@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Brain Rush — Riddles</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper-white: #fbfbf8;
+  --neon1: #7b3af6;
+  --neon2: #00e5ff;
+  --good: #1fb97a;
+  --bad: #ff4757;
+  --coin-size: 20px;
+}
+* { box-sizing: border-box; }
+html, body { height:100%; margin:0; background:var(--paper-white); font-family:Inter,sans-serif; color:#111; }
+.bg { position:fixed; inset:0; z-index:0; background-image:url('https://media.istockphoto.com/id/1469529416/vector/decorative-lined-paper-with-children-two-pages-funny-vector-illustration-eps.jpg?s=612x612&w=0&k=20&c=R9ntFhhrR3Hf8jlql_b-5ES_19Cxsjjx1HcbyScyf68='); background-size:cover; background-position:center; filter:brightness(.98) contrast(.98); }
+.overlay { position:fixed; inset:0; z-index:1; pointer-events:none; background:linear-gradient(180deg, rgba(255,255,255,0.0), rgba(255,255,255,0.0)); }
+.stage { position:relative; z-index:2; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:36px; }
+.book { width:95vw; max-width:1400px; border-radius:10px; padding:18px; position:relative; background:none; }
+.header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:6px; }
+.leftHeader { display:flex; align-items:center; gap:14px; }
+.logoBox { width:84px; height:84px; border-radius:10px; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 28px rgba(0,0,0,0.08); overflow:hidden; border:1px solid rgba(0,0,0,0.04);}
+.logoBox img { width:82%; height:82%; object-fit:contain; display:block; }
+.titleWrap { display:flex; flex-direction:column; gap:4px; }
+.title { font-family:"Patrick Hand", Inter; font-size:34px; margin:0; font-weight:900; color:#111; position:relative; }
+.title::after { content:""; position:absolute; left:0; right:0; bottom:-6px; height:6px; border-radius:6px; background:linear-gradient(90deg,var(--neon1),var(--neon2)); opacity:.18; animation:titlePulse 3.6s ease-in-out infinite; }
+@keyframes titlePulse { 0%{opacity:.14}50%{opacity:.3}100%{opacity:.14} }
+.subtitle { font-size:13px; color:#333; font-weight:700; opacity:.9; margin-top:2px; }
+.coins { display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:12px; background:#fff; box-shadow:0 6px 30px rgba(0,0,0,0.06); border:1px solid rgba(0,0,0,0.03); font-weight:900; }
+.coins .coinEmoji { font-size:20px; margin-right:6px; }
+.coins #headerCoins { font-size:18px; color:#222; }
+.card { margin-top:12px; background:none; border-radius:12px; padding:28px; min-height:62vh; display:flex; flex-direction:column; gap:12px; align-items:stretch; transform-origin:center; position:relative; }
+.topbar { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.qcount { font-weight:900; color:#222; padding:8px 12px; background:rgba(255,255,255,0.8); border-radius:10px; box-shadow:0 6px 20px rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.02); }
+.timerWrap { display:flex; align-items:center; gap:10px; justify-content:center; margin-top:12px; }
+.timerText { font-weight:900; color:#111; min-width:56px; text-align:center; font-size:20px; }
+svg.timer { width:70px; height:70px; }
+.question { font-family:"Patrick Hand", Inter; font-size:2.5rem; font-weight:900; color:#000; text-align:center; margin:20px 0; line-height:1.4; padding:20px 40px; position:relative; z-index:10; }
+.question::before { content:''; position:absolute; inset:-15px; background:rgba(255,255,255,0.92); border-radius:16px; z-index:-1; }
+.choices { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:20px auto; }
+.choice { flex:1 1 20%; min-width:120px; height:60px; border-radius:999px; display:flex; align-items:center; justify-content:center; gap:12px; cursor:pointer; user-select:none; font-weight:900; font-size:1.2rem; color:#fff; background:linear-gradient(-45deg,#1a9850,#2ecc71,#27ae60,#1a9850); background-size:400% 400%; border:6px solid #057d05; transition:all .3s ease; position:relative; overflow:visible; animation:gradientBG 8s ease infinite;}
+.choice.correct { border-color:#00ff00; background:linear-gradient(-45deg,#1a9850,#2ecc71); box-shadow:0 0 16px #00ff00; }
+.choice.wrong { border-color:#ff0000; background:linear-gradient(-45deg,#c62828,#ef5350);}
+.feedback { min-height:28px; font-weight:800; text-align:center; color:#333; }
+.progressWrap { margin-top:6px; display:flex; flex-direction:column; gap:8px; align-items:stretch; }
+.progressBar { height:10px; background:linear-gradient(90deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01)); border-radius:999px; overflow:hidden; }
+.progressFill { height:100%; width:0%; background:linear-gradient(90deg, rgba(123,58,246,0.85), rgba(0,229,255,0.8)); transition:width .35s ease; }
+.final { position:absolute; inset:0; z-index:12; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; background:linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.96)); border-radius:10px; padding:28px; box-shadow:0 40px 120px rgba(0,0,0,0.08); text-align:center; display:none; }
+.final h2 { font-family:"Patrick Hand", Inter; font-size:2rem; margin:6px 0; color:#0b6b3a; }
+.final .score { font-weight:900; color:#222; font-size:1.15rem; }
+.final .btns { display:flex; gap:12px; margin-top:8px; }
+.btn { padding:10px 16px; border-radius:10px; border:none; cursor:pointer; font-weight:900; background:linear-gradient(90deg,#7b3af6,#00e5ff); color:#fff; box-shadow:0 12px 36px rgba(0,0,0,0.12); }
+.confetti { position:fixed; width:10px; height:8px; top:-20px; pointer-events:none; z-index:40; opacity:0.95; border-radius:2px; transform:translateY(0) rotate(0deg); animation:confettiFall 2200ms linear forwards; }
+@keyframes confettiFall { to { transform:translateY(110vh) rotate(720deg); opacity:0.95; } }
+#timerCircle { transition: stroke-dashoffset 1s linear; }
+@media(max-width:760px) { .choice { height:50px; font-size:16px; flex:1 1 45%; min-width:100px; } .title { font-size:22px; } }
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div>
+<div class="overlay" aria-hidden="true"></div>
+
+<div class="stage">
+  <div class="book" role="main" aria-label="Brain Rush riddles game">
+    <div class="header">
+      <div class="leftHeader">
+        <div class="logoBox"><img src="logo.png" alt="logo"></div>
+        <div class="titleWrap">
+          <div class="title">Brain Rush</div>
+          <div class="subtitle">Level 1 • Riddles</div>
+        </div>
+        <div style="margin-left:14px;">
+          <div class="qcount" id="qcount">Question 1 / 10</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="coins"><span class="coinEmoji">💰</span> <span id="headerCoins">0</span></div>
+      </div>
+    </div>
+
+    <div class="card" id="card">
+      <div class="timerWrap">
+        <svg class="timer" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="45" stroke="#ddd" stroke-width="10" fill="none"/>
+          <circle id="timerCircle" cx="50" cy="50" r="45" stroke="#7b3af6" stroke-width="10" fill="none" stroke-dasharray="282.6" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+        </svg>
+        <div class="timerText" id="timerText">15</div>
+      </div>
+
+      <div class="question" id="question">Loading…</div>
+      <div class="choices" id="choices" role="list" aria-live="polite"></div>
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+      <div class="progressWrap">
+        <div class="progressBar"><div class="progressFill" id="progressFill"></div></div>
+      </div>
+
+      <div id="final" class="final">
+        <h2>🎉 Congratulations!</h2>
+        <div class="score" id="finalScore">You answered 0 / 10 correctly</div>
+        <div style="margin-top:8px;"><div class="score" id="coinSummary">You earned 0 🪙 this round</div></div>
+        <div class="btns">
+          <button class="btn" id="playAgain">Play Again</button>
+          <button class="btn" id="goHome">Home</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<audio id="clickS" preload="auto"><source src="click.mp3" type="audio/mpeg"></audio>
+<audio id="coinS" preload="auto"><source src="coin.mp3" type="audio/mpeg"></audio>
+<audio id="cheerS" preload="auto"><source src="cheer.mp3" type="audio/mpeg"></audio>
+<audio id="bgMusic" loop><source src="background-music.mp3" type="audio/mpeg"></audio>
+
+<script>
+(() => {
+const BANK = [
+  {q:"I speak without a mouth and hear without ears. I have nobody, but I come alive with wind. What am I?", choices:["Echo","Shadow","Fire","Wave"], answer:"Echo"},
+  {q:"I’m tall when I’m young, and I’m short when I’m old. What am I?", choices:["Candle","Pencil","Tree","Clock"], answer:"Candle"},
+  {q:"What has keys but can’t open locks?", choices:["Piano","Map","Locksmith","Keyboard"], answer:"Piano"},
+  {q:"What has a heart that doesn’t beat?", choices:["Artichoke","Stone","Clock","Tree"], answer:"Artichoke"},
+  {q:"The more you take, the more you leave behind. What am I?", choices:["Footsteps","Shadow","Time","Air"], answer:"Footsteps"},
+  {q:"What can travel around the world while staying in a corner?", choices:["Stamp","Coin","Book","Globe"], answer:"Stamp"},
+  {q:"What has to be broken before you can use it?", choices:["Egg","Glass","Seal","Nut"], answer:"Egg"},
+  {q:"I’m always hungry and will die if not fed, but whatever I touch will soon turn red. What am I?", choices:["Fire","Ice","Sun","Blood"], answer:"Fire"},
+  {q:"What goes up but never comes down?", choices:["Age","Smoke","Kite","Balloon"], answer:"Age"},
+  {q:"I have cities, but no houses; forests, but no trees; and water, but no fish. What am I?", choices:["Map","Dream","Painting","Maze"], answer:"Map"}
+];
+
+let currentSet=[], currentQ=0, score=0;
+let totalCoins = Number(localStorage.getItem('totalCoins')) || 0;
+const pointsPerQ = 10;
+let timeLeft=15, timerInterval;
+let answering=false;
+
+const questionEl = document.getElementById('question');
+const choicesEl = document.getElementById('choices');
+const progressFill = document.getElementById('progressFill');
+const qcountEl = document.getElementById('qcount');
+const finalEl = document.getElementById('final');
+const finalScoreEl = document.getElementById('finalScore');
+const coinSummaryEl = document.getElementById('coinSummary');
+const headerCoinsEl = document.getElementById('headerCoins');
+const playAgainBtn = document.getElementById('playAgain');
+const goHomeBtn = document.getElementById('goHome');
+
+const clickS = document.getElementById('clickS');
+const coinS = document.getElementById('coinS');
+const cheerS = document.getElementById('cheerS');
+const bgMusic = document.getElementById('bgMusic');
+
+headerCoinsEl.textContent = totalCoins;
+
+function shuffle(array){
+  let arr=[...array];
+  for(let i=arr.length-1;i>0;i--){
+    let j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function shuffleBank(){
+  currentSet = shuffle(BANK).slice(0,10).map(q=>{
+    let shuffledChoices = shuffle(q.choices);
+    let correctIndex = shuffledChoices.indexOf(q.answer);
+    return {...q, choices:shuffledChoices, correct: correctIndex};
+  });
+}
+
+function loadQuestion(){
+  answering=false;
+  let current = currentSet[currentQ];
+  questionEl.textContent = current.q;
+  choicesEl.innerHTML='';
+  current.choices.forEach((c,i)=>{
+    let btn=document.createElement('div');
+    btn.className='choice';
+    btn.setAttribute('role','listitem');
+    btn.textContent=c;
+    btn.addEventListener('click',()=>selectAnswer(i,btn));
+    choicesEl.appendChild(btn);
+  });
+  qcountEl.textContent=`Question ${currentQ+1} / 10`;
+  progressFill.style.width=`${(currentQ/10)*100}%`;
+  startTimer();
+}
+
+function startTimer(){
+  clearInterval(timerInterval);
+  timeLeft=15;
+  updateTimerVisual();
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    updateTimerVisual();
+    if(timeLeft<=0){
+      clearInterval(timerInterval);
+      nextQuestion();
+    }
+  },1000);
+}
+
+function updateTimerVisual(){
+  document.getElementById('timerText').textContent=timeLeft;
+  document.getElementById('timerCircle').style.strokeDashoffset = 282.6*(1-timeLeft/15);
+}
+
+function selectAnswer(i,btn){
+  if(answering) return;
+  answering=true;
+  if(bgMusic.paused){ try{ bgMusic.play(); }catch(e){} }
+  try{ clickS.currentTime=0; clickS.play(); }catch(e){}
+  clearInterval(timerInterval);
+  let current = currentSet[currentQ];
+  if(i===current.correct){
+    btn.classList.add('correct');
+    score++;
+    totalCoins+=pointsPerQ;
+    localStorage.setItem('totalCoins',totalCoins);
+    headerCoinsEl.textContent=totalCoins;
+    try{ coinS.currentTime=0; coinS.play(); }catch(e){}
+    coinPop(pointsPerQ);
+  } else {
+    btn.classList.add('wrong');
+    Array.from(choicesEl.children)[current.correct].classList.add('correct');
+  }
+  Array.from(choicesEl.children).forEach(c=>c.style.pointerEvents='none');
+  setTimeout(()=>nextQuestion(),800);
+}
+
+function nextQuestion(){
+  currentQ++;
+  if(currentQ<10) loadQuestion();
+  else finishQuiz();
+}
+
+function finishQuiz(){
+  finalEl.style.display='flex';
+  finalScoreEl.textContent=`You answered ${score} / 10 correctly`;
+  coinSummaryEl.textContent=`You earned ${score*pointsPerQ} 🪙 this round`;
+  try{ cheerS.currentTime=0; cheerS.play(); }catch(e){}
+  progressFill.style.width='100%';
+  confetti();
+}
+
+playAgainBtn.addEventListener('click',()=>{
+  finalEl.style.display='none';
+  score=0;
+  currentQ=0;
+  shuffleBank();
+  loadQuestion();
+});
+
+goHomeBtn.addEventListener('click',()=>window.location.href='index.html');
+
+function coinPop(amount){
+  const pop=document.createElement('div');
+  pop.textContent=`+${amount} 🪙`;
+  Object.assign(pop.style,{
+    position:'absolute', top:'30px', right:'30px', fontWeight:'900',
+    color:'#fbc531', zIndex:'100', opacity:'1', transition:'all 1s ease-out'
+  });
+  document.body.appendChild(pop);
+  requestAnimationFrame(()=>{
+    pop.style.transform='translateY(-50px)';
+    pop.style.opacity='0';
+  });
+  setTimeout(()=>pop.remove(),1000);
+}
+
+function confetti(){
+  for(let i=0;i<120;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.backgroundColor=`hsl(${Math.random()*360},100%,50%)`;
+    c.style.left=`${Math.random()*100}vw`;
+    c.style.animationDuration=`${Math.random()*2+1.5}s`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2200);
+  }
+}
+
+shuffleBank();
+loadQuestion();
+})();
+</script>
+</body>
+</html>

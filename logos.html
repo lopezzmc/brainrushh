@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brain Rush — Logos</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root { --coin-color:#fbc531; --timer-bg:#ddd; --timer-fg:#7b3af6; }
+*{box-sizing:border-box;}
+html,body{height:100%;margin:0;font-family:Inter,sans-serif;color:#111;overflow:hidden;background:#fbfbf8;}
+.bg{position:fixed;inset:0;background:url('https://media.istockphoto.com/id/1469529416/vector/decorative-lined-paper-with-children-two-pages-funny-vector-illustration-eps.jpg?s=612x612&w=0&k=20&c=R9ntFhhrR3Hf8jlql_b-5ES_19Cxsjjx1HcbyScyf68=');background-size:cover;background-position:center;filter:brightness(.98) contrast(.98);z-index:0;}
+.overlay{position:fixed;inset:0;z-index:1;pointer-events:none;}
+.stage{position:relative;z-index:2;width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:18px;}
+.book{width:95vw;max-width:1400px;border-radius:10px;padding:18px;background:none;display:flex;flex-direction:column;align-items:center;}
+.header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;width:100%;}
+.leftHeader{display:flex;align-items:center;gap:14px;}
+.logoBox{width:120px;height:120px;border-radius:20px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(0,0,0,0.08);}
+.logoBox img{width:95%;height:95%;object-fit:contain;}
+.titleWrap{display:flex;flex-direction:column;gap:4px;}
+.title{font-family:"Patrick Hand", Inter;font-size:34px;margin:0;font-weight:900;color:#111;position:relative;}
+.title::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:6px;border-radius:6px;background:linear-gradient(90deg,#7b3af6,#00e5ff);opacity:.18;animation:titlePulse 3.6s ease-in-out infinite;}
+@keyframes titlePulse{0%{opacity:.14}50%{opacity:.3}100%{opacity:.14}}
+.subtitle{font-size:13px;color:#333;font-weight:700;opacity:.9;margin-top:2px;}
+.coins{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;background:#fff;box-shadow:0 6px 30px rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.03);font-weight:900;}
+.coins .coinEmoji{font-size:20px;margin-right:6px;}
+.coins #headerCoins{font-size:18px;color:#222;}
+.card{margin-top:12px;background:none;border-radius:12px;padding:28px;min-height:60vh;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:flex-start;position:relative;}
+#logoImg{width:250px;height:250px;object-fit:contain;border-radius:20px;}
+.question{font-family:"Patrick Hand", Inter;font-weight:900;text-align:center;margin:12px 0;line-height:1.4;display:flex;align-items:center;justify-content:center;padding:12px 24px;font-size:2.2rem;position:relative;}
+.question::before{content:'';position:absolute;inset:-12px;background:rgba(255,255,255,0.92);border-radius:16px;z-index:-1;}
+.choices{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px;width:100%;}
+.choice{flex:1 1 20%;min-width:120px;height:60px;border-radius:999px;display:flex;align-items:center;justify-content:center;gap:12px;cursor:pointer;user-select:none;font-weight:900;font-size:1.2rem;color:#fff;background:linear-gradient(-45deg,#1a9850,#2ecc71,#27ae60,#1a9850);background-size:400% 400%;border:6px solid #057d05;transition:all .3s ease;position:relative;overflow:visible;animation:gradientBG 8s ease infinite;}
+.choice.correct{border-color:#00ff00;background:linear-gradient(-45deg,#1a9850,#2ecc71);box-shadow:0 0 16px #00ff00;}
+.choice.wrong{border-color:#ff0000;background:linear-gradient(-45deg,#c62828,#ef5350);}
+.progressWrap{margin-top:6px;display:flex;flex-direction:column;gap:8px;align-items:stretch;width:100%;}
+.progressBar{height:10px;background:linear-gradient(90deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01));border-radius:999px;overflow:hidden;}
+.progressFill{height:100%;width:0%;background:linear-gradient(90deg, rgba(123,58,246,0.85), rgba(0,229,255,0.8));transition:width .35s ease;}
+.final{position:absolute;inset:0;z-index:12;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.96));border-radius:10px;padding:28px;box-shadow:0 40px 120px rgba(0,0,0,0.08);text-align:center;display:none;}
+.final h2{font-family:"Patrick Hand", Inter;font-size:2rem;margin:6px 0;color:#0b6b3a;}
+.final .score{font-weight:900;color:#222;font-size:1.15rem;}
+.final .btns{display:flex;gap:12px;margin-top:8px;}
+.btn{padding:10px 16px;border-radius:10px;border:none;cursor:pointer;font-weight:900;background:linear-gradient(90deg,#7b3af6,#00e5ff);color:#fff;box-shadow:0 12px 36px rgba(0,0,0,0.12);}
+.confetti{position:fixed;width:10px;height:8px;top:-20px;pointer-events:none;z-index:40;opacity:0.95;border-radius:2px;transform:translateY(0) rotate(0deg);animation:confettiFall 2200ms linear forwards;}
+@keyframes confettiFall{to{transform:translateY(110vh) rotate(720deg);opacity:0.95}}
+.timerWrap{position:absolute;top:18px;right:18px;width:60px;height:60px;}
+#timerSvg{transform:rotate(-90deg);}
+#timerCircle{stroke:var(--timer-fg);stroke-width:6;fill:none;stroke-dasharray:94.2;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear;}
+@media(max-width:760px){.choice{height:50px;font-size:16px;flex:1 1 45%;min-width:100px;}.title{font-size:22px;}.question{font-size:1.8rem;}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="overlay"></div>
+<div class="stage">
+  <div class="book">
+    <div class="header">
+      <div class="leftHeader">
+        <div class="logoBox"><img src="logo.png" alt="logo"></div>
+        <div class="titleWrap">
+          <div class="title">Brain Rush</div>
+          <div class="subtitle">Level 1 • Logos • 1 / 10</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="coins"><span class="coinEmoji">💰</span><span id="headerCoins">0</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <img id="logoImg" src="" alt="Logo Image">
+      <div class="question" id="question">Loading…</div>
+      <div class="choices" id="choices"></div>
+      <div class="progressWrap">
+        <div class="progressBar"><div class="progressFill" id="progressFill"></div></div>
+      </div>
+      <div class="timerWrap">
+        <svg width="60" height="60" id="timerSvg">
+          <circle r="15" cx="30" cy="30" stroke="#ddd" stroke-width="6" fill="none"></circle>
+          <circle id="timerCircle" r="15" cx="30" cy="30"></circle>
+        </svg>
+      </div>
+      <div id="final" class="final">
+        <h2>🎉 Congratulations!</h2>
+        <div class="score" id="finalScore"></div>
+        <div class="score" id="coinSummary"></div>
+        <div class="btns">
+          <button class="btn" id="playAgain">Play Again</button>
+          <button class="btn" id="goHome">Home</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<audio id="clickS" preload="auto"><source src="click.mp3" type="audio/mpeg"></audio>
+<audio id="coinS" preload="auto"><source src="coin.mp3" type="audio/mpeg"></audio>
+<audio id="cheerS" preload="auto"><source src="cheer.mp3" type="audio/mpeg"></audio>
+<audio id="bgMusic" loop><source src="background-music.mp3" type="audio/mpeg"></audio>
+
+<script>
+const BANK=[
+  { img: 'logos/pepsi.jpg', choices: ['Pepsi','Coca Cola','Fanta','Sprite'], a:0 },
+  { img: 'logos/netflix.jpg', choices: ['Netflix','Hulu','Disney+','Amazon Prime'], a:0 },
+  { img: 'logos/youtube.jpg', choices: ['YouTube','Vimeo','TikTok','Dailymotion'], a:0 },
+  { img: 'logos/instagram.jpg', choices: ['Instagram','Snapchat','Facebook','Twitter'], a:0 },
+  { img: 'logos/bmw.jpg', choices: ['BMW','Mercedes','Audi','Ferrari'], a:0 },
+  { img: 'logos/hyundai.jpg', choices: ['Hyundai','Kia','Toyota','Honda'], a:0 },
+  { img: 'logos/snapchat.jpg', choices: ['Snapchat','Instagram','TikTok','Messenger'], a:0 },
+  { img: 'logos/subaru.jpg', choices: ['Subaru','Mazda','Nissan','Mitsubishi'], a:0 },
+  { img: 'logos/spotify.jpg', choices: ['Spotify','Apple Music','Tidal','SoundCloud'], a:0 },
+  { img: 'logos/mcdonald.jpg', choices: ['McDonald','Burger King','KFC','Wendy\'s'], a:0 },
+  { img: 'logos/telegram.jpg', choices: ['Telegram','WhatsApp','Signal','Messenger'], a:0 },
+  { img: 'logos/xbox.jpg', choices: ['Xbox','PlayStation','Nintendo','Sega'], a:0 },
+  { img: 'logos/android.jpg', choices: ['Android','iOS','Windows Phone','Symbian'], a:0 },
+  { img: 'logos/amazon.jpg', choices: ['Amazon','eBay','Alibaba','Etsy'], a:0 },
+  { img: 'logos/dominos.jpg', choices: ['Dominos','Pizza Hut','Papa John\'s','Little Caesars'], a:0 },
+  { img: 'logos/channel.jpg', choices: ['Channel','Discovery','NatGeo','History'], a:0 },
+  { img: 'logos/cartoonnetwork.jpg', choices: ['Cartoon Network','Nickelodeon','Disney','Boomerang'], a:0 },
+  { img: 'logos/ferrari.jpg', choices: ['Ferrari','Lamborghini','Porsche','Bugatti'], a:0 },
+  { img: 'logos/mercedes.jpg', choices: ['Mercedes','BMW','Audi','Jaguar'], a:0 }
+];
+
+let currentSet=[], currentQ=0, score=0;
+let totalCoins=Number(localStorage.getItem('totalCoins'))||0;
+const POINTS_PER_Q=10, TIMER_DURATION=15;
+
+const logoImg=document.getElementById('logoImg');
+const questionEl=document.getElementById('question');
+const choicesEl=document.getElementById('choices');
+const progressFill=document.getElementById('progressFill');
+const finalEl=document.getElementById('final');
+const finalScoreEl=document.getElementById('finalScore');
+const coinSummaryEl=document.getElementById('coinSummary');
+const headerCoinsEl=document.getElementById('headerCoins');
+const playAgainBtn=document.getElementById('playAgain');
+const goHomeBtn=document.getElementById('goHome');
+const clickS=document.getElementById('clickS');
+const coinS=document.getElementById('coinS');
+const cheerS=document.getElementById('cheerS');
+const bgMusic=document.getElementById('bgMusic');
+const timerCircle=document.getElementById('timerCircle');
+const subtitleEl=document.querySelector('.subtitle');
+
+headerCoinsEl.textContent=totalCoins;
+
+function shuffleArray(arr){return arr.sort(()=>Math.random()-0.5);}
+function safePlay(audio){audio.currentTime=0;audio.play().catch(()=>{});}
+
+function newSet(){
+  currentSet = shuffleArray([...BANK]).slice(0,10).map(q=>{
+    let shuffled = shuffleArray([...q.choices]);
+    let correctText = q.choices[q.a];
+    let newIndex = shuffled.indexOf(correctText);
+    return {...q, choices: shuffled, a: newIndex};
+  });
+  currentQ=0; score=0;
+}
+
+function loadQuestion(){
+  if(currentQ>=currentSet.length){finishQuiz(); return;}
+  const current=currentSet[currentQ];
+  logoImg.src=current.img;
+  questionEl.textContent="Which brand is this logo?";
+  choicesEl.innerHTML='';
+  current.choices.forEach((txt,i)=>{
+    const btn=document.createElement('div');
+    btn.className='choice';
+    btn.textContent=txt;
+    btn.addEventListener('click',()=>selectAnswer(btn,i,current.a));
+    choicesEl.appendChild(btn);
+  });
+  progressFill.style.width=`${(currentQ/currentSet.length)*100}%`;
+  subtitleEl.textContent=`Level 1 • Logos • ${currentQ+1} / ${currentSet.length}`;
+  startTimer();
+}
+
+let timerInterval=null, timeLeft=TIMER_DURATION;
+function startTimer(){
+  clearInterval(timerInterval);
+  timeLeft=TIMER_DURATION;
+  updateTimer();
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    updateTimer();
+    if(timeLeft<=0){ clearInterval(timerInterval); disableChoices(); setTimeout(()=>{currentQ++; loadQuestion();},500); }
+  },1000);
+}
+
+function updateTimer(){
+  const c=2*Math.PI*15;
+  timerCircle.style.strokeDasharray=c;
+  timerCircle.style.strokeDashoffset=c*(1 - timeLeft/TIMER_DURATION);
+}
+
+function disableChoices(){Array.from(choicesEl.children).forEach(b=>b.style.pointerEvents='none');}
+
+function selectAnswer(btn,clicked,correct){
+  clearInterval(timerInterval);
+  disableChoices();
+  safePlay(clickS);
+  if(clicked===correct){ btn.classList.add('correct'); score++; totalCoins+=POINTS_PER_Q; localStorage.setItem('totalCoins',totalCoins); headerCoinsEl.textContent=totalCoins; safePlay(coinS); }
+  else{ btn.classList.add('wrong'); Array.from(choicesEl.children)[correct].classList.add('correct'); }
+  setTimeout(()=>{currentQ++; loadQuestion();},800);
+}
+
+function finishQuiz(){
+  finalEl.style.display='flex';
+  finalScoreEl.textContent=`You answered ${score} / ${currentSet.length} correctly`;
+  coinSummaryEl.textContent=`You earned ${score*POINTS_PER_Q} 🪙 this round`;
+  progressFill.style.width='100%';
+  safePlay(cheerS);
+  confetti();
+}
+
+function confetti(){
+  for(let i=0;i<60;i++){
+    const c=document.createElement('div'); c.className='confetti';
+    c.style.backgroundColor=`hsl(${Math.random()*360},100%,50%)`;
+    c.style.left=`${Math.random()*100}vw`;
+    c.style.animationDuration=`${Math.random()*2+1.5}s`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2500);
+  }
+}
+
+playAgainBtn.addEventListener('click',()=>{finalEl.style.display='none'; newSet(); loadQuestion();});
+goHomeBtn.addEventListener('click',()=>window.location.href='index.html');
+
+let musicStarted=false;
+document.addEventListener('click',()=>{ if(!musicStarted){ bgMusic.volume=0.3; safePlay(bgMusic); musicStarted=true; } });
+
+newSet();
+loadQuestion();
+</script>
+</body>
+</html>

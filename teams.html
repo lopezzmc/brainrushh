@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Brain Rush — Team Quiz</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --coin-color:#fbc531;
+  --timer-bg:#ddd;
+  --timer-fg:#7b3af6;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;margin:0;font-family:Inter,sans-serif;color:#111;overflow:hidden;background:#fbfbf8;}
+.bg{position:fixed;inset:0;background:url('https://media.istockphoto.com/id/1469529416/vector/decorative-lined-paper-with-children-two-pages-funny-vector-illustration-eps.jpg?s=612x612&w=0&k=20&c=R9ntFhhrR3Hf8jlql_b-5ES_19Cxsjjx1HcbyScyf68=') no-repeat center/cover;filter:brightness(.98) contrast(.98);z-index:0;}
+.overlay{position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,0.0),rgba(255,255,255,0.0));}
+.stage{position:relative;z-index:2;width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:18px;}
+.book{width:95vw;max-width:1400px;border-radius:10px;padding:18px;background:none;display:flex;flex-direction:column;align-items:center;}
+.header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;width:100%;}
+.leftHeader{display:flex;align-items:center;gap:14px;}
+.logoBox{width:120px;height:120px;border-radius:20px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(0,0,0,0.08);transition:all .4s;}
+.logoBox img{width:95%;height:95%;object-fit:contain;}
+.titleWrap{display:flex;flex-direction:column;gap:4px;}
+.title{font-family:"Patrick Hand", Inter;font-size:34px;margin:0;font-weight:900;color:#111;position:relative;}
+.title::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:6px;border-radius:6px;background:linear-gradient(90deg,#7b3af6,#00e5ff);opacity:.18;animation:titlePulse 3.6s ease-in-out infinite;}
+@keyframes titlePulse{0%{opacity:.14}50%{opacity:.3}100%{opacity:.14}}
+.subtitle{font-size:13px;color:#333;font-weight:700;opacity:.9;margin-top:2px;}
+.coins{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;background:#fff;box-shadow:0 6px 30px rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.03);font-weight:900;}
+.coins .coinEmoji{font-size:20px;margin-right:6px;}
+.coins #headerCoins{font-size:18px;color:#222;}
+.card{margin-top:12px;background:none;border-radius:12px;padding:28px;min-height:60vh;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:flex-start;position:relative;transition:opacity .4s;}
+#logoImg{width:250px;height:250px;object-fit:contain;border-radius:20px;transition:opacity .4s;}
+.question{font-family:"Patrick Hand", Inter;font-weight:900;text-align:center;margin:12px 0;line-height:1.4;display:flex;align-items:center;justify-content:center;padding:12px 24px;font-size:2.2rem;position:relative;transition:opacity .4s;}
+.question::before{content:'';position:absolute;inset:-12px;background:rgba(255,255,255,0.92);border-radius:16px;z-index:-1;}
+.choices{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px;width:100%;transition:opacity .4s;}
+.choice{flex:1 1 20%;min-width:120px;height:60px;border-radius:999px;display:flex;align-items:center;justify-content:center;gap:12px;cursor:pointer;user-select:none;font-weight:900;font-size:1.2rem;color:#fff;background:linear-gradient(-45deg,#1a9850,#2ecc71,#27ae60,#1a9850);background-size:400% 400%;border:6px solid #057d05;transition:all .3s ease;position:relative;overflow:hidden;}
+.choice.correct{border-color:#00ff00;background:linear-gradient(-45deg,#1a9850,#2ecc71);box-shadow:0 0 16px #00ff00;}
+.choice.wrong{border-color:#ff0000;background:linear-gradient(-45deg,#c62828,#ef5350);}
+.progressWrap{margin-top:6px;display:flex;flex-direction:column;gap:8px;align-items:stretch;width:100%;}
+.progressBar{height:10px;background:linear-gradient(90deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01));border-radius:999px;overflow:hidden;}
+.progressFill{height:100%;width:0%;background:linear-gradient(90deg, rgba(123,58,246,0.85), rgba(0,229,255,0.8));transition:width .35s ease;}
+.final{position:absolute;inset:0;z-index:12;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.96));border-radius:10px;padding:28px;box-shadow:0 40px 120px rgba(0,0,0,0.08);text-align:center;display:none;opacity:0;transition:opacity .4s;}
+.final.show{display:flex;opacity:1;}
+.final h2{font-family:"Patrick Hand", Inter;font-size:2rem;margin:6px 0;color:#0b6b3a;}
+.final .score{font-weight:900;color:#222;font-size:1.15rem;}
+.final .btns{display:flex;gap:12px;margin-top:8px;}
+.btn{padding:10px 16px;border-radius:10px;border:none;cursor:pointer;font-weight:900;background:linear-gradient(90deg,#7b3af6,#00e5ff);color:#fff;box-shadow:0 12px 36px rgba(0,0,0,0.12);}
+.timerWrap{position:absolute;top:18px;right:18px;width:60px;height:60px;}
+#timerSvg{transform:rotate(-90deg);}
+#timerCircle{stroke:var(--timer-fg);stroke-width:6;fill:none;stroke-dasharray:94.2;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear;}
+@media(max-width:760px){.choice{height:50px;font-size:16px;flex:1 1 45%;min-width:100px;}.title{font-size:22px;}.question{font-size:1.8rem;}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="overlay"></div>
+<div class="stage">
+  <div class="book">
+    <div class="header">
+      <div class="leftHeader">
+        <div class="logoBox"><img src="logo.png" alt="logo"></div>
+        <div class="titleWrap">
+          <div class="title">Team Quiz</div>
+          <div class="subtitle" id="levelText">Question 1 / 10</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="coins"><span class="coinEmoji">💰</span><span id="headerCoins">0</span></div>
+      </div>
+    </div>
+
+    <div class="card" id="card">
+      <img id="logoImg" src="" alt="Logo Image">
+      <div class="question" id="question">Loading…</div>
+      <div class="choices" id="choices"></div>
+      <div class="progressWrap">
+        <div class="progressBar"><div class="progressFill" id="progressFill"></div></div>
+      </div>
+      <div class="timerWrap">
+        <svg width="60" height="60" id="timerSvg">
+          <circle r="15" cx="30" cy="30" stroke="#ddd" stroke-width="6" fill="none"></circle>
+          <circle id="timerCircle" r="15" cx="30" cy="30"></circle>
+        </svg>
+      </div>
+      <div id="final" class="final">
+        <h2>🎉 Congratulations!</h2>
+        <div class="score" id="finalScore"></div>
+        <div class="score" id="coinSummary"></div>
+        <div class="btns">
+          <button class="btn" id="playAgain">Play Again</button>
+          <button class="btn" id="goHome">Home</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<audio id="clickS" preload="auto"><source src="click.mp3" type="audio/mpeg"></audio>
+<audio id="coinS" preload="auto"><source src="coin.mp3" type="audio/mpeg"></audio>
+<audio id="cheerS" preload="auto"><source src="cheer.mp3" type="audio/mpeg"></audio>
+<audio id="bgMusic" loop><source src="background-music.mp3" type="audio/mpeg"></audio>
+
+<script>
+// ---------------- DATA ----------------
+const LOGO_QUESTIONS=[
+  { img: 'teams/bucks.jpg', question: 'Which team has this logo?', choices: ['Bucks','Lakers','Miami Heat','Chicago Bulls'], a:0 },
+  { img: 'teams/lakers.jpg', question: 'Which team has this logo?', choices: ['Bucks','Lakers','Miami Heat','Chicago Bulls'], a:1 },
+  { img: 'teams/manutd.jpg', question: 'Who is the manager of Manchester United?', choices: ['Erik ten Hag','Jürgen Klopp','Carlo Ancelotti','Diego Simeone'], a:0 },
+  { img: 'teams/liverpool.jpg', question: 'Who is the manager of Liverpool?', choices: ['Erik ten Hag','Jürgen Klopp','Carlo Ancelotti','Diego Simeone'], a:1 },
+  { img: 'teams/napoli.jpg', question: 'Which team has this logo?', choices: ['Napoli','Real Madrid','Atletico Madrid','Santos'], a:0 },
+  { img: 'teams/miamiheat.jpg', question: 'Which team has this logo?', choices: ['Miami Heat','Bucks','Lakers','Chicago Bulls'], a:0 },
+  { img: 'teams/portugal.jpg', question: 'Which team has this logo?', choices: ['Portugal','Real Madrid','Manchester United','Liverpool'], a:0 },
+  { img: 'teams/realmadrid.jpg', question: 'Which team has this logo?', choices: ['Real Madrid','Atletico Madrid','Napoli','Santos'], a:0 },
+  { img: 'teams/santos.jpg', question: 'Which team has this logo?', choices: ['Santos','Napoli','Manchester United','Liverpool'], a:0 },
+  { img: 'teams/atleticomadrid.jpg', question: 'Which team has this logo?', choices: ['Atletico Madrid','Real Madrid','Napoli','Liverpool'], a:0 }
+];
+
+const TEXT_QUESTIONS=[
+  { q: "Which team won the 2023 NBA Championship?", choices: ["Miami Heat","Los Angeles Lakers","Milwaukee Bucks","Boston Celtics"], a:2 },
+  { q: "Which team is nicknamed 'The Red Devils'?", choices: ["Liverpool","Manchester United","Atletico Madrid","Santos"], a:1 },
+  { q: "Which Italian club plays at Stadio Diego Armando Maradona?", choices: ["Napoli","Juventus","Atletico Madrid","Real Madrid"], a:0 },
+  { q: "Which NBA team plays in Los Angeles and wears purple and gold?", choices: ["Lakers","Bucks","Miami Heat","Chicago Bulls"], a:0 },
+  { q: "Which team is based in Milwaukee, Wisconsin?", choices: ["Miami Heat","Bucks","Lakers","Chicago Bulls"], a:1 },
+  { q: "Which team is known as 'The Reds' in English football?", choices: ["Liverpool","Manchester United","Santos","Atletico Madrid"], a:0 },
+  { q: "Which team won the UEFA Champions League in 2022?", choices: ["Real Madrid","Manchester United","Liverpool","Atletico Madrid"], a:0 },
+  { q: "Which Portuguese star plays for Portugal?", choices: ["Cristiano Ronaldo","Lionel Messi","Neymar","Kylian Mbappe"], a:0 },
+  { q: "Which team plays in Miami, Florida in the NBA?", choices: ["Miami Heat","Bucks","Chicago Bulls","Lakers"], a:0 },
+  { q: "Which Brazilian club is Pelé famous for playing?", choices: ["Santos","Napoli","Atletico Madrid","Liverpool"], a:0 }
+];
+
+// ---------------- QUIZ LOGIC ----------------
+let QUIZ=[], currentQ=0, score=0;
+let totalCoins = Number(localStorage.getItem('totalCoins')) || 0;
+const POINTS_PER_Q = 10;
+let timerInterval, timeLeft = 15;
+
+const logoImg=document.getElementById('logoImg');
+const questionEl=document.getElementById('question');
+const choicesEl=document.getElementById('choices');
+const progressFill=document.getElementById('progressFill');
+const finalEl=document.getElementById('final');
+const finalScoreEl=document.getElementById('finalScore');
+const coinSummaryEl=document.getElementById('coinSummary');
+const headerCoinsEl=document.getElementById('headerCoins');
+const playAgainBtn=document.getElementById('playAgain');
+const goHomeBtn=document.getElementById('goHome');
+const levelText=document.getElementById('levelText');
+const clickS=document.getElementById('clickS');
+const coinS=document.getElementById('coinS');
+const cheerS=document.getElementById('cheerS');
+const bgMusic=document.getElementById('bgMusic');
+const card=document.getElementById('card');
+const timerCircle=document.getElementById('timerCircle');
+
+headerCoinsEl.textContent=totalCoins;
+
+// shuffle utility
+function shuffleArray(arr){ return arr.sort(()=>Math.random()-0.5); }
+
+// generate quiz with shuffled correct answers
+function newQuiz(){
+  QUIZ = shuffleArray([...LOGO_QUESTIONS, ...TEXT_QUESTIONS]).slice(0,10).map(q=>{
+    let choicesCopy = [...q.choices];
+    choicesCopy = shuffleArray(choicesCopy);
+    let correctAnswerText = q.img ? q.choices[q.a] : q.choices[q.a];
+    let newIndex = choicesCopy.indexOf(correctAnswerText);
+    return q.img ? {...q, choices:choicesCopy, a:newIndex} : {...q, choices:choicesCopy, question:q.q, a:newIndex};
+  });
+  currentQ=0; score=0;
+}
+
+// ---------------- LOAD QUESTION ----------------
+function loadQuestion(){
+  if(currentQ>=QUIZ.length){ finishQuiz(); return; }
+  let current = QUIZ[currentQ];
+  card.style.opacity = 0;
+  setTimeout(()=>{
+    if(current.img){
+      logoImg.src = current.img;
+      logoImg.style.display = 'block';
+    } else { logoImg.style.display = 'none'; }
+
+    questionEl.textContent = current.img ? current.question : current.question;
+    choicesEl.innerHTML = '';
+
+    current.choices.forEach((c,i)=>{
+      const btn = document.createElement('div');
+      btn.className='choice';
+      btn.textContent=c;
+      btn.addEventListener('click',()=>selectAnswer(btn,current.a));
+      choicesEl.appendChild(btn);
+    });
+
+    progressFill.style.width = `${(currentQ/QUIZ.length)*100}%`;
+    levelText.textContent = `Question ${currentQ+1} / ${QUIZ.length}`;
+    startTimer();
+    card.style.opacity = 1;
+  },300);
+}
+
+// ---------------- TIMER ----------------
+function startTimer(){
+  clearInterval(timerInterval);
+  timeLeft=15;
+  updateTimer();
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    updateTimer();
+    if(timeLeft<=0){
+      clearInterval(timerInterval);
+      currentQ++;
+      loadQuestion();
+    }
+  },1000);
+}
+
+function updateTimer(){
+  const circumference=2*Math.PI*15;
+  const offset=circumference*(1 - timeLeft/15);
+  timerCircle.style.strokeDasharray=circumference;
+  timerCircle.style.strokeDashoffset=offset;
+}
+
+// ---------------- SELECT ANSWER ----------------
+function selectAnswer(btn, answerIdx){
+  clearInterval(timerInterval);
+  clickS.currentTime=0; clickS.play();
+  const buttons = Array.from(choicesEl.children);
+  const current = QUIZ[currentQ];
+
+  if(buttons.indexOf(btn)===answerIdx){
+    btn.classList.add('correct');
+    score++;
+    totalCoins+=POINTS_PER_Q;
+    localStorage.setItem('totalCoins',totalCoins);
+    headerCoinsEl.textContent=totalCoins;
+    coinS.currentTime=0; coinS.play();
+  } else {
+    btn.classList.add('wrong');
+    buttons[answerIdx].classList.add('correct');
+  }
+  buttons.forEach(b=>b.style.pointerEvents='none');
+  setTimeout(()=>{currentQ++; loadQuestion();},800);
+}
+
+// ---------------- FINISH QUIZ ----------------
+function finishQuiz(){
+  finalEl.classList.add('show');
+  finalScoreEl.textContent = `You answered ${score} / ${QUIZ.length} correctly`;
+  coinSummaryEl.textContent = `You earned ${score*POINTS_PER_Q} 🪙 this round`;
+  cheerS.currentTime=0; cheerS.play();
+  progressFill.style.width='100%';
+  confetti();
+}
+
+// ---------------- BUTTONS ----------------
+playAgainBtn.addEventListener('click',()=>{ finalEl.classList.remove('show'); newQuiz(); loadQuestion(); });
+goHomeBtn.addEventListener('click',()=>window.location.href='index.html');
+
+// ---------------- CONFETTI ----------------
+function confetti(){
+  const colors = ["#f94144","#f3722c","#f9c74f","#90be6d","#43aa8b","#577590","#7b3af6","#00e5ff"];
+  for(let i=0;i<150;i++){
+    const c = document.createElement('div');
+    c.className='confetti';
+    c.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
+    c.style.left = `${Math.random()*100}vw`;
+    c.style.width = `${Math.random()*8 + 6}px`;
+    c.style.height = `${Math.random()*8 + 6}px`;
+    c.style.opacity = Math.random()*0.8 + 0.3;
+    c.style.transform = `rotate(${Math.random()*360}deg)`;
+    c.style.animationDuration = `${Math.random()*3+2}s`;
+    c.style.animationDelay = `${Math.random()*0.5}s`;
+    document.body.appendChild(c);
+    
+    // Remove confetti after animation
+    setTimeout(()=>c.remove(),4000);
+  }
+}
+
+
+// ---------------- MUSIC ----------------
+let musicStarted=false;
+document.addEventListener('click', ()=>{
+  if(!musicStarted){ bgMusic.volume=0.3; bgMusic.play().catch(e=>{}); musicStarted=true; }
+});
+
+// ---------------- INIT ----------------
+newQuiz();
+loadQuestion();
+</script>
+</body>
+</html>

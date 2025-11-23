@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Brain Rush — Geography</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Inter:wght@400;700;900&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --paper-white: #fbfbf8;
+      --neon1: #7b3af6;
+      --neon2: #00e5ff;
+      --good: #1fb97a;
+      --bad: #ff4757;
+      --coin-size: 20px;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      background: var(--paper-white);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color: #111;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image: url('https://media.istockphoto.com/id/1469529416/vector/decorative-lined-paper-with-children-two-pages-funny-vector-illustration-eps.jpg?s=612x612&w=0&k=20&c=R9ntFhhrR3Hf8jlql_b-5ES_19Cxsjjx1HcbyScyf68=');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(.98) contrast(.98);
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.00), rgba(255, 255, 255, 0.00));
+    }
+
+    .stage {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 36px;
+    }
+
+    .book {
+      width: 95vw;
+      max-width: 1400px;
+      border-radius: 10px;
+      padding: 18px;
+      position: relative;
+      background: none;
+      box-shadow: none;
+      border: none;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .leftHeader {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logoBox {
+      width: 84px;
+      height: 84px;
+      border-radius: 10px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, 0.04)
+    }
+
+    .logoBox img {
+      width: 82%;
+      height: 82%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .titleWrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px
+    }
+
+    .title {
+      font-family: "Patrick Hand", "Patrick Hand SC", Inter, system-ui, sans-serif;
+      font-size: 34px;
+      margin: 0;
+      font-weight: 900;
+      color: #111;
+      position: relative;
+    }
+
+    .title::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -6px;
+      height: 6px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, var(--neon1), var(--neon2));
+      opacity: .18;
+      animation: titlePulse 3.6s ease-in-out infinite;
+    }
+
+    @keyframes titlePulse {
+      0% {
+        opacity: .14
+      }
+
+      50% {
+        opacity: .3
+      }
+
+      100% {
+        opacity: .14
+      }
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #333;
+      font-weight: 700;
+      opacity: .9;
+      margin-top: 2px;
+      font-family: Inter;
+    }
+
+    .coins {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+      font-weight: 900;
+    }
+
+    .coins .coinEmoji {
+      font-size: 20px;
+      margin-right: 6px
+    }
+
+    .coins #headerCoins {
+      font-size: 18px;
+      color: #222
+    }
+
+    .card {
+      margin-top: 12px;
+      background: none;
+      border-radius: 12px;
+      padding: 28px;
+      min-height: 62vh;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: stretch;
+      transform-origin: center;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .qcount {
+      font-weight: 900;
+      color: #222;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+      border: 1px solid rgba(0, 0, 0, 0.02)
+    }
+
+    .timerWrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 12px;
+    }
+
+    .timerText {
+      font-weight: 900;
+      color: #111;
+      min-width: 56px;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    svg.timer {
+      width: 70px;
+      height: 70px
+    }
+
+    .question {
+      font-family: "Patrick Hand", "Patrick Hand SC", Inter, system-ui, sans-serif;
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: #000;
+      text-align: center;
+      margin: 20px 0;
+      line-height: 1.4;
+      padding: 20px 40px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .question::before {
+      content: '';
+      position: absolute;
+      inset: -15px;
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 16px;
+      z-index: -1;
+    }
+
+    .choices {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin: 20px auto;
+    }
+
+    .choice {
+      flex: 1 1 20%;
+      min-width: 120px;
+      height: 60px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+      font-weight: 900;
+      font-size: 1.2rem;
+      font-family: "Patrick Hand", Inter, sans-serif;
+      color: #fff;
+      background: linear-gradient(-45deg, #1a9850, #2ecc71, #27ae60, #1a9850);
+      background-size: 400% 400%;
+      border: 6px solid #057d05;
+      box-shadow: none;
+      transition: all .3s ease;
+      position: relative;
+      overflow: visible;
+      animation: gradientBG 8s ease infinite;
+    }
+
+    .choice.correct {
+      border-color: #00ff00;
+      background: linear-gradient(-45deg, #1a9850, #2ecc71);
+      box-shadow: 0 0 16px #00ff00;
+    }
+
+    .choice.wrong {
+      border-color: #ff0000;
+      background: linear-gradient(-45deg, #c62828, #ef5350);
+    }
+
+    .feedback {
+      min-height: 28px;
+      font-weight: 800;
+      text-align: center;
+      color: #333;
+    }
+
+    .progressWrap {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .progressBar {
+      height: 10px;
+      background: linear-gradient(90deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.01));
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progressFill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(123, 58, 246, 0.85), rgba(0, 229, 255, 0.8));
+      transition: width .35s ease;
+    }
+
+    .final {
+      position: absolute;
+      inset: 0;
+      z-index: 12;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.96));
+      border-radius: 10px;
+      padding: 28px;
+      box-shadow: 0 40px 120px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      display: none;
+    }
+
+    .final h2 {
+      font-family: "Patrick Hand", Inter;
+      font-size: 2rem;
+      margin: 6px 0;
+      color: #0b6b3a;
+    }
+
+    .final .score {
+      font-weight: 900;
+      color: #222;
+      font-size: 1.15rem
+    }
+
+    .final .btns {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: 900;
+      background: linear-gradient(90deg, #7b3af6, #00e5ff);
+      color: #fff;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12)
+    }
+
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 8px;
+      top: -20px;
+      pointer-events: none;
+      z-index: 40;
+      opacity: 0.95;
+      border-radius: 2px;
+      transform: translateY(0) rotate(0deg);
+      animation: confettiFall 2200ms linear forwards;
+    }
+
+    @keyframes confettiFall {
+      to {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 0.95;
+      }
+    }
+
+    #timerCircle {
+      transition: stroke-dashoffset 1s linear;
+    }
+
+    @media(max-width:760px) {
+      .choice {
+        height: 50px;
+        font-size: 16px;
+        flex: 1 1 45%;
+        min-width: 100px;
+      }
+
+      .title {
+        font-size: 22px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="overlay" aria-hidden="true"></div>
+
+  <div class="stage">
+    <div class="book" role="main" aria-label="Brain Rush geography game">
+      <div class="header">
+        <div class="leftHeader">
+          <div class="logoBox"><img src="logo.png" alt="logo" onerror="this.style.display='none'"></div>
+          <div class="titleWrap">
+            <div class="title">Brain Rush</div>
+            <div class="subtitle">Level 1 • Geography</div>
+          </div>
+          <div style="margin-left:14px;">
+            <div class="qcount" id="qcount">Question 1 / 10</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="coins"><span class="coinEmoji">💰</span> <span id="headerCoins">0</span></div>
+        </div>
+      </div>
+
+      <div class="card" id="card">
+        <div class="timerWrap">
+          <svg class="timer" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" stroke="#ddd" stroke-width="10" fill="none" />
+            <circle id="timerCircle" cx="50" cy="50" r="45" stroke="#7b3af6" stroke-width="10" fill="none"
+              stroke-dasharray="282.6" stroke-dashoffset="0" transform="rotate(-90 50 50)" />
+          </svg>
+          <div class="timerText" id="timerText">15</div>
+        </div>
+
+        <div class="question" id="question">Loading…</div>
+        <div class="choices" id="choices" role="list" aria-live="polite"></div>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+        <div class="progressWrap">
+          <div class="progressBar">
+            <div class="progressFill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div id="final" class="final">
+          <h2>🎉 Congratulations!</h2>
+          <div class="score" id="finalScore">You answered 0 / 10 correctly</div>
+          <div style="margin-top:8px;">
+            <div class="score" id="coinSummary">You earned 0 🪙 this round</div>
+          </div>
+          <div class="btns">
+            <button class="btn" id="playAgain">Play Again</button>
+            <button class="btn" id="goHome">Home</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="coinPop" id="coinPop"></div>
+
+  <audio id="clickS" preload="auto">
+    <source src="click.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="coinS" preload="auto">
+    <source src="coin.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="cheerS" preload="auto">
+    <source src="cheer.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="bgMusic" loop>
+    <source src="background-music.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // ====== GEOGRAPHY QUESTIONS BANK ======
+    const BANK = [
+      { q: "What is the largest continent by area?", choices: ["Africa", "Asia", "Europe", "Antarctica"], a: 1 },
+      { q: "Which country has the largest population?", choices: ["India", "USA", "China", "Russia"], a: 2 },
+      { q: "What is the capital of Australia?", choices: ["Sydney", "Melbourne", "Canberra", "Brisbane"], a: 2 },
+      { q: "Which river is the longest in the world?", choices: ["Amazon", "Nile", "Yangtze", "Mississippi"], a: 1 },
+      { q: "Which country is known as the Land of the Rising Sun?", choices: ["China", "Japan", "Thailand", "South Korea"], a: 1 },
+      { q: "Mount Everest is located in which mountain range?", choices: ["Andes", "Himalayas", "Rockies", "Alps"], a: 1 },
+      { q: "Which desert is the largest in the world?", choices: ["Sahara", "Gobi", "Arabian", "Kalahari"], a: 0 },
+      { q: "Which ocean is the deepest?", choices: ["Pacific", "Atlantic", "Indian", "Arctic"], a: 0 },
+      { q: "What is the capital of Canada?", choices: ["Toronto", "Vancouver", "Ottawa", "Montreal"], a: 2 },
+      { q: "Which country has the most time zones?", choices: ["USA", "Russia", "France", "China"], a: 1 },
+      { q: "Which country is completely landlocked?", choices: ["Switzerland", "Poland", "Netherlands", "Egypt"], a: 0 },
+      { q: "Which continent is known as the Dark Continent?", choices: ["Africa", "Asia", "Europe", "South America"], a: 0 },
+      { q: "Which country has the longest coastline?", choices: ["Canada", "Australia", "Russia", "USA"], a: 0 },
+      { q: "What is the smallest country in the world?", choices: ["Monaco", "Vatican City", "Malta", "San Marino"], a: 1 },
+      { q: "Which US state is the largest by area?", choices: ["Alaska", "Texas", "California", "Montana"], a: 0 },
+      { q: "Which African country was never colonized?", choices: ["Ethiopia", "Nigeria", "Ghana", "Kenya"], a: 0 },
+      { q: "Which country is famous for its fjords?", choices: ["Norway", "Sweden", "Iceland", "Finland"], a: 0 },
+      { q: "What is the capital of Brazil?", choices: ["Rio de Janeiro", "São Paulo", "Brasília", "Salvador"], a: 2 },
+      { q: "Which mountain is the tallest in Africa?", choices: ["Mount Kilimanjaro", "Mount Kenya", "Atlas Mountains", "Ruwenzori"], a: 0 },
+      { q: "Which strait separates Europe from Asia?", choices: ["Bosphorus", "Dardanelles", "Malacca", "Hormuz"], a: 0 },
+      { q: "Which country has the largest rainforest?", choices: ["Brazil", "Congo", "Indonesia", "Peru"], a: 0 },
+      { q: "Which sea is shrinking due to water diversion?", choices: ["Aral Sea", "Dead Sea", "Baltic Sea", "Red Sea"], a: 0 },
+      { q: "Which desert is the coldest?", choices: ["Sahara", "Gobi", "Antarctic Desert", "Kalahari"], a: 2 },
+      { q: "Which is the largest island in the world?", choices: ["Greenland", "Madagascar", "Borneo", "New Guinea"], a: 0 },
+      { q: "Which country has the highest number of volcanoes?", choices: ["Indonesia", "Japan", "USA", "Italy"], a: 0 },
+      { q: "Which ocean touches all continents?", choices: ["Atlantic", "Pacific", "Indian", "Southern"], a: 3 },
+      { q: "What is the capital of Egypt?", choices: ["Cairo", "Alexandria", "Giza", "Luxor"], a: 0 },
+      { q: "Which country is the largest by land area in Africa?", choices: ["Algeria", "Nigeria", "Sudan", "Egypt"], a: 0 },
+      { q: "Which country is famous for tulips?", choices: ["Belgium", "Netherlands", "Denmark", "France"], a: 1 },
+      { q: "Which city is known as the City of Canals?", choices: ["Venice", "Amsterdam", "Bruges", "Stockholm"], a: 0 },
+      { q: "Which river flows through London?", choices: ["Seine", "Thames", "Danube", "Rhine"], a: 1 },
+      { q: "Which country has the most pyramids?", choices: ["Egypt", "Sudan", "Mexico", "Peru"], a: 1 },
+      { q: "What is the capital of Russia?", choices: ["Moscow", "Saint Petersburg", "Kazan", "Novosibirsk"], a: 0 },
+      { q: "Which country is located on two continents?", choices: ["Turkey", "Russia", "Egypt", "Greece"], a: 0 },
+      { q: "Which mountain range is in South America?", choices: ["Rockies", "Andes", "Alps", "Himalayas"], a: 1 },
+      { q: "Which US river is the longest?", choices: ["Mississippi", "Missouri", "Colorado", "Rio Grande"], a: 1 },
+      { q: "Which country has the largest Muslim population?", choices: ["Pakistan", "Indonesia", "Saudi Arabia", "India"], a: 1 },
+      { q: "Which African lake is the largest by surface area?", choices: ["Lake Victoria", "Lake Tanganyika", "Lake Malawi", "Lake Chad"], a: 0 },
+      { q: "Which country is known as the Land of a Thousand Lakes?", choices: ["Finland", "Canada", "Sweden", "Norway"], a: 0 },
+      { q: "Which country has the most islands?", choices: ["Sweden", "Indonesia", "Philippines", "Canada"], a: 2 },
+      { q: "Which city is the capital of Japan?", choices: ["Kyoto", "Tokyo", "Osaka", "Hiroshima"], a: 1 },
+      { q: "Which continent has the fewest countries?", choices: ["Antarctica", "Australia", "Europe", "South America"], a: 0 },
+      { q: "Which country is famous for its pyramids of Meroe?", choices: ["Sudan", "Egypt", "Ethiopia", "Morocco"], a: 0 },
+      { q: "Which river forms part of the border between USA and Mexico?", choices: ["Colorado", "Rio Grande", "Mississippi", "Missouri"], a: 1 },
+      { q: "Which African country has the most natural lakes?", choices: ["Tanzania", "Democratic Republic of Congo", "Kenya", "Uganda"], a: 0 },
+      { q: "Which strait connects the Atlantic and Pacific Oceans?", choices: ["Bering", "Magellan", "Panama", "Malacca"], a: 2 },
+      { q: "Which country is the largest in South America?", choices: ["Argentina", "Brazil", "Colombia", "Peru"], a: 1 },
+      { q: "Which country has the longest river in Europe?", choices: ["Germany", "Russia", "France", "Ukraine"], a: 1 },
+      { q: "Which desert is located in northern China and southern Mongolia?", choices: ["Gobi", "Taklamakan", "Karakum", "Kalahari"], a: 0 },
+      { q: "Which US city is nicknamed the Windy City?", choices: ["Chicago", "New York", "Boston", "Seattle"], a: 0 },
+      { q: "Which mountain is the highest in Europe?", choices: ["Mont Blanc", "Elbrus", "Matterhorn", "Mount Etna"], a: 1 },
+      { q: "Which African country is known for coffee production?", choices: ["Ethiopia", "Kenya", "Uganda", "Tanzania"], a: 0 },
+      { q: "Which strait separates Russia from Alaska?", choices: ["Bering Strait", "Malacca Strait", "Bosporus", "Dardanelles"], a: 0 }
+    ];
+
+    // ====== VARIABLES ======
+    let currentSet = [0], currentQ = 0, score = 0;
+    let totalCoins = Number(localStorage.getItem('totalCoins')) || 0;
+    let pointsPerQ = 10, usedIndexes = [];
+    let timeLeft = 15, timerInterval;
+
+    // ====== ELEMENTS ======
+    const questionEl = document.getElementById('question');
+    const choicesEl = document.getElementById('choices');
+    const progressFill = document.getElementById('progressFill');
+    const qcountEl = document.getElementById('qcount');
+    const finalEl = document.getElementById('final');
+    const finalScoreEl = document.getElementById('finalScore');
+    const coinSummaryEl = document.getElementById('coinSummary');
+    const headerCoinsEl = document.getElementById('headerCoins');
+
+    const playAgainBtn = document.getElementById('playAgain');
+    const goHomeBtn = document.getElementById('goHome');
+
+    const clickS = document.getElementById('clickS');
+    const coinS = document.getElementById('coinS');
+    const cheerS = document.getElementById('cheerS');
+    const bgMusic = document.getElementById('bgMusic');
+
+    // ====== INITIAL SETUP ======
+    headerCoinsEl.textContent = totalCoins;
+
+    function shuffleBank() {
+      let indexes = [];
+      while (indexes.length < 10) {
+        let rand = Math.floor(Math.random() * BANK.length);
+        if (!usedIndexes.includes(rand)) {
+          indexes.push(rand);
+          usedIndexes.push(rand);
+          if (usedIndexes.length >= BANK.length) usedIndexes = [];
+        }
+      }
+      currentSet = indexes.map(i => BANK[i]);
+    }
+
+    function loadQuestion() {
+      questionEl.textContent = currentSet[currentQ].q;
+      choicesEl.innerHTML = '';
+      currentSet[currentQ].choices.forEach((c, i) => {
+        let btn = document.createElement('div');
+        btn.className = 'choice';
+        btn.textContent = c;
+        btn.addEventListener('click', () => selectAnswer(i, btn));
+        choicesEl.appendChild(btn);
+      });
+      qcountEl.textContent = `Question ${currentQ + 1} / 10`;
+      progressFill.style.width = `${(currentQ / 10) * 100}%`;
+      startTimer();
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      timeLeft = 15;
+      updateTimerVisual();
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerVisual();
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          nextQuestion();
+        }
+      }, 1000);
+    }
+
+    function updateTimerVisual() {
+      document.getElementById('timerText').textContent = timeLeft;
+      const dashOffset = 282.6 * (1 - timeLeft / 15);
+      document.getElementById('timerCircle').style.strokeDashoffset = dashOffset;
+    }
+
+    function selectAnswer(i, btn) {
+      if (bgMusic.paused) bgMusic.play();
+      clickS.currentTime = 0; clickS.play();
+      clearInterval(timerInterval);
+
+      const correct = currentSet[currentQ].a;
+      if (i === correct) {
+        btn.classList.add('correct');
+        score++;
+        totalCoins += pointsPerQ;
+        localStorage.setItem('totalCoins', totalCoins);
+        headerCoinsEl.textContent = totalCoins;
+        coinS.currentTime = 0; coinS.play();
+        coinPop(pointsPerQ);
+      } else {
+        btn.classList.add('wrong');
+        Array.from(choicesEl.children)[correct].classList.add('correct');
+      }
+      Array.from(choicesEl.children).forEach(ch => ch.style.pointerEvents = 'none');
+      setTimeout(() => nextQuestion(), 800);
+    }
+
+    function nextQuestion() {
+      currentQ++;
+      if (currentQ < 10) loadQuestion();
+      else finishQuiz();
+    }
+
+    function finishQuiz() {
+      finalEl.style.display = 'flex';
+      finalScoreEl.textContent = `You answered ${score} / 10 correctly`;
+      coinSummaryEl.textContent = `You earned ${score * pointsPerQ} 🪙 this round`;
+      cheerS.currentTime = 0; cheerS.play();
+      progressFill.style.width = '100%';
+      confetti();
+    }
+
+    playAgainBtn.addEventListener('click', () => {
+      finalEl.style.display = 'none';
+      score = 0;
+      shuffleBank();
+      currentQ = 0;
+      loadQuestion();
+    });
+
+    goHomeBtn.addEventListener('click', () => window.location.href = "index.html");
+
+    function coinPop(amount) {
+      const pop = document.createElement('div');
+      pop.textContent = `+${amount} 🪙`;
+      pop.style.position = 'absolute';
+      pop.style.top = '30px';
+      pop.style.right = '30px';
+      pop.style.fontWeight = '900';
+      pop.style.color = '#fbc531';
+      pop.style.zIndex = '100';
+      pop.style.opacity = '1';
+      pop.style.transition = 'all 1s ease-out';
+      document.body.appendChild(pop);
+      setTimeout(() => { pop.style.transform = 'translateY(-50px)'; pop.style.opacity = '0'; }, 50);
+      setTimeout(() => pop.remove(), 1000);
+    }
+
+    function confetti() {
+      for (let i = 0; i < 120; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.backgroundColor = `hsl(${Math.random() * 360},100%,50%)`;
+        c.style.left = `${Math.random() * 100}vw`;
+        c.style.animationDuration = `${Math.random() * 2 + 1.5}s`;
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 2200);
+      }
+    }
+
+    shuffleBank();
+    loadQuestion();
+  </script>
+</body>
+
+</html>

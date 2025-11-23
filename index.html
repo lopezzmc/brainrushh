@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Brain Rush | Home</title>
+
+<!-- GOOGLE ANALYTICS -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX'); // <-- Replace with your GA ID
+</script>
+
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif;}
+  body { min-height:100vh; color:#fff; overflow-x:hidden; position:relative;}
+  video#bg-video { position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-2; pointer-events:none;}
+  .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.45); z-index:-1;}
+  header { display:flex; justify-content:space-between; align-items:center; padding:18px 25px; background:rgba(0,0,0,0.35); backdrop-filter:blur(8px); position:sticky; top:0; z-index:10;}
+  .header-content { display:flex; align-items:center; gap:12px; animation:fadeIn 1.5s ease;}
+  .logo img { width:70px; height:70px; filter:drop-shadow(0 0 12px #fff);}
+  .logo h1 { font-size:2rem; background:linear-gradient(to right,#ff79c6,#8be9fd,#50fa7b); -webkit-background-clip:text; background-clip:text; color:transparent; animation:titleGradient 4s linear infinite;}
+  nav a { text-decoration:none; color:#fff; font-weight:700; font-size:1.1rem; transition:.3s;}
+  nav a:hover { color:#ffe600; text-shadow:0 0 10px #ffe600;}
+  .coins { display:flex; align-items:center; gap:6px; font-weight:700; font-size:1.15rem; background:rgba(255,255,255,0.18); padding:6px 14px; border-radius:20px; box-shadow:0 6px 16px rgba(0,0,0,0.4);}
+  .coin-emoji { font-size:24px; animation:coinBounce 1.2s infinite ease-in-out;}
+  @keyframes coinBounce {0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+  .hero { text-align:center; margin-top:60px; padding:0 20px; animation:fadeIn 1.5s ease;}
+  .hero h2 { font-size:3rem; font-weight:800; color:#fff; text-shadow:0 4px 10px rgba(0,0,0,0.6); margin-bottom:10px;}
+  .hero p { font-size:1.2rem; color:#eef; margin-bottom:20px;}
+  .music-btn { background:#ffffff33; border:3px solid #fff; border-radius:50%; color:#fff; font-size:1.4rem; width:55px; height:55px; cursor:pointer; transition:.3s; box-shadow:0 6px 20px rgba(0,0,0,0.4);}
+  .music-btn:hover { background:#fff; color:#ff69b4; transform:scale(1.15);}
+  .categories-grid { width:92%; max-width:1100px; margin:45px auto 30px; display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:16px;}
+  .category-btn { display:inline-flex; align-items:center; justify-content:center; padding:18px 10px; border-radius:22px; font-weight:900; font-size:1.1rem; text-decoration:none; color:#222; background:linear-gradient(145deg,#ffcd6d,#ff71a7,#7afcff,#a890fe); background-size:300% 300%; animation:extremeGradient 6s linear infinite; box-shadow:0 14px 38px rgba(0,0,0,0.45); transition:transform .25s ease, box-shadow .25s ease;}
+  .category-btn:hover { transform:translateY(-10px) scale(1.07); box-shadow:0 22px 60px rgba(0,0,0,0.55);}
+  @keyframes extremeGradient {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+  @keyframes fadeIn {from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);}}
+  @keyframes titleGradient {0%{filter:hue-rotate(0deg) brightness(1.1);}50%{filter:hue-rotate(180deg) brightness(1.4);}100%{filter:hue-rotate(360deg) brightness(1.1);}}
+  footer { text-align:center; padding:15px; color:#fff; background:rgba(0,0,0,0.35); font-size:.9rem; margin-top:40px;}
+  @media (max-width:430px) {.categories-grid {grid-template-columns:repeat(auto-fit, minmax(130px,1fr));}}
+
+  /* Reward Effects */
+  .reward-popup { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0); background:rgba(255,255,255,0.95); color:#222; padding:25px 35px; font-size:1.5rem; font-weight:800; border-radius:20px; text-align:center; box-shadow:0 6px 20px rgba(0,0,0,0.5); z-index:9999; transition:transform 0.4s ease, opacity 0.4s ease; opacity:0;}
+  .reward-popup.show { transform:translate(-50%,-50%) scale(1); opacity:1;}
+  .confetti { position:fixed; width:10px; height:10px; background:gold; top:0; left:0; pointer-events:none; opacity:0.8; border-radius:50%; animation:fall 2s linear forwards;}
+  @keyframes fall { 0%{transform:translateY(0) rotate(0deg);} 100%{transform:translateY(600px) rotate(720deg); opacity:0;} }
+</style>
+</head>
+<body>
+
+<video autoplay muted loop playsinline id="bg-video">
+  <source src="background.mp4" type="video/mp4">
+</video>
+<div class="overlay"></div>
+
+<header>
+  <div class="header-content logo">
+    <img src="logo.png" alt="Brain Rush Logo">
+    <h1>Brain Rush</h1>
+  </div>
+  <nav><a href="#">Sign In</a></nav>
+  <div class="coins">
+    <span class="coin-emoji">💰</span>
+    <span id="coin-count">0</span> Rush
+  </div>
+</header>
+
+<section class="hero">
+  <h2>Choose Your Brain Challenge 🧠</h2>
+  <p>Pick a category to start earning Rush Coins and boost your mind!</p>
+  <button class="music-btn" id="music-toggle">🎵</button>
+</section>
+
+<div class="categories-grid">
+  <a href="logic.html" class="category-btn">Math</a>
+  <a href="history.html" class="category-btn">History</a>
+  <a href="riddle.html" class="category-btn">Riddles</a>
+  <a href="science.html" class="category-btn">Science</a>
+  <a href="geography.html" class="category-btn">Geography</a>
+  <a href="countries.html" class="category-btn">Countries</a>
+  <a href="cars.html" class="category-btn">Cars</a>
+  <a href="logos.html" class="category-btn">Logos</a>
+  <a href="food.html" class="category-btn">Food & Drinks</a>
+  <a href="cre.html" class="category-btn">CRE</a>
+  <a href="teams.html" class="category-btn">Teams</a>
+  <a href="cartoon.html" class="category-btn">Cartoon</a>
+</div>
+
+
+<footer>© 2025 Brain Rush | All Rights Reserved</footer>
+
+<!-- AUDIO -->
+<audio id="bg-music" loop>
+  <source src="background-music.mp3" type="audio/mpeg">
+</audio>
+<audio id="click-sfx" preload="auto">
+  <source src="click.mp3" type="audio/mpeg">
+</audio>
+<audio id="reward-sfx" preload="auto">
+  <source src="reward.mp3" type="audio/mpeg">
+</audio>
+
+<!-- REWARD POPUP -->
+<div class="reward-popup" id="reward-popup">+0 Rush Coins!</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const coinDisplay = document.getElementById('coin-count');
+  const savedCoins = parseInt(localStorage.getItem('totalCoins')) || 0;
+  coinDisplay.textContent = savedCoins;
+
+  const music = document.getElementById('bg-music');
+  const clickSfx = document.getElementById('click-sfx');
+  const rewardSfx = document.getElementById('reward-sfx');
+  const toggleBtn = document.getElementById('music-toggle');
+
+  // Music autoplay fix
+  music.volume = 0.55;
+  music.play().catch(()=>{toggleBtn.textContent='🔈';});
+
+  toggleBtn.addEventListener('click', ()=>{
+    if(music.paused){music.play(); toggleBtn.textContent='🔊';} 
+    else{music.pause(); toggleBtn.textContent='🔈';}
+  });
+
+  // Click sound
+  const clickable = document.querySelectorAll("a, button, .category-btn");
+  clickable.forEach(el=>el.addEventListener('click',()=>{
+    clickSfx.currentTime=0; clickSfx.play().catch(()=>{});
+  }));
+
+  // REWARD EFFECT FUNCTION
+  window.addCoins = function(amount){
+    let coins = parseInt(localStorage.getItem('totalCoins'))||0;
+    coins += amount;
+    localStorage.setItem('totalCoins',coins);
+    if(coinDisplay) coinDisplay.textContent = coins;
+
+    // Show popup
+    const popup = document.getElementById('reward-popup');
+    popup.textContent = `+${amount} Rush Coins!`;
+    popup.classList.add('show');
+    rewardSfx.currentTime=0; rewardSfx.play().catch(()=>{});
+
+    // Confetti
+    for(let i=0;i<15;i++){
+      const confetti = document.createElement('div');
+      confetti.classList.add('confetti');
+      confetti.style.left = (Math.random()*window.innerWidth)+'px';
+      confetti.style.background = ['#ffcd6d','#ff71a7','#7afcff','#a890fe','#50fa7b'][Math.floor(Math.random()*5)];
+      document.body.appendChild(confetti);
+      setTimeout(()=>{confetti.remove();},2000);
+    }
+
+    setTimeout(()=>{popup.classList.remove('show');},1500);
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Brain Rush — Cars</title>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif;}
+body { min-height:100vh; overflow-x:hidden; background:#f0f0f0; color:#111; position:relative;}
+.bg { position:fixed; inset:0; background:url('https://media.istockphoto.com/id/1469529416/vector/decorative-lined-paper-with-children-two-pages-funny-vector-illustration-eps.jpg?s=612x612&w=0&k=20&c=R9ntFhhrR3Hf8jlql_b-5ES_19Cxsjjx1HcbyScyf68=') center/cover no-repeat; z-index:0; filter:brightness(.98);}
+.overlay { position:fixed; inset:0; z-index:1; pointer-events:none; background:linear-gradient(180deg, rgba(255,255,255,0.0), rgba(255,255,255,0.0)); }
+.stage { position:relative; z-index:2; width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:18px;}
+.book { width:95vw; max-width:1400px; border-radius:10px; padding:18px; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; background:none; }
+.header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; width:100%; }
+.leftHeader { display:flex; align-items:center; gap:14px; }
+.logoBox { width:120px; height:120px; border-radius:20px; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 28px rgba(0,0,0,0.08); overflow:hidden; border:1px solid rgba(0,0,0,0.04);}
+.logoBox img { width:95%; height:95%; object-fit:contain; display:block; }
+.titleWrap { display:flex; flex-direction:column; gap:4px; }
+.title { font-family:"Patrick Hand", Inter; font-size:34px; margin:0; font-weight:900; color:#111; position:relative; }
+.title::after { content:""; position:absolute; left:0; right:0; bottom:-6px; height:6px; border-radius:6px; background:linear-gradient(90deg,#7b3af6,#00e5ff); opacity:.18; animation:titlePulse 3.6s ease-in-out infinite;}
+@keyframes titlePulse{0%{opacity:.14}50%{opacity:.3}100%{opacity:.14}}
+.subtitle { font-size:13px; color:#333; font-weight:700; opacity:.9; margin-top:2px; }
+.coins { display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:12px; background:#fff; box-shadow:0 6px 30px rgba(0,0,0,0.06); border:1px solid rgba(0,0,0,0.03); font-weight:900; }
+.coins .coinEmoji{ font-size:20px; margin-right:6px; }
+.coins #headerCoins{ font-size:18px; color:#222; }
+
+.card { margin-top:12px; background:none; border-radius:12px; padding:28px; min-height:60vh; display:flex; flex-direction:column; gap:12px; align-items:center; justify-content:flex-start; transform-origin:center; position:relative; }
+#logoImg { width:300px; height:200px; object-fit:contain; border-radius:12px; }
+.question { font-family:"Patrick Hand", Inter; font-weight:900; text-align:center; margin:12px 0; line-height:1.4; display:flex; align-items:center; justify-content:center; padding:12px 24px; font-size:2rem; position:relative; transition:all .3s ease; min-height:60px;}
+.question::before { content:''; position:absolute; inset:-12px; background:rgba(255,255,255,0.92); border-radius:16px; z-index:-1; }
+.choices { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:12px; width:100%; }
+.choice { flex:1 1 20%; min-width:120px; height:60px; border-radius:999px; display:flex; align-items:center; justify-content:center; gap:12px; cursor:pointer; user-select:none; font-weight:900; font-size:1.2rem; color:#fff; background:linear-gradient(-45deg,#1a9850,#2ecc71,#27ae60,#1a9850); background-size:400% 400%; border:6px solid #057d05; transition:all .3s ease; position:relative; overflow:visible; animation:gradientBG 8s ease infinite; }
+.choice.correct { border-color:#00ff00; background:linear-gradient(-45deg,#1a9850,#2ecc71); box-shadow:0 0 16px #00ff00; }
+.choice.wrong { border-color:#ff0000; background:linear-gradient(-45deg,#c62828,#ef5350); }
+.feedback{ min-height:28px; font-weight:800; text-align:center; color:#333; }
+.progressWrap{ margin-top:6px; display:flex; flex-direction:column; gap:8px; align-items:stretch; width:100%; }
+.progressBar{ height:10px; background:linear-gradient(90deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01)); border-radius:999px; overflow:hidden; }
+.progressFill{ height:100%; width:0%; background:linear-gradient(90deg, rgba(123,58,246,0.85), rgba(0,229,255,0.8)); transition:width .35s ease; }
+
+.final { position:absolute; inset:0; z-index:12; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; background:linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.96)); border-radius:10px; padding:28px; box-shadow:0 40px 120px rgba(0,0,0,0.08); text-align:center; display:none; }
+.final h2{ font-family:"Patrick Hand", Inter; font-size:2rem; margin:6px 0; color:#0b6b3a; }
+.final .score{ font-weight:900; color:#222; font-size:1.15rem; }
+.final .btns{ display:flex; gap:12px; margin-top:8px; }
+.btn{ padding:10px 16px; border-radius:10px; border:none; cursor:pointer; font-weight:900; background:linear-gradient(90deg,#7b3af6,#00e5ff); color:#fff; box-shadow:0 12px 36px rgba(0,0,0,0.12); }
+
+.timerCircle { width:60px; height:60px; border-radius:50%; border:6px solid #ccc; position:absolute; top:10px; right:10px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:1rem; color:#111; }
+.timerCircle svg { transform:rotate(-90deg); }
+.timerCircle circle { fill:none; stroke:#00e5ff; stroke-width:6; stroke-dasharray:94.2; stroke-dashoffset:0; transition:stroke-dashoffset 1s linear; }
+
+.confetti{ position:fixed; width:10px; height:8px; top:-20px; pointer-events:none; z-index:40; opacity:0.95; border-radius:2px; transform:translateY(0) rotate(0deg); animation:confettiFall 2200ms linear forwards; }
+@keyframes confettiFall{ to{ transform:translateY(110vh) rotate(720deg); opacity:0.95 } }
+@media(max-width:760px){ .choice{height:50px; font-size:16px; flex:1 1 45%; min-width:100px;} .title{font-size:22px;} .question{font-size:1.8rem;} }
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="overlay"></div>
+<div class="stage">
+  <div class="book">
+    <div class="header">
+      <div class="leftHeader">
+        <div class="logoBox"><img src="logo.png" alt="logo"></div>
+        <div class="titleWrap">
+          <div class="title">Brain Rush</div>
+          <div class="subtitle">Level 1 • Cars</div>
+        </div>
+        <div style="margin-left:14px;">
+          <div class="qcount" id="qcount">Question 1 / 10</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="coins"><span class="coinEmoji">💰</span><span id="headerCoins">0</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <img id="logoImg" src="" alt="Car Image">
+      <div class="question" id="question">Loading…</div>
+      <div class="choices" id="choices" role="list" aria-live="polite"></div>
+
+      <div class="timerCircle" id="timerCircle">15</div>
+
+      <div class="progressWrap">
+        <div class="progressBar"><div class="progressFill" id="progressFill"></div></div>
+      </div>
+
+      <div id="final" class="final">
+        <h2>🎉 Congratulations!</h2>
+        <div class="score" id="finalScore">You answered 0 / 10 correctly</div>
+        <div class="score" id="coinSummary">You earned 0 🪙 this round</div>
+        <div class="btns">
+          <button class="btn" id="playAgain">Play Again</button>
+          <button class="btn" id="goHome">Home</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<audio id="clickS" preload="auto"><source src="click.mp3" type="audio/mpeg"></audio>
+<audio id="coinS" preload="auto"><source src="coin.mp3" type="audio/mpeg"></audio>
+<audio id="cheerS" preload="auto"><source src="cheer.mp3" type="audio/mpeg"></audio>
+<audio id="bgMusic" loop><source src="background-music.mp3" type="audio/mpeg"></audio>
+
+<script>
+// --- Cars Bank ---
+const CAR_BANK = [
+  { img: "images/Audi_A6.jpg", q:"Where was Audi originally founded?", choices:["Germany","USA","Italy","France"], a:0 },
+  { img: "images/lambo.jpg", q:"Which year was Lamborghini founded?", choices:["1963","1950","1975","1980"], a:0 },
+  { img: "images/cadillac.jpg", q:"Cadillac is a division of which company?", choices:["GM","Ford","Chrysler","Toyota"], a:0 },
+  { img: "images/Mercedes.jeep.jpg", q:"Mercedes-Benz was founded in which country?", choices:["Germany","USA","UK","Italy"], a:0 },
+  { img: "images/Mercedes.jpg", q:"Which inventor is linked to Mercedes?", choices:["Karl Benz","Henry Ford","Ferruccio Lamborghini","Enzo Ferrari"], a:0 },
+  { img: "images/porsche.jpg", q:"Porsche originated in which country?", choices:["Germany","France","Italy","Switzerland"], a:0 },
+  { img: "images/porsche2.jpg", q:"Porsche is famous for which sports car?", choices:["911","Mustang","Camaro","Miata"], a:0 },
+  { img: "images/lexus.jpg", q:"Which company owns Lexus?", choices:["Toyota","Honda","BMW","Ford"], a:0 },
+  { img: "images/ferrrari.jpg", q:"Ferrari was founded in which year?", choices:["1939","1947","1950","1963"], a:1 },
+  { img: "images/Bentley.jpg", q:"Bentley is based in which country?", choices:["UK","Germany","Italy","USA"], a:0 },
+  { img: "images/renault.jpg", q:"Renault is a car brand from which country?", choices:["France","Italy","Germany","USA"], a:0 },
+  { img: "images/tesla.jpg", q:"Which company produces the Model 3?", choices:["Tesla","BMW","Ford","Audi"], a:0 },
+  { img: "images/ford.jpg", q:"Which year was the Ford Mustang first released?", choices:["1964","1970","1960","1965"], a:0 },
+  { img: "images/chevrolet_c.jpg", q:"Camaro belongs to which company?", choices:["Chevrolet","Ford","Dodge","Toyota"], a:0 },
+  { img: "images/mazda.jpg", q:"Mazda MX-5 is also known as?", choices:["Miata","Roadster","RX-7","Mustang"], a:0 },
+  { img: "images/honda_c.jpg", q:"Honda Civic first launched in which decade?", choices:["1970s","1980s","1990s","2000s"], a:0 },
+  { img: "images/bmw.jpg", q:"BMW M3 is a variant of which series?", choices:["3 Series","5 Series","7 Series","X5"], a:0 },
+  { img: "images/mercedes_s.jpg", q:"Mercedes S-Class is known for?", choices:["Luxury Sedan","Sports Car","SUV","Coupe"], a:0 },
+  { img: "images/audi_r8.jpg", q:"Audi R8 is what type of car?", choices:["Sports Car","SUV","Sedan","Coupe"], a:0 },
+  { img: "images/jaguar.jpg", q:"Jaguar F-Type is from which country?", choices:["UK","Germany","USA","Italy"], a:0 },
+  { img: "images/volvo.jpg", q:"Volvo XC90 is what type of vehicle?", choices:["SUV","Truck","Sedan","Coupe"], a:0 },
+  { img: "images/defender.jpg", q:"Land Rover Defender is designed for?", choices:["Off-road","City","Racing","Luxury"], a:0 },
+  { img: "images/toyota_c.jpg", q:"Toyota Corolla is famous for?", choices:["Reliability","Speed","Luxury","Off-road"], a:0 },
+  { img: "images/nissan.jpg", q:"Nissan GT-R is from which country?", choices:["Japan","Germany","USA","Italy"], a:0 },
+  { img: "images/chevry.jpg", q:"Chevrolet Silverado is what type?", choices:["Truck","SUV","Sedan","Coupe"], a:0 },
+  { img: "images/tesla.jpg", q:"Tesla Model X is known for?", choices:["Falcon Doors","Speed","Luxury","Budget"], a:0 },
+  { img: "images/aston_martin.jpg", q:"Aston Martin is a car brand from?", choices:["UK","Germany","Italy","USA"], a:0 },
+  { img: "images/maserati.jpg", q:"Maserati is famous for?", choices:["Luxury Sports Cars","SUV","Trucks","Economy Cars"], a:0 },
+  { img: "images/ferrari_s.jpg", q:"SF90 Stradale belongs to which company?", choices:["Ferrari","Lamborghini","Porsche","McLaren"], a:0 },
+  { img: "images/bugatti_c.jpg", q:"Bugatti Chiron is made in?", choices:["France","Italy","Germany","UK"], a:0 },
+  { img: "images/koenigsegg.jpg", q:"Koenigsegg is based in which country?", choices:["Sweden","Germany","USA","Italy"], a:0 },
+  { img: "images/Renault_c.jpg", q:"Renault Clio is produced in?", choices:["France","Germany","Italy","Spain"], a:0 }
+];
+
+
+// --- Elements ---
+let currentSet=[],currentQ=0,score=0,totalCoins=Number(localStorage.getItem('totalCoins'))||0;
+const pointsPerQ=10; let timerInterval,timeLeft=15;
+
+const logoImg=document.getElementById('logoImg');
+const questionEl=document.getElementById('question');
+const choicesEl=document.getElementById('choices');
+const progressFill=document.getElementById('progressFill');
+const qcountEl=document.getElementById('qcount');
+const finalEl=document.getElementById('final');
+const finalScoreEl=document.getElementById('finalScore');
+const coinSummaryEl=document.getElementById('coinSummary');
+const headerCoinsEl=document.getElementById('headerCoins');
+const playAgainBtn=document.getElementById('playAgain');
+const goHomeBtn=document.getElementById('goHome');
+const clickS=document.getElementById('clickS');
+const coinS=document.getElementById('coinS');
+const cheerS=document.getElementById('cheerS');
+const bgMusic=document.getElementById('bgMusic');
+const timerCircle=document.getElementById('timerCircle');
+
+headerCoinsEl.textContent=totalCoins;
+
+// --- Helper Functions ---
+function shuffleArray(arr){return arr.sort(()=>Math.random()-0.5);}
+function newSet(){
+  currentSet=shuffleArray([...CAR_BANK]).slice(0,10).map(q=>{return {...q, choices:shuffleArray([...q.choices])};});
+  currentQ=0; score=0;
+}
+function startTimer(){ clearInterval(timerInterval); timeLeft=15; updateTimer(); timerInterval=setInterval(()=>{
+  timeLeft--; updateTimer(); if(timeLeft<=0){ clearInterval(timerInterval); currentQ++; loadQuestion(); } }, 1000);}
+function updateTimer(){ timerCircle.textContent = timeLeft; let pct=(timeLeft/15)*94.2; timerCircle.querySelectorAll('circle').forEach(c=>c.style.strokeDashoffset=pct);}
+
+// --- Load Question ---
+function loadQuestion(){
+  if(currentQ>=currentSet.length){ finishQuiz(); return; }
+  let current=currentSet[currentQ];
+  logoImg.src=current.img;
+  questionEl.textContent=current.q;
+  choicesEl.innerHTML='';
+  current.choices.forEach((c,i)=>{
+    const btn=document.createElement('div');
+    btn.className='choice';
+    btn.textContent=c;
+    btn.addEventListener('click',()=>selectAnswer(btn,i,current.a));
+    choicesEl.appendChild(btn);
+  });
+  qcountEl.textContent=`Question ${currentQ+1} / ${currentSet.length}`;
+  startTimer();
+}
+
+// --- Answer Handling ---
+function selectAnswer(btn,index,answer){
+  clickS.currentTime=0; clickS.play();
+  clearInterval(timerInterval);
+  if(index===answer){
+    btn.classList.add('correct');
+    score++;
+    totalCoins+=pointsPerQ;
+    localStorage.setItem('totalCoins',totalCoins);
+    headerCoinsEl.textContent=totalCoins;
+    coinS.currentTime=0; coinS.play();
+    coinPop(pointsPerQ);
+  } else {
+    btn.classList.add('wrong');
+    Array.from(choicesEl.children).forEach(c=>{if(c.textContent===currentSet[currentQ].choices[answer]) c.classList.add('correct');});
+  }
+  Array.from(choicesEl.children).forEach(c=>c.style.pointerEvents='none');
+  setTimeout(()=>{ currentQ++; loadQuestion(); },800);
+}
+
+// --- Finish ---
+function finishQuiz(){
+  finalEl.style.display='flex';
+  finalScoreEl.textContent=`You answered ${score} / ${currentSet.length} correctly`;
+  coinSummaryEl.textContent=`You earned ${score*pointsPerQ} 🪙 this round`;
+  cheerS.currentTime=0; cheerS.play();
+  progressFill.style.width='100%';
+  confetti();
+}
+
+// --- Coin Pop ---
+function coinPop(amount){
+  const pop=document.createElement('div');
+  pop.textContent=`+${amount} 🪙`;
+  pop.style.position='absolute';
+  pop.style.top='30px';
+  pop.style.right='30px';
+  pop.style.fontWeight='900';
+  pop.style.color='#fbc531';
+  pop.style.zIndex='100';
+  pop.style.opacity='1';
+  pop.style.transition='all 1s ease-out';
+  document.body.appendChild(pop);
+  setTimeout(()=>{ pop.style.transform='translateY(-50px)'; pop.style.opacity='0'; },50);
+  setTimeout(()=>pop.remove(),1000);
+}
+
+// --- Confetti ---
+function confetti(){
+  for(let i=0;i<120;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.backgroundColor=`hsl(${Math.random()*360},100%,50%)`;
+    c.style.left=`${Math.random()*100}vw`;
+    c.style.animationDuration=`${Math.random()*2+1.5}s`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2200);
+  }
+}
+
+// --- Init ---
+playAgainBtn.addEventListener('click',()=>{ finalEl.style.display='none'; newSet(); loadQuestion(); });
+goHomeBtn.addEventListener('click',()=>window.location.href='index.html');
+
+// --- Background Music Autoplay Fix ---
+let musicStarted=false;
+function startMusic() {
+  if(!musicStarted){ bgMusic.volume=0.3; bgMusic.play().catch(e=>console.log("Music play blocked",e)); musicStarted=true; document.removeEventListener('click',startMusic); }
+}
+document.addEventListener('click',startMusic);
+
+// --- Start Quiz ---
+newSet(); loadQuestion();
+</script>
+</body>
+</html>
