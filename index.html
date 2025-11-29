@@ -1,78 +1,301 @@
-<!DOCTYPE html>
+ok so is the codes good for mobile phones<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Brain Rush | Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 
 <!-- GOOGLE ANALYTICS -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0B6LWMZ6P9"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX'); // <-- Replace with your GA ID
+  gtag('config', 'G-0B6LWMZ6P9');
 </script>
 
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif;}
-  body { min-height:100vh; color:#fff; overflow-x:hidden; position:relative;}
-  video#bg-video { position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-2; pointer-events:none;}
-  .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.45); z-index:-1;}
-  header { display:flex; justify-content:space-between; align-items:center; padding:18px 25px; background:rgba(0,0,0,0.35); backdrop-filter:blur(8px); position:sticky; top:0; z-index:10;}
-  .header-content { display:flex; align-items:center; gap:12px; animation:fadeIn 1.5s ease;}
-  .logo img { width:70px; height:70px; filter:drop-shadow(0 0 12px #fff);}
-  .logo h1 { font-size:2rem; background:linear-gradient(to right,#ff79c6,#8be9fd,#50fa7b); -webkit-background-clip:text; background-clip:text; color:transparent; animation:titleGradient 4s linear infinite;}
-  nav a { text-decoration:none; color:#fff; font-weight:700; font-size:1.1rem; transition:.3s;}
-  nav a:hover { color:#ffe600; text-shadow:0 0 10px #ffe600;}
-  .coins { display:flex; align-items:center; gap:6px; font-weight:700; font-size:1.15rem; background:rgba(255,255,255,0.18); padding:6px 14px; border-radius:20px; box-shadow:0 6px 16px rgba(0,0,0,0.4);}
-  .coin-emoji { font-size:24px; animation:coinBounce 1.2s infinite ease-in-out;}
-  @keyframes coinBounce {0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
-  .hero { text-align:center; margin-top:60px; padding:0 20px; animation:fadeIn 1.5s ease;}
-  .hero h2 { font-size:3rem; font-weight:800; color:#fff; text-shadow:0 4px 10px rgba(0,0,0,0.6); margin-bottom:10px;}
-  .hero p { font-size:1.2rem; color:#eef; margin-bottom:20px;}
-  .music-btn { background:#ffffff33; border:3px solid #fff; border-radius:50%; color:#fff; font-size:1.4rem; width:55px; height:55px; cursor:pointer; transition:.3s; box-shadow:0 6px 20px rgba(0,0,0,0.4);}
-  .music-btn:hover { background:#fff; color:#ff69b4; transform:scale(1.15);}
-  .categories-grid { width:92%; max-width:1100px; margin:45px auto 30px; display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:16px;}
-  .category-btn { display:inline-flex; align-items:center; justify-content:center; padding:18px 10px; border-radius:22px; font-weight:900; font-size:1.1rem; text-decoration:none; color:#222; background:linear-gradient(145deg,#ffcd6d,#ff71a7,#7afcff,#a890fe); background-size:300% 300%; animation:extremeGradient 6s linear infinite; box-shadow:0 14px 38px rgba(0,0,0,0.45); transition:transform .25s ease, box-shadow .25s ease;}
-  .category-btn:hover { transform:translateY(-10px) scale(1.07); box-shadow:0 22px 60px rgba(0,0,0,0.55);}
-  @keyframes extremeGradient {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-  @keyframes fadeIn {from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);}}
-  @keyframes titleGradient {0%{filter:hue-rotate(0deg) brightness(1.1);}50%{filter:hue-rotate(180deg) brightness(1.4);}100%{filter:hue-rotate(360deg) brightness(1.1);}}
-  footer { text-align:center; padding:15px; color:#fff; background:rgba(0,0,0,0.35); font-size:.9rem; margin-top:40px;}
-  @media (max-width:430px) {.categories-grid {grid-template-columns:repeat(auto-fit, minmax(130px,1fr));}}
+/* ---------- Base ---------- */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+html,body{height:100%;}
+body{min-height:100vh;color:#fff;overflow-x:hidden;position:relative;background:url('fallback-image.jpg') center/cover fixed no-repeat;}
+video#bg-video{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-2;pointer-events:none;}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:-1;}
 
-  /* Reward Effects */
-  .reward-popup { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0); background:rgba(255,255,255,0.95); color:#222; padding:25px 35px; font-size:1.5rem; font-weight:800; border-radius:20px; text-align:center; box-shadow:0 6px 20px rgba(0,0,0,0.5); z-index:9999; transition:transform 0.4s ease, opacity 0.4s ease; opacity:0;}
-  .reward-popup.show { transform:translate(-50%,-50%) scale(1); opacity:1;}
-  .confetti { position:fixed; width:10px; height:10px; background:gold; top:0; left:0; pointer-events:none; opacity:0.8; border-radius:50%; animation:fall 2s linear forwards;}
-  @keyframes fall { 0%{transform:translateY(0) rotate(0deg);} 100%{transform:translateY(600px) rotate(720deg); opacity:0;} }
+/* ---------- Top HUD ---------- */
+.top-hud{position:fixed;top:0;left:0;width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:rgba(0,0,0,0.35);backdrop-filter:blur(8px);z-index:20;gap:10px;}
+.top-hud .logo{display:flex;align-items:center;gap:8px;}
+.top-hud .logo img{width:56px;height:56px;border-radius:10px;}
+.top-hud .logo h1{font-size:1.6rem;background:linear-gradient(to right,#ff79c6,#8be9fd,#50fa7b);-webkit-background-clip:text;color:transparent;animation:titleGradient 4s linear infinite;white-space:nowrap;}
+.top-hud .settings{display:flex;align-items:center;justify-content:center;font-size:1.2rem;width:48px;height:48px;border-radius:24px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,0.4);transition:.25s;}
+.top-hud .settings:hover{background:#fff;color:#ff69b4;transform:scale(1.05);}
+.top-hud .right-hud{display:flex;gap:10px;align-items:center;}
+.top-hud .coins, .top-hud .diamonds{display:flex;align-items:center;gap:8px;font: weight 350px;;font-size:1rem;background:rgba(255,255,255,0.12);padding:6px 12px;border-radius:18px;box-shadow:0 6px 10px rgba(0,0,0,0.35);cursor:pointer;position:relative;}
+.coin-emoji{font-size:20px;animation:coinBounce 1.2s infinite ease-in-out;}
+.diamond-emoji{font-size:20px;animation:coinBounce 1.2s infinite ease-in-out;}
+
+/* ---------- Hero ---------- */
+.hero{text-align:center;margin-top:86px;padding:18px;animation:fadeIn 1s ease;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;}
+.hero h2{width:100%;font-size:2.2rem;font-weight:800;color:#fff;text-shadow:0 4px 10px rgba(0,0,0,0.6);margin-bottom:6px;}
+.hero p{width:100%;font-size:1rem;color:#eef;margin-bottom:12px;}
+.hero button{padding:12px 18px;font-size:1rem;font-weight:700;color:#222;border-radius:18px;cursor:pointer;box-shadow:0 10px 28px rgba(0,0,0,0.45);transition: transform 0.25s, box-shadow 0.25s; background:linear-gradient(145deg,#ff71a7,#50fa7b,#8be9fd);}
+.hero button:hover{transform:scale(1.03);box-shadow:0 18px 48px rgba(0,0,0,0.55);}
+
+/* ---------- Music Button ---------- */
+.music-btn{background:#ffffff33;border:3px solid #fff;border-radius:50%;color:#fff;font-size:1.1rem;width:50px;height:50px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;box-shadow:0 6px 20px rgba(0,0,0,0.3);}
+.music-btn:hover{background:#fff;color:#ff69b4;transform:scale(1.08);}
+
+/* ---------- Streak ---------- */
+.streak-wrap{width:90%;max-width:760px;margin:18px auto 26px;}
+.streak-bar{width:100%;height:16px;background:rgba(255,255,255,0.16);border-radius:12px;overflow:hidden;}
+.streak-fill{width:0%;height:100%;background: linear-gradient(90deg,#4ade80,#22d3ee);border-radius:12px;transition: width 0.5s ease, box-shadow 0.5s ease;}
+
+/* ---------- Categories ---------- */
+.categories-grid{width:92%;max-width:1100px;margin:18px auto 48px;display:grid;grid-template-columns:repeat(auto-fit, minmax(120px,1fr));gap:12px;}
+.category-btn{display:inline-flex;align-items:center;justify-content:center;padding:14px 10px;border-radius:18px;font-weight:800;font-size:0.98rem;text-decoration:none;color:#222;background:linear-gradient(145deg,#ffcd6d,#ff71a7,#7afcff,#a890fe);background-size:300% 300%;animation:extremeGradient 6s linear infinite;position:relative;overflow:hidden;}
+.category-btn:hover{transform:translateY(-6px) scale(1.03);}
+
+/* ---------- Reward popup ---------- */
+.reward-popup{position:fixed;top:86px;right:16px;padding:10px 14px;font-size:1rem;font-weight:800;border-radius:12px;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,0.45);z-index:9999;transition:transform 0.35s ease, opacity 0.35s ease;opacity:0;color:#222;background:linear-gradient(90deg,#fff7b2,#dff7ff);}
+.reward-popup.show{opacity:1;transform:translateY(-8px);}
+
+/* ---------- Mystery box ---------- */
+#mystery-box-anim {position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);z-index:9999;text-align:center;width:160px;height:160px;}
+.mystery-box-anim.show {animation:popBox 0.55s forwards;}
+.mystery-box-anim .box {width:100%;height:100%;background:#ffcd6d;border-radius:12px;position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.35);}
+.mystery-box-anim .lid {width:100%;height:44px;background:#ff71a7;border-radius:12px 12px 0 0;position:absolute;top:0;left:0;transform-origin:top center;transition:transform 0.5s ease;}
+.mystery-box-anim.show .lid {transform:rotateX(-120deg);}
+.mystery-box-anim .reward-text {position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1.4rem;font-weight:800;opacity:0;transition:opacity .35s .45s ease;}
+.mystery-box-anim.show .reward-text{opacity:1;}
+
+/* ---------- Confetti ---------- */
+.confetti-piece {position:absolute;width:7px;height:7px;z-index:9999;pointer-events:none;border-radius:2px;}
+
+/* ---------- Wheel modal ---------- */
+#daily-wheel-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);background:rgba(0,0,0,0.95);padding:18px;border-radius:16px;z-index:999;transition:0.35s ease;opacity:0;width:92%;max-width:420px;max-height:90vh;display:flex;align-items:center;justify-content:center;flex-direction:column;overflow:hidden;}
+#daily-wheel-modal.show{transform:translate(-50%,-50%) scale(1);opacity:1;}
+#wheel-canvas{cursor:pointer;border-radius:50%;box-shadow:0 0 30px 5px #fff,0 0 50px 15px #fffa70 inset;background:#fff;}
+.back-btn{margin-top:12px;padding:8px 14px;border-radius:10px;border:none;background:#4ade80;color:#000;font-weight:700;cursor:pointer;}
+
+/* ---------- Leaderboard (Rushers League) ---------- */
+#leaderboard{position:fixed;top:120px;right:10px;background:rgba(0,0,0,0.56);padding:12px;border-radius:12px;width:280px;color:#fff;font-weight:600;box-shadow:0 8px 20px rgba(0,0,0,0.6);max-height:420px;overflow-y:auto;z-index:9;transition:0.3s;}
+#leaderboard h3{margin-bottom:10px;font-size:1.1rem;text-align:center;}
+#leaderboard-list{list-style:none;padding:0;margin:0;}
+.leaderboard-item{display:flex;align-items:center;justify-content:space-between;padding:8px 6px;border-radius:8px;margin-bottom:6px;font-weight:700;}
+.medal{display:inline-flex;align-items:center;gap:8px;padding:6px 8px;border-radius:10px;width:100%;}
+.gold-medal{background:linear-gradient(90deg,#fff6d6,#ffe07a);color:#7a4e00;text-shadow:0 0 10px rgba(255,215,0,0.8);font-weight:800;}
+.silver-medal{background:linear-gradient(90deg,#eef3fb,#d7e2f7);color:#26303a;font-weight:800;}
+.bronze-medal{background:linear-gradient(90deg,#fff0e1,#ffd6a8);color:#4a2b00;font-weight:800;}
+.leader-normal{color:#fff;padding:6px 8px;border-radius:8px;}
+
+/* ---------- Username modal ---------- */
+#username-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(240,240,255,0.98));
+    color: #222;
+    padding: 30px 28px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 
+      0 20px 60px rgba(0,0,0,0.3),
+      0 0 60px rgba(255,105,180,0.2);
+    z-index: 9999;
+    transition: 0.35s cubic-bezier(.2,.9,.3,1);
+    opacity: 0;
+    width: 90%;
+    max-width: 420px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.5);
+  }
+  #username-modal.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    animation: modalPop 0.4s cubic-bezier(.34,.1,.68,1);
+  }
+  #username-modal h2 {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    background: linear-gradient(90deg, #ff71a7, #8be9fd);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: titleGlow 2s infinite;
+  }
+  #username-modal p {
+    font-size: 1.05rem;
+    margin-bottom: 16px;
+    color: #444;
+  }
+  #username-input-modal {
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 2px solid #ddd;
+    text-align: center;
+    width: 85%;
+    margin: 12px auto;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: rgba(255,255,255,0.8);
+  }
+  #username-input-modal:focus {
+    outline: none;
+    border-color: #ff71a7;
+    background: #fff;
+    box-shadow: 0 0 15px rgba(255,105,180,0.3);
+    transform: scale(1.02);
+  }
+  #username-submit-modal {
+    background: linear-gradient(135deg, #ff71a7, #8be9fd);
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(255,105,180,0.3);
+  }
+  #username-submit-modal:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(255,105,180,0.4);
+    filter: brightness(1.05);
+  }
+  #username-submit-modal:active {
+    transform: translateY(-1px);
+  }
+
+  /* Enhanced leaderboard entry button */
+  #leaderboard-entry-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 12px;
+    background: linear-gradient(135deg, #4ade80, #22d3ee);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(74,222,128,0.3);
+    animation: buttonGlow 2s infinite;
+  }
+  #leaderboard-entry-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(74,222,128,0.5);
+    filter: brightness(1.08);
+  }
+  #leaderboard-entry-btn:active {
+    transform: translateY(0);
+  }
+
+  /* Contact / Settings modal (centered, animated) */
+  #contact-modal{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 92%;
+    max-width: 520px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,245,255,0.98));
+    color: #111;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.45), 0 0 40px rgba(123, 80, 255, 0.06) inset;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 320ms cubic-bezier(.2,.9,.3,1), opacity 320ms ease;
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+
+  #contact-modal.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+    animation: contactPop 380ms cubic-bezier(.2,.9,.3,1);
+  }
+
+  @keyframes contactPop{
+    0%   { transform: translate(-50%, -40%) scale(.96); opacity: 0; filter: blur(6px); }
+    60%  { transform: translate(-50%, -52%) scale(1.04); opacity: 1; filter: blur(0); }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; filter: blur(0); }
+  }
+
+  /* content inside modal */
+  #contact-modal h2{ font-size:1.25rem; margin-bottom:8px; font-weight:800; color:#222; }
+  #contact-modal p{ color:#333; margin-bottom:8px; }
+  #contact-modal .modal-row{ display:flex; gap:12px; align-items:center; margin:8px 0; }
+  #contact-modal .modal-actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:16px; }
+  #contact-modal .back-btn, #contact-modal button {
+    padding:10px 14px; border-radius:10px; border:none; cursor:pointer; font-weight:800;
+  }
+  #contact-modal .back-btn { background:#4ade80; color:#000; }
+  #contact-modal .reset-btn { background:linear-gradient(90deg,#ff8a65,#ff5252); color:#fff; }
+
+  /* prevent body scroll while modal open */
+  body.modal-open { overflow: hidden; }
+
+  /* small fade overlay behind modal */
+  .modal-dim {
+    position: fixed; inset:0; background: rgba(0,0,0,0.45); z-index:9998; opacity:0; pointer-events:none; transition:opacity .28s;
+  }
+  .modal-dim.show { opacity:1; pointer-events:auto; }
+
+  /* ---------- Animations ---------- */
+@keyframes coinBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);} }
+@keyframes titleGradient{0%{filter:hue-rotate(0deg) brightness(1.05);}50%{filter:hue-rotate(180deg) brightness(1.2);}100%{filter:hue-rotate(360deg) brightness(1.05);} }
+@keyframes extremeGradient{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;} }
+@keyframes fadeIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+@keyframes popBox{0%{transform:translate(-50%,-50%) scale(0);}60%{transform:translate(-50%,-50%) scale(1.15);}100%{transform:translate(-50%,-50%) scale(1);} }
+
+/* responsive */
+@media(max-width:700px){
+  .hero h2{font-size:1.6rem;}
+  #leaderboard{position:static;width:92%;max-width:420px;margin:12px auto 18px;right:auto;top:auto;}
+  .top-hud .logo h1{font-size:1.1rem;}
+}
 </style>
 </head>
 <body>
 
-<video autoplay muted loop playsinline id="bg-video">
+<video autoplay muted playsinline loop id="bg-video">
   <source src="background.mp4" type="video/mp4">
 </video>
 <div class="overlay"></div>
 
-<header>
-  <div class="header-content logo">
+<div class="top-hud">
+  <div class="logo">
     <img src="logo.png" alt="Brain Rush Logo">
     <h1>Brain Rush</h1>
   </div>
-  <nav><a href="#">Sign In</a></nav>
-  <div class="coins">
-    <span class="coin-emoji">💰</span>
-    <span id="coin-count">0</span> Rush
+  <div class="right-hud">
+    <div class="coins" title="Your Rush Coins"><span class="coin-emoji">💰</span><span id="coin-count">0</span> Rush</div>
+    <div class="diamonds" title="Your Diamonds"><span class="diamond-emoji">💎</span><span id="diamond-count">0</span></div>
+    <button class="music-btn" id="music-toggle" aria-label="Toggle Music">🎵</button>
+    <div class="settings" id="settings-btn" title="Settings">⚙️</div>
   </div>
-</header>
+</div>
+
 
 <section class="hero">
   <h2>Choose Your Brain Challenge 🧠</h2>
-  <p>Pick a category to start earning Rush Coins and boost your mind!</p>
-  <button class="music-btn" id="music-toggle">🎵</button>
+  <p>Pick a category to start earning Rush Coins and Diamonds!</p>
+  <button id="mystery-box">🎁 Mystery Box</button>
+  <button id="daily-wheel-btn">🎡 Daily Wheel</button>
 </section>
+
+<div class="streak-wrap">
+  <div class="streak-bar"><div class="streak-fill" id="streak-fill"></div></div>
+</div>
 
 <div class="categories-grid">
   <a href="logic.html" class="category-btn">Math</a>
@@ -84,15 +307,58 @@
   <a href="cars.html" class="category-btn">Cars</a>
   <a href="logos.html" class="category-btn">Logos</a>
   <a href="food.html" class="category-btn">Food & Drinks</a>
-  <a href="cre.html" class="category-btn">CRE</a>
+  <a href="CRE.html" class="category-btn">CRE</a>
   <a href="teams.html" class="category-btn">Teams</a>
-  <a href="cartoon.html" class="category-btn">Cartoon</a>
+  <a href="cartoons.html" class="category-btn">Cartoon</a>
 </div>
-
 
 <footer>© 2025 Brain Rush | All Rights Reserved</footer>
 
-<!-- AUDIO -->
+<!-- Reward popup -->
+<div class="reward-popup" id="reward-popup">+0 Rush Coins!</div>
+
+<!-- Mystery box animation -->
+<div id="mystery-box-anim">
+  <div class="lid"></div>
+  <div class="box"></div>
+  <div class="reward-text"></div>
+</div>
+
+<!-- wheel modal -->
+<div id="daily-wheel-modal">
+  <canvas id="wheel-canvas" width="360" height="360"></canvas>
+  <button id="close-wheel" class="back-btn">Back</button>
+</div>
+
+
+<div id="leaderboard">
+  <h3>Rushers League</h3>
+  <ul id="leaderboard-list"></ul>
+  <!-- Button now says 'Enter' -->
+  <button id="leaderboard-entry-btn" class="entry-btn">Enter</button>
+</div>
+
+<!-- username modal -->
+<div id="username-modal">
+  <h2>Join the Rushers League 🏆</h2>
+  <p>Enter your username:</p>
+  <input type="text" id="username-input-modal" placeholder="Your username">
+  <div style="margin-top:12px;">
+    <button id="username-submit-modal" class="back-btn">Enter</button>
+  </div>
+</div>
+
+
+<!-- contact/settings modal -->
+<div id="contact-modal">
+  <h2>Contact & Settings</h2>
+  <p>Phone: 0795411081</p>
+  <p>Instagram: @xo_lopezz_</p>
+  <button id="reset-coins">Reset Coins</button>
+  <button class="back-btn" id="close-settings">Back</button>
+</div>
+
+<!-- audio -->
 <audio id="bg-music" loop>
   <source src="background-music.mp3" type="audio/mpeg">
 </audio>
@@ -103,60 +369,449 @@
   <source src="reward.mp3" type="audio/mpeg">
 </audio>
 
-<!-- REWARD POPUP -->
-<div class="reward-popup" id="reward-popup">+0 Rush Coins!</div>
-
 <script>
+/* ------------------- FULL JS ------------------- */
 document.addEventListener('DOMContentLoaded', () => {
+  // Elements
   const coinDisplay = document.getElementById('coin-count');
-  const savedCoins = parseInt(localStorage.getItem('totalCoins')) || 0;
-  coinDisplay.textContent = savedCoins;
-
+  const diamondDisplay = document.getElementById('diamond-count');
+  const streakFill = document.getElementById('streak-fill');
+  const rewardPopup = document.getElementById('reward-popup');
   const music = document.getElementById('bg-music');
-  const clickSfx = document.getElementById('click-sfx');
-  const rewardSfx = document.getElementById('reward-sfx');
   const toggleBtn = document.getElementById('music-toggle');
+  const wheelBtn = document.getElementById('daily-wheel-btn');
+  const wheelModal = document.getElementById('daily-wheel-modal');
+  const closeWheel = document.getElementById('close-wheel');
+  const mysteryBoxBtn = document.getElementById('mystery-box');
+  const mysteryBoxAnim = document.getElementById('mystery-box-anim');
+  const rewardText = mysteryBoxAnim.querySelector('.reward-text');
+  const resetBtn = document.getElementById('reset-coins');
+  const settingsBtn = document.getElementById('settings-btn');
+  const contactModal = document.getElementById('contact-modal');
+  const closeSettings = document.getElementById('close-settings');
+  const leaderboardList = document.getElementById('leaderboard-list');
+  const usernameModal = document.getElementById('username-modal');
+  const usernameInput = document.getElementById('username-input-modal');
+  const usernameSubmit = document.getElementById('username-submit-modal');
+  const rewardSfx = document.getElementById('reward-sfx');
+  const clickSfx = document.getElementById('click-sfx');
+  const leaderboardEntryBtn = document.getElementById('leaderboard-entry-btn');
+  
+  // State
+  let coins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+  let diamonds = parseInt(localStorage.getItem('totalDiamonds') || '0', 10);
+  let lastBox = localStorage.getItem('lastBox') || null;
+  let lastWheel = localStorage.getItem('lastWheel') || null;
+  let username = localStorage.getItem('username') || null;
 
-  // Music autoplay fix
-  music.volume = 0.55;
-  music.play().catch(()=>{toggleBtn.textContent='🔈';});
+  // Leaderboard storage structure: array [{name, coins}]
+  let rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
 
-  toggleBtn.addEventListener('click', ()=>{
-    if(music.paused){music.play(); toggleBtn.textContent='🔊';} 
-    else{music.pause(); toggleBtn.textContent='🔈';}
+  // HUD init
+  coinDisplay.textContent = coins;
+  diamondDisplay.textContent = diamonds;
+
+  // Music: restore state
+  const musicEnabled = localStorage.getItem('musicEnabled') === '1';
+  if (musicEnabled) {
+    music.play().catch(()=>{});
+    toggleBtn.textContent = '🔊';
+  } else {
+    toggleBtn.textContent = '🎵';
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    try { clickSfx && clickSfx.play(); } catch(e){}
+    if (music.paused) {
+      music.play().catch(()=>{});
+      toggleBtn.textContent = '🔊';
+      localStorage.setItem('musicEnabled','1');
+    } else {
+      music.pause();
+      toggleBtn.textContent = '🎵';
+      localStorage.setItem('musicEnabled','0');
+    }
   });
 
-  // Click sound
-  const clickable = document.querySelectorAll("a, button, .category-btn");
-  clickable.forEach(el=>el.addEventListener('click',()=>{
-    clickSfx.currentTime=0; clickSfx.play().catch(()=>{});
-  }));
+  // Settings modal
+  settingsBtn.addEventListener('click', () => contactModal.classList.add('show'));
+  closeSettings.addEventListener('click', () => contactModal.classList.remove('show'));
 
-  // REWARD EFFECT FUNCTION
-  window.addCoins = function(amount){
-    let coins = parseInt(localStorage.getItem('totalCoins'))||0;
-    coins += amount;
-    localStorage.setItem('totalCoins',coins);
-    if(coinDisplay) coinDisplay.textContent = coins;
+  resetBtn.addEventListener('click', () => {
+    if (!confirm('Reset coins and diamonds? This will set totals to 0.')) return;
+    coins = 0; diamonds = 0;
+    localStorage.setItem('totalCoins', coins);
+    localStorage.setItem('totalDiamonds', diamonds);
+    // clear last rewards optionally:
+    localStorage.removeItem('lastBox');
+    localStorage.removeItem('lastWheel');
+    coinDisplay.textContent = coins;
+    diamondDisplay.textContent = diamonds;
+    updateStreak(coins);
+    saveRushersLeagueEntry(); // update user's entry if exists
+    renderLeaderboard();
+    alert('🎉 Coins and Diamonds reset!');
+  });
 
-    // Show popup
-    const popup = document.getElementById('reward-popup');
-    popup.textContent = `+${amount} Rush Coins!`;
-    popup.classList.add('show');
-    rewardSfx.currentTime=0; rewardSfx.play().catch(()=>{});
-
-    // Confetti
-    for(let i=0;i<15;i++){
-      const confetti = document.createElement('div');
-      confetti.classList.add('confetti');
-      confetti.style.left = (Math.random()*window.innerWidth)+'px';
-      confetti.style.background = ['#ffcd6d','#ff71a7','#7afcff','#a890fe','#50fa7b'][Math.floor(Math.random()*5)];
-      document.body.appendChild(confetti);
-      setTimeout(()=>{confetti.remove();},2000);
+  // ---------- Confetti ----------
+  function spawnConfetti(count = 28) {
+    // reduced count to improve mobile performance
+    for (let i = 0; i < count; i++) {
+      const div = document.createElement('div');
+      div.className = 'confetti-piece';
+      div.style.background = `hsl(${Math.random() * 360}, 88%, 60%)`;
+      div.style.left = (20 + Math.random() * 60) + '%';
+      div.style.top = '-10px';
+      const size = (Math.random() * 6 + 4);
+      div.style.width = `${size}px`;
+      div.style.height = `${size}px`;
+      div.style.opacity = `${0.85 - Math.random() * 0.4}`;
+      div.style.transform = `rotate(${Math.random() * 360}deg)`;
+      document.body.appendChild(div);
+      const falling = setInterval(() => {
+        const top = parseFloat(div.style.top || -10);
+        div.style.top = (top + Math.random() * 10) + 'px';
+        div.style.left = (parseFloat(div.style.left) + Math.random() * 4 - 2) + '%';
+        if (top > window.innerHeight + 50) {
+          div.remove();
+          clearInterval(falling);
+        }
+      }, 30);
     }
-
-    setTimeout(()=>{popup.classList.remove('show');},1500);
   }
+
+  // ---------- Reward popup ----------
+  function showRewardPopup(text) {
+    rewardPopup.textContent = text;
+    rewardPopup.classList.add('show');
+    setTimeout(() => rewardPopup.classList.remove('show'), 1600);
+  }
+
+  // ---------- Streak ----------
+  function updateStreak(totalCoins) {
+    // Streak increases in steps of 10 coins towards a 100-coin cycle
+    const stepPercent = Math.min(100, Math.floor((totalCoins % 100) / 10) * 10);
+    // set width
+    streakFill.style.width = stepPercent + '%';
+    // map percent -> hue (0 red .. 120 green). More percent => greener
+    const hue = Math.round( (stepPercent / 100) * 120 );
+    streakFill.style.background = `linear-gradient(90deg, hsl(${hue},72%,43%), hsl(${(hue+22)%360},72%,53%))`;
+    // show numeric label inside bar (optional)
+    streakFill.textContent = stepPercent === 0 ? '' : `${stepPercent}%`;
+    // small pulse to draw attention when increased
+    streakFill.classList.remove('streak-burst');
+    // reflow to restart animation
+    // eslint-disable-next-line no-unused-expressions
+    void streakFill.offsetWidth;
+    streakFill.classList.add('streak-burst');
+
+    // celebrate full bar
+    if (stepPercent === 100) {
+      spawnConfetti(18);
+    }
+  }
+  updateStreak(coins);
+
+  // ---------- Leaderboard (Rushers League) ----------
+  function saveRushersLeague() {
+    localStorage.setItem('rushersLeague', JSON.stringify(rushersLeague));
+  }
+
+  function saveRushersLeagueEntry() {
+    if (!username) return;
+    // update or insert user entry
+    const existing = rushersLeague.find(e => e.name === username);
+    if (existing) existing.coins = coins;
+    else rushersLeague.push({ name: username, coins: coins });
+    saveRushersLeague();
+  }
+
+  function renderLeaderboard() {
+    // sort by coins desc
+    rushersLeague.sort((a, b) => b.coins - a.coins);
+    leaderboardList.innerHTML = '';
+    if (rushersLeague.length === 0) {
+      const li = document.createElement('li');
+      li.className = 'leaderboard-item';
+      li.textContent = 'Be first — set a username to join!';
+      leaderboardList.appendChild(li);
+      return;
+      
+    }
+    rushersLeague.forEach((player, idx) => {
+      const li = document.createElement('li');
+      li.className = 'leaderboard-item';
+      if (idx === 0) {
+        li.innerHTML = `<div class="medal gold-medal">🥇 <strong>${player.name}</strong></div><div class="small">${player.coins} 💰</div>`;
+      } else if (idx === 1) {
+        li.innerHTML = `<div class="medal silver-medal">🥈 <strong>${player.name}</strong></div><div class="small">${player.coins} 💰</div>`;
+      } else if (idx === 2) {
+        li.innerHTML = `<div class="medal bronze-medal">🥉 <strong>${player.name}</strong></div><div class="small">${player.coins} 💰</div>`;
+      } else {
+        li.innerHTML = `<div class="leader-normal">${player.name}</div><div class="small">${player.coins} 💰</div>`;
+      }
+      leaderboardList.appendChild(li);
+    });
+  }
+
+  // On load render
+  renderLeaderboard();
+
+  // If no username, prompt user
+  function checkUsernamePrompt() {
+    username = localStorage.getItem('username') || null;
+    if (!username) {
+      // Auto-show on first visit
+      setTimeout(() => {
+        usernameModal.classList.add('show');
+        usernameInput.focus();
+      }, 800);
+    } else {
+      usernameModal.classList.remove('show');
+    }
+  }
+  checkUsernamePrompt();
+
+  // Leaderboard entry button functionality
+  leaderboardEntryBtn.addEventListener('click', () => {
+    try { clickSfx && clickSfx.play(); } catch(e){}
+    usernameModal.classList.add('show');
+  });
+
+  // Updated username submit handler
+  usernameSubmit.addEventListener('click', () => {
+    const uname = usernameInput.value.trim();
+    if (!uname || uname.length < 2) {
+      alert('❌ Username must be at least 2 characters!');
+      usernameInput.focus();
+      return;
+    }
+    if (uname.length > 20) {
+      alert('❌ Username must be under 20 characters!');
+      return;
+    }
+    username = uname;
+    localStorage.setItem('username', username);
+    // Create/update user's entry in league
+    saveRushersLeagueEntry();
+    renderLeaderboard();
+    usernameModal.classList.remove('show');
+    usernameInput.value = '';
+    
+    // Success message with animation
+    showRewardPopup(`🏆 Welcome ${username}!`);
+    spawnConfetti(24);
+    try { rewardSfx && rewardSfx.play(); } catch(e){}
+  });
+
+  usernameInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') usernameSubmit.click();
+  });
+
+  // Click coins area to change username
+  document.querySelector('.coins').addEventListener('click', () => {
+    try { clickSfx && clickSfx.play(); } catch(e){}
+    usernameModal.classList.add('show');
+    usernameInput.focus();
+  });
+
+  // Check if user has username on page load
+  function checkUsernamePrompt() {
+    username = localStorage.getItem('username') || null;
+    if (!username) {
+      // Auto-show on first visit
+      setTimeout(() => {
+        usernameModal.classList.add('show');
+        usernameInput.focus();
+      }, 800);
+    } else {
+      usernameModal.classList.remove('show');
+    }
+  }
+  checkUsernamePrompt();
+
+  // Close modal on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      usernameModal.classList.remove('show');
+      contactModal.classList.remove('show');
+      wheelModal.classList.remove('show');
+    }
+  });
+
+  // ---------- Mystery box ----------
+  mysteryBoxBtn.addEventListener('click', () => {
+    try { clickSfx && clickSfx.play(); } catch(e){}
+    // cooldown check
+    const last = localStorage.getItem('lastBox');
+    if (last && Date.now() - new Date(last).getTime() < 24 * 60 * 60 * 1000) {
+      alert('🎁 Mystery Box available every 24 hours!');
+      return;
+    }
+    mysteryBoxAnim.classList.add('show');
+    // choose reward
+    const rewardType = Math.random() > 0.5 ? 'coin' : 'diamond';
+    const rewardAmount = Math.floor(Math.random() * 100) + 1; // 1-100
+    setTimeout(() => {
+      rewardText.textContent = rewardType === 'coin' ? `💰 ${rewardAmount}` : `💎 ${rewardAmount}`;
+      if (rewardType === 'coin') {
+        coins += rewardAmount;
+        coinDisplay.textContent = coins;
+        localStorage.setItem('totalCoins', coins);
+        showRewardPopup(`+${rewardAmount} Rush Coins`);
+      } else {
+        diamonds += rewardAmount;
+        diamondDisplay.textContent = diamonds;
+        localStorage.setItem('totalDiamonds', diamonds);
+        showRewardPopup(`+${rewardAmount} Diamonds`);
+      }
+      try { rewardSfx && rewardSfx.play(); } catch(e){}
+      spawnConfetti(36);
+      localStorage.setItem('lastBox', new Date().toISOString());
+      updateStreak(coins);
+      // update leaderboard entry for this user
+      saveRushersLeagueEntry();
+      renderLeaderboard();
+    }, 700);
+    // hide animation after a bit
+    setTimeout(() => mysteryBoxAnim.classList.remove('show'), 2200);
+  });
+
+  // ---------- Wheel (complete animation and reward logic) ----------
+  const wheelCanvas = document.getElementById('wheel-canvas');
+  const ctx = wheelCanvas.getContext('2d');
+
+  // fixed set of 8 segments (confirmed)
+  const segments = [
+    { label: '💰 10', type: 'coin', amount: 10, color: '#ffcd6d' },
+    { label: '💰 20', type: 'coin', amount: 20, color: '#ff71a7' },
+    { label: '💎 10', type: 'diamond', amount: 10, color: '#50fa7b' },
+    { label: '💎 20', type: 'diamond', amount: 20, color: '#8be9fd' },
+    { label: '💰 50', type: 'coin', amount: 50, color: '#ffb347' },
+    { label: '💎 50', type: 'diamond', amount: 50, color: '#9b59b6' },
+    { label: '💰 100', type: 'coin', amount: 100, color: '#f5e05a' },
+    { label: '💎 100', type: 'diamond', amount: 100, color: '#3498db' }
+  ];
+
+  const wheelRadius = 180;
+  const center = wheelRadius;
+  const segmentAngle = (2 * Math.PI) / segments.length;
+  let rotation = 0; // current rotation offset
+  let spinning = false;
+
+  function drawWheel() {
+    ctx.clearRect(0, 0, wheelCanvas.width, wheelCanvas.height);
+    segments.forEach((seg, i) => {
+      const start = i * segmentAngle + rotation;
+      const end = (i + 1) * segmentAngle + rotation;
+      ctx.beginPath();
+      ctx.moveTo(center, center);
+      ctx.arc(center, center, wheelRadius, start, end);
+      ctx.fillStyle = seg.color;
+      ctx.fill();
+      ctx.save();
+      ctx.translate(center, center);
+      ctx.rotate((i + 0.5) * segmentAngle + rotation);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#222';
+      ctx.font = '16px Poppins, Arial';
+      ctx.fillText(seg.label, wheelRadius - 12, 6);
+      ctx.restore();
+    });
+    // pointer (triangle)
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.moveTo(center, center - 4);
+    ctx.lineTo(center + 14, center - 18);
+    ctx.lineTo(center - 14, center - 18);
+    ctx.closePath();
+    ctx.fill();
+  }
+  drawWheel();
+
+  wheelCanvas.addEventListener('click', () => {
+    try { clickSfx && clickSfx.play(); } catch(e){}
+    if (spinning) return;
+    const last = localStorage.getItem('lastWheel');
+    if (last && Date.now() - new Date(last).getTime() < 24 * 60 * 60 * 1000) {
+      alert('🎡 Daily Wheel available every 24 hours!');
+      return;
+    }
+    spinning = true;
+    // physics: set initial velocity and slow down with friction
+    let velocity = 0.45 + Math.random() * 0.25; // radians per frame
+    let rotations = 40 + Math.random() * 40; // total steps-like measure
+    function spinStep() {
+      if (rotations <= 0 && velocity < 0.002) {
+        // finalize
+        spinning = false;
+        // normalized rotation between 0 and 2π
+        const finalRotation = ((rotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+        // compute index under pointer (pointer at top = angle 0)
+        let index = Math.floor(((2 * Math.PI - finalRotation) % (2 * Math.PI)) / segmentAngle) % segments.length;
+        if (index < 0) index += segments.length;
+        const reward = segments[index];
+        if (reward.type === 'coin') {
+          coins += reward.amount;
+          coinDisplay.textContent = coins;
+          localStorage.setItem('totalCoins', coins);
+          showRewardPopup(`+${reward.amount} Rush Coins`);
+        } else {
+          diamonds += reward.amount;
+          diamondDisplay.textContent = diamonds;
+          localStorage.setItem('totalDiamonds', diamonds);
+          showRewardPopup(`+${reward.amount} Diamonds`);
+        }
+        localStorage.setItem('lastWheel', new Date().toISOString());
+        try { rewardSfx && rewardSfx.play(); } catch(e){}
+        spawnConfetti(36);
+        updateStreak(coins);
+        saveRushersLeagueEntry();
+        renderLeaderboard();
+        return;
+      }
+      rotation += velocity;
+      drawWheel();
+      // decelerate
+      velocity *= 0.986; // friction
+      rotations -= 0.12;
+      requestAnimationFrame(spinStep);
+    }
+    spinStep();
+  });
+
+  // open/close wheel modal
+  wheelBtn.addEventListener('click', () => wheelModal.classList.add('show'));
+  closeWheel.addEventListener('click', () => wheelModal.classList.remove('show'));
+
+  // ---------- Init and helper ----------
+
+  function renderAll() {
+    coinDisplay.textContent = coins;
+    diamondDisplay.textContent = diamonds;
+    updateStreak(coins);
+    renderLeaderboard();
+  }
+  renderAll();
+
+  // persist user entry on page unload
+  window.addEventListener('beforeunload', () => {
+    localStorage.setItem('totalCoins', coins);
+    localStorage.setItem('totalDiamonds', diamonds);
+    saveRushersLeague();
+  });
+
+  // small UX: back button closes contact/username
+  document.getElementById('close-settings').addEventListener('click', () => contactModal.classList.remove('show'));
+
+  // keyboard convenience
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      contactModal.classList.remove('show');
+      usernameModal.classList.remove('show');
+      wheelModal.classList.remove('show');
+    }
+  });
 });
 </script>
 </body>
