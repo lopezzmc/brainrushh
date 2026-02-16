@@ -4,12 +4,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Brain Rush — History</title>
+  <title>Brain Rush — Agriculture</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Inter:wght@400;700;900&display=swap"
     rel="stylesheet">
   <style>
-    /* ===== STYLES SAME AS GEOGRAPHY PAGE ===== */
+    /* ===== STYLES SAME AS OTHER PAGES ===== */
     :root {
       --paper-white: #fbfbf8;
       --neon1: #7b3af6;
@@ -69,13 +69,13 @@
   <div class="overlay" aria-hidden="true"></div>
 
   <div class="stage">
-    <div class="book" role="main" aria-label="Brain Rush history game">
+    <div class="book" role="main" aria-label="Brain Rush agriculture game">
       <div class="header">
         <div class="leftHeader">
           <div class="logoBox"><img src="logo.png" alt="logo" onerror="this.style.display='none'"></div>
           <div class="titleWrap">
             <div class="title">Brain Rush</div>
-            <div class="subtitle">Level 1 • History</div>
+            <div class="subtitle">Level 1 • Agriculture</div>
           </div>
           <div style="margin-left:14px;">
             <div class="qcount" id="qcount">Question 1 / 10</div>
@@ -136,67 +136,88 @@
   </audio>
 
   <script>
-  // ====== AGRICULTURE QUESTIONS BANK ======
-const BANK = [
-  { q: "What is agriculture?", choices: ["Growing crops and keeping animals", "Selling food only", "Fishing in rivers", "Mining minerals"], a: 0 },
-  { q: "Which crop is a cereal?", choices: ["Beans", "Maize", "Groundnuts", "Cowpeas"], a: 1 },
-  { q: "Which animal is kept for milk?", choices: ["Sheep", "Goat", "Cow", "Chicken"], a: 2 },
-  { q: "What is the main tool used for digging?", choices: ["Panga", "Jembe", "Rake", "Wheelbarrow"], a: 1 },
-  { q: "Which soil type is best for farming?", choices: ["Sandy", "Clay", "Loam", "Rocky"], a: 2 },
-  { q: "What is irrigation?", choices: ["Planting seeds", "Supplying water to crops", "Harvesting crops", "Applying fertilizer"], a: 1 },
-  { q: "Which crop grows underground?", choices: ["Maize", "Beans", "Potatoes", "Cabbage"], a: 2 },
-  { q: "What do legumes add to the soil?", choices: ["Water", "Nitrogen", "Sand", "Oxygen"], a: 1 },
-  { q: "Which farming practice involves growing one crop only?", choices: ["Mixed farming", "Crop rotation", "Monocropping", "Intercropping"], a: 2 },
-  { q: "Which animal provides wool?", choices: ["Goat", "Sheep", "Cow", "Pig"], a: 1 },
-  { q: "What is compost manure made from?", choices: ["Plastic waste", "Animal feeds", "Organic waste", "Chemicals"], a: 2 },
-  { q: "Which tool is used to cut grass?", choices: ["Hoe", "Panga", "Fork jembe", "Rake"], a: 1 },
-  { q: "Which crop is grown for its leaves?", choices: ["Spinach", "Maize", "Tomato", "Beans"], a: 0 },
-  { q: "Which farming system combines crops and animals?", choices: ["Pastoralism", "Mixed farming", "Nomadic farming", "Monoculture"], a: 1 },
-  { q: "What is mulching?", choices: ["Burning crop residues", "Covering soil surface", "Harvesting crops", "Spraying pesticides"], a: 1 },
-  { q: "Which animal is kept for eggs?", choices: ["Duck", "Chicken", "Turkey", "All of the above"], a: 3 },
-  { q: "Which nutrient helps plants grow strong stems?", choices: ["Nitrogen", "Phosphorus", "Potassium", "Calcium"], a: 2 },
-  { q: "Which crop is a cash crop in Kenya?", choices: ["Tea", "Maize", "Beans", "Sorghum"], a: 0 },
-  { q: "What is pest control?", choices: ["Planting seeds", "Killing weeds", "Managing harmful insects", "Harvesting crops"], a: 2 },
-  { q: "Which soil holds water for a long time?", choices: ["Sandy", "Loam", "Clay", "Gravel"], a: 2 },
-  { q: "Which animal is reared for meat?", choices: ["Goat", "Cow", "Sheep", "All of the above"], a: 3 },
-  { q: "What is a greenhouse?", choices: ["Animal shelter", "Glass house for crops", "Storage shed", "Seed store"], a: 1 },
-  { q: "Which crop is propagated using cuttings?", choices: ["Maize", "Beans", "Sugarcane", "Sorghum"], a: 2 },
-  { q: "What is thinning?", choices: ["Removing excess seedlings", "Adding fertilizer", "Watering crops", "Harvesting"], a: 0 },
-  { q: "Which farming practice prevents soil erosion?", choices: ["Overgrazing", "Terracing", "Burning bushes", "Monocropping"], a: 1 },
-  { q: "Which animal provides hides and skins?", choices: ["Chicken", "Goat", "Cow", "Both goat and cow"], a: 3 },
-  { q: "What is crop rotation?", choices: ["Planting same crop always", "Changing crops each season", "Harvesting early", "Planting many crops together"], a: 1 },
-  { q: "Which tool is used for harvesting maize?", choices: ["Panga", "Sickle", "Hoe", "Fork jembe"], a: 1 },
-  { q: "Which crop is drought resistant?", choices: ["Rice", "Wheat", "Sorghum", "Tea"], a: 2 },
-  { q: "What is livestock farming?", choices: ["Growing crops", "Keeping animals", "Fishing", "Forestry"], a: 1 },
-  { q: "Which disease affects poultry?", choices: ["East Coast Fever", "Newcastle disease", "Foot and mouth", "Anthrax"], a: 1 },
-  { q: "Which fertilizer is organic?", choices: ["DAP", "CAN", "Urea", "Farmyard manure"], a: 3 },
-  { q: "Which crop is grown in wetlands?", choices: ["Maize", "Rice", "Millet", "Sorghum"], a: 1 },
-  { q: "What is weeding?", choices: ["Removing unwanted plants", "Planting seeds", "Harvesting crops", "Spraying pesticides"], a: 0 },
-  { q: "Which animal is kept for honey?", choices: ["Bee", "Ant", "Butterfly", "Wasp"], a: 0 },
-  { q: "Which practice improves soil fertility?", choices: ["Bush burning", "Crop rotation", "Overgrazing", "Deforestation"], a: 1 },
-  { q: "Which crop matures fastest?", choices: ["Maize", "Beans", "Tea", "Coffee"], a: 1 },
-  { q: "What is farm mechanization?", choices: ["Using machines in farming", "Using animals only", "Manual farming", "Traditional farming"], a: 0 },
-  { q: "Which animal provides manure?", choices: ["Cow", "Goat", "Chicken", "All of the above"], a: 3 },
-  { q: "Which crop is grown mainly for export in Kenya?", choices: ["Tea", "Cassava", "Millet", "Maize"], a: 0 },
-  { q: "Which tool is used to carry farm produce?", choices: ["Wheelbarrow", "Hoe", "Rake", "Sickle"], a: 0 },
-  { q: "What is pruning?", choices: ["Removing excess branches", "Planting seeds", "Watering crops", "Harvesting"], a: 0 },
-  { q: "Which soil type drains water fastest?", choices: ["Clay", "Loam", "Sandy", "Silt"], a: 2 },
-  { q: "Which animal is affected by East Coast Fever?", choices: ["Goat", "Sheep", "Cow", "Pig"], a: 2 },
-  { q: "What is harvesting?", choices: ["Planting crops", "Collecting mature crops", "Watering plants", "Spraying chemicals"], a: 1 },
-  { q: "Which crop is grown using seedlings?", choices: ["Maize", "Rice", "Beans", "Millet"], a: 1 },
-  { q: "Which practice conserves water in farming?", choices: ["Mulching", "Overwatering", "Bush burning", "Deforestation"], a: 0 },
-  { q: "Which animal is kept mainly for milk in arid areas?", choices: ["Cow", "Sheep", "Camel", "Pig"], a: 2 },
-  { q: "Which crop is a root crop?", choices: ["Carrot", "Cabbage", "Spinach", "Onion"], a: 0 },
-  { q: "What is a seedbed?", choices: ["Place where seeds are planted", "Storage area", "Animal house", "Farm road"], a: 0 },
-  { q: "Which activity prepares land for planting?", choices: ["Harvesting", "Ploughing", "Weeding", "Spraying"], a: 1 }
-];
+    // ====== AGRICULTURE QUESTIONS BANK (50 QUESTIONS) ======
+    const BANK = [
+      { q: "What is agriculture?", choices: ["Growing crops and keeping animals", "Selling food only", "Fishing in rivers", "Mining minerals"], a: 0 },
+      { q: "Which crop is a cereal?", choices: ["Beans", "Maize", "Groundnuts", "Cowpeas"], a: 1 },
+      { q: "Which animal is kept for milk?", choices: ["Sheep", "Goat", "Cow", "Chicken"], a: 2 },
+      { q: "What is the main tool used for digging?", choices: ["Panga", "Jembe (Hoe)", "Rake", "Wheelbarrow"], a: 1 },
+      { q: "Which soil type is best for farming?", choices: ["Sandy", "Clay", "Loam", "Rocky"], a: 2 },
+      { q: "What is irrigation?", choices: ["Planting seeds", "Supplying water to crops", "Harvesting crops", "Applying fertilizer"], a: 1 },
+      { q: "Which crop grows underground?", choices: ["Maize", "Beans", "Potatoes", "Cabbage"], a: 2 },
+      { q: "What do legumes add to the soil?", choices: ["Water", "Nitrogen", "Sand", "Oxygen"], a: 1 },
+      { q: "Which farming practice involves growing one crop only?", choices: ["Mixed farming", "Crop rotation", "Monocropping", "Intercropping"], a: 2 },
+      { q: "Which animal provides wool?", choices: ["Goat", "Sheep", "Cow", "Pig"], a: 1 },
+      { q: "What is compost manure made from?", choices: ["Plastic waste", "Animal feeds", "Organic waste", "Chemicals"], a: 2 },
+      { q: "Which tool is used to cut grass?", choices: ["Hoe", "Panga (Machete)", "Fork jembe", "Rake"], a: 1 },
+      { q: "Which crop is grown for its leaves?", choices: ["Spinach", "Maize", "Tomato", "Beans"], a: 0 },
+      { q: "Which farming system combines crops and animals?", choices: ["Pastoralism", "Mixed farming", "Nomadic farming", "Monoculture"], a: 1 },
+      { q: "What is mulching?", choices: ["Burning crop residues", "Covering soil surface", "Harvesting crops", "Spraying pesticides"], a: 1 },
+      { q: "Which animal is kept for eggs?", choices: ["Duck", "Chicken", "Turkey", "All of the above"], a: 3 },
+      { q: "Which nutrient helps plants grow strong stems?", choices: ["Nitrogen", "Phosphorus", "Potassium", "Calcium"], a: 2 },
+      { q: "Which crop is a cash crop in Kenya?", choices: ["Tea", "Maize", "Beans", "Sorghum"], a: 0 },
+      { q: "What is pest control?", choices: ["Planting seeds", "Killing weeds", "Managing harmful insects", "Harvesting crops"], a: 2 },
+      { q: "Which soil holds water for a long time?", choices: ["Sandy", "Loam", "Clay", "Gravel"], a: 2 },
+      { q: "Which animal is reared for meat?", choices: ["Goat", "Cow", "Sheep", "All of the above"], a: 3 },
+      { q: "What is a greenhouse?", choices: ["Animal shelter", "Glass house for crops", "Storage shed", "Seed store"], a: 1 },
+      { q: "Which crop is propagated using cuttings?", choices: ["Maize", "Beans", "Sugarcane", "Sorghum"], a: 2 },
+      { q: "What is thinning?", choices: ["Removing excess seedlings", "Adding fertilizer", "Watering crops", "Harvesting"], a: 0 },
+      { q: "Which farming practice prevents soil erosion?", choices: ["Overgrazing", "Terracing", "Burning bushes", "Monocropping"], a: 1 },
+      { q: "Which animal provides hides and skins?", choices: ["Chicken", "Goat", "Cow", "Both goat and cow"], a: 3 },
+      { q: "What is crop rotation?", choices: ["Planting same crop always", "Changing crops each season", "Harvesting early", "Planting many crops together"], a: 1 },
+      { q: "Which tool is used for harvesting maize?", choices: ["Panga", "Sickle", "Hoe", "Fork jembe"], a: 1 },
+      { q: "Which crop is drought resistant?", choices: ["Rice", "Wheat", "Sorghum", "Tea"], a: 2 },
+      { q: "What is livestock farming?", choices: ["Growing crops", "Keeping animals", "Fishing", "Forestry"], a: 1 },
+      { q: "Which disease affects poultry?", choices: ["East Coast Fever", "Newcastle disease", "Foot and mouth", "Anthrax"], a: 1 },
+      { q: "Which fertilizer is organic?", choices: ["DAP", "CAN", "Urea", "Farmyard manure"], a: 3 },
+      { q: "Which crop is grown in wetlands?", choices: ["Maize", "Rice", "Millet", "Sorghum"], a: 1 },
+      { q: "What is weeding?", choices: ["Removing unwanted plants", "Planting seeds", "Harvesting crops", "Spraying pesticides"], a: 0 },
+      { q: "Which animal is kept for honey?", choices: ["Bee", "Ant", "Butterfly", "Wasp"], a: 0 },
+      { q: "Which practice improves soil fertility?", choices: ["Bush burning", "Crop rotation", "Overgrazing", "Deforestation"], a: 1 },
+      { q: "Which crop matures fastest?", choices: ["Maize", "Beans", "Tea", "Coffee"], a: 1 },
+      { q: "What is farm mechanization?", choices: ["Using machines in farming", "Using animals only", "Manual farming", "Traditional farming"], a: 0 },
+      { q: "Which animal provides manure?", choices: ["Cow", "Goat", "Chicken", "All of the above"], a: 3 },
+      { q: "Which crop is grown mainly for export in Kenya?", choices: ["Tea", "Cassava", "Millet", "Maize"], a: 0 },
+      { q: "Which tool is used to carry farm produce?", choices: ["Wheelbarrow", "Hoe", "Rake", "Sickle"], a: 0 },
+      { q: "What is pruning?", choices: ["Removing excess branches", "Planting seeds", "Watering crops", "Harvesting"], a: 0 },
+      { q: "Which soil type drains water fastest?", choices: ["Clay", "Loam", "Sandy", "Silt"], a: 2 },
+      { q: "Which animal is affected by East Coast Fever?", choices: ["Goat", "Sheep", "Cow", "Pig"], a: 2 },
+      { q: "What is harvesting?", choices: ["Planting crops", "Collecting mature crops", "Watering plants", "Spraying chemicals"], a: 1 },
+      { q: "Which crop is grown using seedlings?", choices: ["Maize", "Rice", "Beans", "Millet"], a: 1 },
+      { q: "Which practice conserves water in farming?", choices: ["Mulching", "Overwatering", "Bush burning", "Deforestation"], a: 0 },
+      { q: "Which animal is kept mainly for milk in arid areas?", choices: ["Cow", "Sheep", "Camel", "Pig"], a: 2 },
+      { q: "Which crop is a root crop?", choices: ["Carrot", "Cabbage", "Spinach", "Onion"], a: 0 },
+      { q: "What is a seedbed?", choices: ["Place where seeds are planted", "Storage area", "Animal house", "Farm road"], a: 0 },
+      { q: "Which activity prepares land for planting?", choices: ["Harvesting", "Ploughing", "Weeding", "Spraying"], a: 1 },
+      { q: "What is grafting?", choices: ["Joining two plants together", "Planting seeds", "Watering crops", "Harvesting"], a: 0 },
+      { q: "Which crop is a legume?", choices: ["Beans", "Maize", "Wheat", "Rice"], a: 0 },
+      { q: "What is the main source of water for farming in arid areas?", choices: ["Rain", "Rivers", "Irrigation", "Wells"], a: 2 },
+      { q: "Which animal is used for transport in farms?", choices: ["Cow", "Donkey", "Sheep", "Goat"], a: 1 }
+    ];
 
-
-    
-
-    // ====== VARIABLES ======
+    // ====== FIXED VARIABLES - LOAD USER'S SAVED COINS ======
     let currentSet = [0], currentQ = 0, score = 0;
-    let totalCoins = Number(localStorage.getItem('totalCoins')) || 0;
+    
+    // 🔴 FIXED: Load username and user's saved coins from leaderboard
+    let username = localStorage.getItem('username') || null;
+    let rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+    
+    // Load user's coins from leaderboard or use existing totalCoins
+    let totalCoins = 0;
+    if (username) {
+      const userEntry = rushersLeague.find(e => e.name === username);
+      if (userEntry) {
+        totalCoins = userEntry.coins;  // Load user's OWN saved coins
+      } else {
+        totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+      }
+    } else {
+      totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+    }
+    
+    // Save the loaded coins back to localStorage
+    localStorage.setItem('totalCoins', totalCoins);
+    
     let pointsPerQ = 10, usedIndexes = [];
     let timeLeft = 15, timerInterval;
 
@@ -220,6 +241,23 @@ const BANK = [
 
     // ====== INITIAL SETUP ======
     headerCoinsEl.textContent = totalCoins;
+
+    // ====== LEADERBOARD UPDATE FUNCTION ======
+    function updateLeaderboardEntry() {
+      if (!username) return;
+      
+      rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+      const existing = rushersLeague.find(e => e.name === username);
+      
+      if (existing) {
+        existing.coins = totalCoins;
+      } else {
+        rushersLeague.push({ name: username, coins: totalCoins });
+      }
+      
+      rushersLeague.sort((a, b) => b.coins - a.coins);
+      localStorage.setItem('rushersLeague', JSON.stringify(rushersLeague));
+    }
 
     function shuffleBank() {
       let indexes = [];
@@ -283,6 +321,9 @@ const BANK = [
         headerCoinsEl.textContent = totalCoins;
         coinS.currentTime = 0; coinS.play();
         coinPop(pointsPerQ);
+        
+        // 🔴 Update leaderboard immediately when coins change
+        updateLeaderboardEntry();
       } else {
         btn.classList.add('wrong');
         Array.from(choicesEl.children)[correct].classList.add('correct');
@@ -301,6 +342,10 @@ const BANK = [
       finalEl.style.display = 'flex';
       finalScoreEl.textContent = `You answered ${score} / 10 correctly`;
       coinSummaryEl.textContent = `You earned ${score * pointsPerQ} 🪙 this round`;
+      
+      // 🔴 Final leaderboard update
+      updateLeaderboardEntry();
+      
       cheerS.currentTime = 0; cheerS.play();
       progressFill.style.width = '100%';
       confetti();
@@ -309,12 +354,29 @@ const BANK = [
     playAgainBtn.addEventListener('click', () => {
       finalEl.style.display = 'none';
       score = 0;
+      usedIndexes = [];  // Reset used indexes for new game
       shuffleBank();
       currentQ = 0;
       loadQuestion();
     });
 
-    goHomeBtn.addEventListener('click', () => window.location.href = "index.html");
+    // 🔴 FIXED: Home button with proper leaderboard update
+    goHomeBtn.addEventListener('click', () => {
+      // Final save of coins
+      localStorage.setItem('totalCoins', totalCoins);
+      
+      // Update leaderboard
+      updateLeaderboardEntry();
+      
+      // Trigger storage event for home page to refresh
+      localStorage.setItem('totalCoins', totalCoins);
+      if (username) {
+        localStorage.setItem('rushersLeague', localStorage.getItem('rushersLeague'));
+      }
+      
+      // Navigate to home
+      window.location.href = "index.html";
+    });
 
     function coinPop(amount) {
       const pop = document.createElement('div');

@@ -137,90 +137,82 @@
 
   <script>
     // ====== HISTORY QUESTIONS BANK ======
-      const BANK = [
-  { q: "Who was the first president of the United States?", choices: ["George Washington", "John Adams", "Thomas Jefferson", "James Madison"], a: 0 },
-  { q: "In what year did World War II end?", choices: ["1940", "1942", "1945", "1948"], a: 2 },
-  { q: "Who was known as the 'Iron Lady'?", choices: ["Margaret Thatcher", "Angela Merkel", "Indira Gandhi", "Golda Meir"], a: 0 },
-  { q: "Which empire was ruled by Julius Caesar?", choices: ["Greek", "Roman", "Ottoman", "Persian"], a: 1 },
-  { q: "The Great Fire of London occurred in which year?", choices: ["1666", "1670", "1650", "1680"], a: 0 },
-  { q: "Who discovered America in 1492?", choices: ["Christopher Columbus", "Amerigo Vespucci", "Leif Erikson", "Ferdinand Magellan"], a: 0 },
-  { q: "What was the main cause of the French Revolution?", choices: ["Inequality", "War", "Disease", "Trade"], a: 0 },
-  { q: "Which wall divided East and West Berlin?", choices: ["Great Wall", "Berlin Wall", "Hadrian's Wall", "Western Wall"], a: 1 },
-  { q: "Who was the first man on the moon?", choices: ["Neil Armstrong", "Buzz Aldrin", "Yuri Gagarin", "Michael Collins"], a: 0 },
-  { q: "Which ancient civilization built the pyramids?", choices: ["Romans", "Greeks", "Egyptians", "Mesopotamians"], a: 2 },
+    const BANK = [
+      { q: "Who was the first President of Kenya?", choices: ["Jomo Kenyatta", "Daniel Moi", "Uhuru Kenyatta", "Raila Odinga"], a: 0 },
+      { q: "In which year did Kenya gain independence?", choices: ["1960", "1963", "1965", "1970"], a: 1 },
+      { q: "Who led the Mau Mau freedom fighters?", choices: ["Dedan Kimathi", "Jomo Kenyatta", "Tom Mboya", "Oginga Odinga"], a: 0 },
+      { q: "Which European explorer visited Kenya in the 15th century?", choices: ["Vasco da Gama", "Christopher Columbus", "David Livingstone", "Henry Morton Stanley"], a: 0 },
+      { q: "What was the capital of Kenya before Nairobi?", choices: ["Mombasa", "Kisumu", "Nakuru", "Machakos"], a: 0 },
+      { q: "Which year was the Mau Mau rebellion?", choices: ["1945", "1952", "1960", "1963"], a: 1 },
+      { q: "Who was the first Vice President of Kenya?", choices: ["Jaramogi Oginga Odinga", "Daniel Moi", "Tom Mboya", "Ronald Ngala"], a: 0 },
+      { q: "Which colonial power colonized Kenya?", choices: ["Britain", "France", "Germany", "Portugal"], a: 0 },
+      { q: "What was the name of the independence political party?", choices: ["KANU", "KADU", "FORD", "NASA"], a: 0 },
+      { q: "In which year did the British arrive in Kenya?", choices: ["1880", "1895", "1900", "1910"], a: 1 },
+      { q: "Who was the second President of Kenya?", choices: ["Daniel Moi", "Jomo Kenyatta", "Mwai Kibaki", "Uhuru Kenyatta"], a: 0 },
+      { q: "Which year was the Kenya People's Union formed?", choices: ["1966", "1970", "1975", "1980"], a: 0 },
+      { q: "Who founded the Kikuyu Central Association?", choices: ["Harry Thuku", "Jomo Kenyatta", "Dedan Kimathi", "Mbiyu Koinange"], a: 0 },
+      { q: "Which treaty ended the Mazrui rule in Mombasa?", choices: ["Treaty of Versailles", "Treaty of Paris", "Anglo-German Agreement", "Heligoland Treaty"], a: 2 },
+      { q: "Who was the leader of the KADU party?", choices: ["Ronald Ngala", "Jomo Kenyatta", "Tom Mboya", "Oginga Odinga"], a: 0 },
+      { q: "What was the main cash crop introduced by the British?", choices: ["Coffee", "Tea", "Pyrethrum", "Sisal"], a: 0 },
+      { q: "When was the Lancaster House Conference?", choices: ["1960", "1962", "1963", "1964"], a: 1 },
+      { q: "Who founded the East African Community?", choices: ["Kenya, Uganda, Tanzania", "Kenya, Uganda, Rwanda", "Kenya, Tanzania, Burundi", "Uganda, Tanzania, Rwanda"], a: 0 },
+      { q: "Which year did Mzee Jomo Kenyatta die?", choices: ["1978", "1980", "1982", "1985"], a: 0 },
+      { q: "Who took over after Kenyatta's death?", choices: ["Daniel Moi", "Mwai Kibaki", "Uhuru Kenyatta", "Raila Odinga"], a: 0 },
+      { q: "What was the name of the single-party system under Moi?", choices: ["KANU", "KADU", "FORD", "DP"], a: 0 },
+      { q: "When was multi-party democracy reintroduced?", choices: ["1991", "1992", "1993", "1995"], a: 0 },
+      { q: "Who won the 2002 general elections?", choices: ["Mwai Kibaki", "Uhuru Kenyatta", "Raila Odinga", "Kalonzo Musyoka"], a: 0 },
+      { q: "What year was the new Kenya constitution promulgated?", choices: ["2010", "2012", "2015", "2018"], a: 0 },
+      { q: "Who is known as the 'Father of Nation' in Kenya?", choices: ["Jomo Kenyatta", "Daniel Moi", "Mwai Kibaki", "Uhuru Kenyatta"], a: 0 },
+      { q: "Which community resisted British colonial rule longest?", choices: ["Nandi", "Kikuyu", "Maasai", "Luo"], a: 0 },
+      { q: "Who was the leader of the Nandi resistance?", choices: ["Koitalel Arap Samoei", "Orkoiyot", "Mekatilili", "Dedan Kimathi"], a: 0 },
+      { q: "Who led the Giriama resistance?", choices: ["Mekatilili wa Menza", "Dedan Kimathi", "Koitalel", "Harry Thuku"], a: 0 },
+      { q: "When was the first railway line to Uganda completed?", choices: ["1901", "1905", "1910", "1915"], a: 0 },
+      { q: "What was the name of the railway workers from India?", choices: ["Coolies", "Labourers", "Migrants", "Settlers"], a: 0 },
+      { q: "Which year did the Devonshire White Paper come out?", choices: ["1923", "1930", "1935", "1940"], a: 0 },
+      { q: "What did the Devonshire White Paper declare?", choices: ["African interests paramount", "European supremacy", "Indian equality", "British rule"], a: 0 },
+      { q: "Who was Tom Mboya?", choices: ["Trade unionist", "President", "Chief", "Farmer"], a: 0 },
+      { q: "Which year was Tom Mboya assassinated?", choices: ["1969", "1970", "1972", "1975"], a: 0 },
+      { q: "Who was Pio Gama Pinto?", choices: ["Journalist and politician", "Chief", "Farmer", "Teacher"], a: 0 },
+      { q: "When was Pio Gama Pinto assassinated?", choices: ["1965", "1970", "1975", "1980"], a: 0 },
+      { q: "What was the Lyttelton Constitution?", choices: ["Colonial constitution", "Independence treaty", "Peace agreement", "Trade deal"], a: 0 },
+      { q: "When was the Lyttelton Constitution introduced?", choices: ["1954", "1960", "1963", "1970"], a: 0 },
+      { q: "Who was the first Governor of Kenya?", choices: ["Sir Evelyn Baring", "Lord Delamere", "Sir Philip Mitchell", "Sir James Sadler"], a: 2 },
+      { q: "What was the State of Emergency years?", choices: ["1952-1960", "1950-1955", "1960-1965", "1945-1950"], a: 0 },
+      { q: "Who was Field Marshal Muthoni?", choices: ["Female freedom fighter", "Chief", "Queen", "Nurse"], a: 0 },
+      { q: "Which year did Kenya become a Republic?", choices: ["1964", "1963", "1970", "1965"], a: 0 },
+      { q: "Who was the first Attorney General of Kenya?", choices: ["Charles Njonjo", "Tom Mboya", "Oginga Odinga", "Mbiyu Koinange"], a: 0 },
+      { q: "What was the 'Nyayo philosophy'?", choices: ["Peace, Love, Unity", "Freedom, Justice, Equality", "Work, Pray, Pay", "Harambee, Unity, Progress"], a: 0 },
+      { q: "When was the East African Community collapsed?", choices: ["1977", "1980", "1985", "1990"], a: 0 },
+      { q: "Who founded the Kenya African Union?", choices: ["Jomo Kenyatta", "Harry Thuku", "James Gichuru", "Eliud Mathu"], a: 0 },
+      { q: "Which year was the Kenya African Union formed?", choices: ["1944", "1950", "1960", "1970"], a: 0 },
+      { q: "Who was the first African nominated to LEGCO?", choices: ["Eliud Mathu", "Jomo Kenyatta", "Tom Mboya", "Oginga Odinga"], a: 0 },
+      { q: "When was the first African nominated to LEGCO?", choices: ["1944", "1950", "1960", "1970"], a: 0 },
+      { q: "What does LEGCO stand for?", choices: ["Legislative Council", "Legal Committee", "Legislative Court", "Legal Council"], a: 0 }
+    ];
 
-  { q: "Who wrote the 'Iliad' and the 'Odyssey'?", choices: ["Homer", "Plato", "Socrates", "Aristotle"], a: 0 },
-  { q: "Which year did the Berlin Wall fall?", choices: ["1987", "1989", "1991", "1993"], a: 1 },
-  { q: "Who was the first emperor of China?", choices: ["Qin Shi Huang", "Han Wudi", "Sun Tzu", "Kublai Khan"], a: 0 },
-  { q: "Who led the Indian independence movement?", choices: ["Mahatma Gandhi", "Jawaharlal Nehru", "Subhas Chandra Bose", "Indira Gandhi"], a: 0 },
-  { q: "What was the main language of the Roman Empire?", choices: ["Greek", "Latin", "Arabic", "Hebrew"], a: 1 },
-  { q: "Who was the last pharaoh of ancient Egypt?", choices: ["Cleopatra", "Nefertiti", "Hatshepsut", "Ramses II"], a: 0 },
-  { q: "The Magna Carta was signed in which year?", choices: ["1215", "1315", "1415", "1515"], a: 0 },
-  { q: "Who was the first woman to fly solo across the Atlantic?", choices: ["Amelia Earhart", "Harriet Quimby", "Bessie Coleman", "Jacqueline Cochran"], a: 0 },
-  { q: "Which war was fought between the North and South in the USA?", choices: ["World War I", "American Civil War", "Revolutionary War", "Spanish-American War"], a: 1 },
-  { q: "Who was the founder of the Mongol Empire?", choices: ["Kublai Khan", "Genghis Khan", "Attila the Hun", "Tamerlane"], a: 1 },
-
-  { q: "What year did the Titanic sink?", choices: ["1910", "1912", "1914", "1916"], a: 1 },
-  { q: "Who was the first Chancellor of Germany?", choices: ["Otto von Bismarck", "Adolf Hitler", "Konrad Adenauer", "Wilhelm II"], a: 0 },
-  { q: "Which empire built Machu Picchu?", choices: ["Aztec", "Inca", "Maya", "Olmec"], a: 1 },
-  { q: "Who invented the printing press?", choices: ["Leonardo da Vinci", "Johannes Gutenberg", "Isaac Newton", "Galileo Galilei"], a: 1 },
-  { q: "The Cold War was primarily between which two countries?", choices: ["USA and USSR", "USA and Germany", "France and UK", "China and Japan"], a: 0 },
-  { q: "Who was the first Prime Minister of the UK?", choices: ["Winston Churchill", "Robert Walpole", "Margaret Thatcher", "Tony Blair"], a: 1 },
-  { q: "Who was the famous nurse during the Crimean War?", choices: ["Florence Nightingale", "Clara Barton", "Mary Seacole", "Edith Cavell"], a: 0 },
-  { q: "Which African country was never colonized?", choices: ["Kenya", "Ethiopia", "Nigeria", "Ghana"], a: 1 },
-  { q: "Who was the leader of the Soviet Union during WWII?", choices: ["Vladimir Lenin", "Joseph Stalin", "Nikita Khrushchev", "Leon Trotsky"], a: 1 },
-  { q: "What year did the American Declaration of Independence happen?", choices: ["1776", "1783", "1791", "1800"], a: 0 },
-
-  { q: "Who was the first female Prime Minister of Pakistan?", choices: ["Benazir Bhutto", "Indira Gandhi", "Golda Meir", "Sheikh Hasina"], a: 0 },
-  { q: "Which country did Napoleon Bonaparte rule?", choices: ["Spain", "France", "Italy", "Belgium"], a: 1 },
-  { q: "Who was the famous Egyptian queen known for beauty and politics?", choices: ["Cleopatra", "Nefertiti", "Hatshepsut", "Sobekneferu"], a: 0 },
-  { q: "The Renaissance began in which country?", choices: ["France", "Italy", "Germany", "Spain"], a: 1 },
-  { q: "Who wrote the Declaration of Independence?", choices: ["Benjamin Franklin", "Thomas Jefferson", "John Adams", "Alexander Hamilton"], a: 1 },
-  { q: "The Spanish Armada was defeated in which year?", choices: ["1588", "1578", "1600", "1610"], a: 0 },
-  { q: "Which war was fought from 1939 to 1945?", choices: ["World War I", "World War II", "Korean War", "Vietnam War"], a: 1 },
-  { q: "Who was the first ruler of the Ottoman Empire?", choices: ["Mehmed II", "Osman I", "Suleiman the Magnificent", "Selim I"], a: 1 },
-  { q: "Who was the leader of the Cuban Revolution?", choices: ["Che Guevara", "Fidel Castro", "Raul Castro", "Hugo Chavez"], a: 1 },
-  { q: "Which empire built the Colosseum?", choices: ["Greek", "Roman", "Byzantine", "Persian"], a: 1 },
-
-  { q: "Who was the famous English queen during the Spanish Armada?", choices: ["Elizabeth I", "Mary I", "Victoria", "Anne"], a: 0 },
-  { q: "Which year did the Russian Revolution occur?", choices: ["1905", "1917", "1922", "1939"], a: 1 },
-  { q: "Who was the first president of South Africa after apartheid?", choices: ["Nelson Mandela", "Thabo Mbeki", "FW de Klerk", "Jacob Zuma"], a: 0 },
-  { q: "What ancient civilization used cuneiform writing?", choices: ["Egyptians", "Romans", "Mesopotamians", "Greeks"], a: 2 },
-  { q: "The Industrial Revolution began in which country?", choices: ["USA", "Germany", "France", "England"], a: 3 },
-  { q: "Who discovered penicillin?", choices: ["Louis Pasteur", "Alexander Fleming", "Marie Curie", "Gregor Mendel"], a: 1 },
-  { q: "Who was the first emperor of Japan?", choices: ["Jimmu", "Hirohito", "Meiji", "Nintoku"], a: 0 },
-  { q: "Which empire was ruled by Cyrus the Great?", choices: ["Persian", "Roman", "Greek", "Mongol"], a: 0 },
-  { q: "Who led the Haitian Revolution?", choices: ["Toussaint Louverture", "Jean-Jacques Dessalines", "Napoleon", "Simon Bolivar"], a: 0 },
-  { q: "Which war ended with the Treaty of Versailles?", choices: ["World War I", "World War II", "Crimean War", "Napoleonic Wars"], a: 0 },
-
-  { q: "Who was the first African-American president of the USA?", choices: ["Barack Obama", "Martin Luther King Jr.", "Colin Powell", "Frederick Douglass"], a: 0 },
-  { q: "Which empire had the city of Tenochtitlan?", choices: ["Aztec", "Maya", "Inca", "Olmec"], a: 0 },
-  { q: "The Battle of Hastings occurred in which year?", choices: ["1066", "1215", "1415", "1314"], a: 0 },
-  { q: "Who was the famous Chinese philosopher during the Zhou dynasty?", choices: ["Confucius", "Laozi", "Sun Tzu", "Mencius"], a: 0 },
-  { q: "Which war was fought between Athens and Sparta?", choices: ["Persian War", "Peloponnesian War", "Trojan War", "Macedonian War"], a: 1 },
-  { q: "Who painted the Mona Lisa?", choices: ["Michelangelo", "Leonardo da Vinci", "Raphael", "Donatello"], a: 1 },
-  { q: "Which country was Napoleon exiled to first?", choices: ["Elba", "St. Helena", "Corsica", "Sardinia"], a: 0 },
-  { q: "Who led the Protestant Reformation?", choices: ["Martin Luther", "John Calvin", "Henry VIII", "John Knox"], a: 0 },
-  { q: "Which battle marked Napoleon’s final defeat?", choices: ["Austerlitz", "Waterloo", "Trafalgar", "Leipzig"], a: 1 },
-  { q: "Who was the first ruler of the Byzantine Empire?", choices: ["Constantine the Great", "Justinian I", "Theodosius I", "Heraclius"], a: 0 },
-
-  { q: "Which empire built Petra in modern-day Jordan?", choices: ["Nabataean", "Roman", "Greek", "Persian"], a: 0 },
-  { q: "Who was the famous nurse in the Crimean War?", choices: ["Florence Nightingale", "Clara Barton", "Mary Seacole", "Edith Cavell"], a: 0 },
-  { q: "Which US president issued the Emancipation Proclamation?", choices: ["George Washington", "Abraham Lincoln", "Thomas Jefferson", "Theodore Roosevelt"], a: 1 },
-  { q: "The Berlin Conference divided which continent among European powers?", choices: ["Asia", "Africa", "South America", "Oceania"], a: 1 },
-  { q: "Who was the last Tsar of Russia?", choices: ["Nicholas II", "Alexander III", "Peter the Great", "Ivan IV"], a: 0 },
-  { q: "Which empire was ruled by Suleiman the Magnificent?", choices: ["Ottoman", "Persian", "Roman", "Mongol"], a: 0 },
-  { q: "Who was the first European to reach India by sea?", choices: ["Vasco da Gama", "Christopher Columbus", "Ferdinand Magellan", "Marco Polo"], a: 0 },
-  { q: "Which empire created the Code of Hammurabi?", choices: ["Babylonian", "Assyrian", "Persian", "Egyptian"], a: 0 },
-  { q: "Who led the Norman conquest of England?", choices: ["William the Conqueror", "Harold Godwinson", "Edward the Confessor", "Richard the Lionheart"], a: 0 },
-  { q: "Which ancient civilization used hieroglyphics?", choices: ["Greek", "Egyptian", "Sumerian", "Roman"], a: 1 }
-];
-
-    
-
-    // ====== VARIABLES ======
+    // ====== FIXED VARIABLES - LOAD USER'S SAVED COINS ======
     let currentSet = [0], currentQ = 0, score = 0;
-    let totalCoins = Number(localStorage.getItem('totalCoins')) || 0;
+    
+    // 🔴 FIXED: Load username and user's saved coins from leaderboard
+    let username = localStorage.getItem('username') || null;
+    let rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+    
+    // Load user's coins from leaderboard or use existing totalCoins
+    let totalCoins = 0;
+    if (username) {
+      const userEntry = rushersLeague.find(e => e.name === username);
+      if (userEntry) {
+        totalCoins = userEntry.coins;  // Load user's OWN saved coins
+      } else {
+        totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+      }
+    } else {
+      totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+    }
+    
+    // Save the loaded coins back to localStorage
+    localStorage.setItem('totalCoins', totalCoins);
+    
     let pointsPerQ = 10, usedIndexes = [];
     let timeLeft = 15, timerInterval;
 
@@ -244,6 +236,23 @@
 
     // ====== INITIAL SETUP ======
     headerCoinsEl.textContent = totalCoins;
+
+    // ====== LEADERBOARD UPDATE FUNCTION ======
+    function updateLeaderboardEntry() {
+      if (!username) return;
+      
+      rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+      const existing = rushersLeague.find(e => e.name === username);
+      
+      if (existing) {
+        existing.coins = totalCoins;
+      } else {
+        rushersLeague.push({ name: username, coins: totalCoins });
+      }
+      
+      rushersLeague.sort((a, b) => b.coins - a.coins);
+      localStorage.setItem('rushersLeague', JSON.stringify(rushersLeague));
+    }
 
     function shuffleBank() {
       let indexes = [];
@@ -307,6 +316,9 @@
         headerCoinsEl.textContent = totalCoins;
         coinS.currentTime = 0; coinS.play();
         coinPop(pointsPerQ);
+        
+        // 🔴 Update leaderboard immediately when coins change
+        updateLeaderboardEntry();
       } else {
         btn.classList.add('wrong');
         Array.from(choicesEl.children)[correct].classList.add('correct');
@@ -325,6 +337,10 @@
       finalEl.style.display = 'flex';
       finalScoreEl.textContent = `You answered ${score} / 10 correctly`;
       coinSummaryEl.textContent = `You earned ${score * pointsPerQ} 🪙 this round`;
+      
+      // 🔴 Final leaderboard update
+      updateLeaderboardEntry();
+      
       cheerS.currentTime = 0; cheerS.play();
       progressFill.style.width = '100%';
       confetti();
@@ -333,12 +349,29 @@
     playAgainBtn.addEventListener('click', () => {
       finalEl.style.display = 'none';
       score = 0;
+      usedIndexes = [];  // Reset used indexes for new game
       shuffleBank();
       currentQ = 0;
       loadQuestion();
     });
 
-    goHomeBtn.addEventListener('click', () => window.location.href = "index.html");
+    // 🔴 FIXED: Home button with proper leaderboard update
+    goHomeBtn.addEventListener('click', () => {
+      // Final save of coins
+      localStorage.setItem('totalCoins', totalCoins);
+      
+      // Update leaderboard
+      updateLeaderboardEntry();
+      
+      // Trigger storage event for home page to refresh
+      localStorage.setItem('totalCoins', totalCoins);
+      if (username) {
+        localStorage.setItem('rushersLeague', localStorage.getItem('rushersLeague'));
+      }
+      
+      // Navigate to home
+      window.location.href = "index.html";
+    });
 
     function coinPop(amount) {
       const pop = document.createElement('div');

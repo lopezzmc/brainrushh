@@ -33,8 +33,55 @@ html,body{height:100%;margin:0;background:var(--paper-white);font-family:Inter,s
 .coins{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;background:#fff;box-shadow:0 6px 30px rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.03);font-weight:900;}
 .coins .coinEmoji{font-size:20px;margin-right:6px;}
 .coins #headerCoins{font-size:18px;color:#222;}
-.card{margin-top:12px;background:none;border-radius:12px;padding:28px;min-height:60vh;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:flex-start;transform-origin:center;}
-#logoImg{width:250px;height:250px;object-fit:contain;border-radius:20px;}
+.card{margin-top:12px;background:none;border-radius:12px;padding:28px;min-height:60vh;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:flex-start;transform-origin:center;position:relative;}
+#logoImg{width:250px;height:250px;object-fit:contain;border-radius:20px;background:#f5f5f5;padding:10px;}
+
+/* Timer Styles */
+.timer-circle {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: #111;
+  background: rgba(255,255,255,0.9);
+  border: 4px solid #7b3af6;
+  box-shadow: 0 0 20px rgba(123,58,246,0.3);
+  z-index: 5;
+}
+
+.timer-circle svg {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 70px;
+  height: 70px;
+  transform: rotate(-90deg);
+}
+
+.timer-circle circle {
+  fill: none;
+  stroke: #00e5ff;
+  stroke-width: 4;
+  stroke-dasharray: 188.4; /* 2 * π * 30 ≈ 188.4 */
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear;
+  filter: drop-shadow(0 0 5px rgba(0,229,255,0.5));
+}
+
+#timerText {
+  position: relative;
+  z-index: 2;
+  color: #7b3af6;
+  text-shadow: 0 0 10px rgba(123,58,246,0.3);
+}
+
 .question{font-family:"Patrick Hand", Inter;font-weight:900;text-align:center;margin:12px 0;line-height:1.4;display:flex;align-items:center;justify-content:center;padding:12px 24px;position:relative;transition:all .3s ease;}
 .question::before{content:'';position:absolute;inset:-12px;background:rgba(255,255,255,0.92);border-radius:16px;z-index:-1;}
 .choices{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px;width:100%;}
@@ -77,6 +124,16 @@ html,body{height:100%;margin:0;background:var(--paper-white);font-family:Inter,s
       </div>
     </div>
     <div class="card">
+      <!-- Timer Circle -->
+      <div class="timer-circle">
+        <svg width="70" height="70" viewBox="0 0 70 70">
+          <circle cx="35" cy="35" r="30" stroke="#ddd" stroke-width="4" fill="none" />
+          <circle id="timerProgress" cx="35" cy="35" r="30" stroke="#7b3af6" stroke-width="4" fill="none"
+            stroke-dasharray="188.4" stroke-dashoffset="0" transform="rotate(-90 35 35)" />
+        </svg>
+        <span id="timerText">15</span>
+      </div>
+      
       <img id="logoImg" src="" alt="Cartoon Image">
       <div class="question" id="question">Loading…</div>
       <div class="choices" id="choices" role="list" aria-live="polite"></div>
@@ -102,153 +159,347 @@ html,body{height:100%;margin:0;background:var(--paper-white);font-family:Inter,s
 <audio id="bgMusic" loop><source src="background-music.mp3" type="audio/mpeg"></audio>
 
 <script>
-// --- Cartoon BANK ---
-const CARTOON_BANK=[
-{img:"cartoons/Cinderella.jpg",choices:["Cinderella","Snow White","Aurora","Belle"],answer:"Cinderella"},
-  {img:"cartoons/Mikey.jpg",choices:["Mickey","Donald","Goofy","Pluto"],answer:"Mickey"},
-  {img:"cartoons/spongebob.jpg",choices:["SpongeBob and Patrick","Sandy","Squidward","Mr. Krabs"],answer:"SpongeBob and Patrick"},
-  {img:"cartoons/Phineas and ferb.jpg",choices:["Phineas and ferb","mailo","Mickey","Donald"],answer:"Phineas and ferb"},
-  {img:"cartoons/mordecia and rigby.jpg",choices:["Mordecai and Rigby","Phineas","Mickey","Donald"],answer:"Mordecai and Rigby"},
-  {img:"cartoons/Scooby-Doo.jpg",choices:["Scooby-Doo","Shaggy","Tom","Jerry"],answer:"Scooby-Doo"},
-  {img:"cartoons/smurfs.jpg",choices:["Smurf","Gargamel","Hefty","Papa Smurf"],answer:"Smurf"},
-  {img:"cartoons/stitch.jpg",choices:["Stitch","Lilo","Mickey","Donald"],answer:"Stitch"},
-  {img:"cartoons/Pikachu.jpg",choices:["Pikachu","Charizard","Bulbasaur","Squirtle"],answer:"Pikachu"},
-  {img:"cartoons/pawpatrol.jpg",choices:["Chase","Marshall","Skye","Rubble"],answer:"Chase"},
-  {img:"cartoons/angry birds.jpg",choices:["Red","Chuck","Bomb","Mighty Eagle"],answer:"Red"},
-  {img:"cartoons/Winniepooh.jpg",choices:["Winnie the Pooh","Piglet","Tigger","Eeyore"],answer:"Winnie the Pooh"},
-  {img:"cartoons/batman.jpg",choices:["Batman","Superman","Robin","Joker"],answer:"Batman"},
-  {img:"cartoons/deadpool.jpg",choices:["Deadpool","Spider-Man","Iron Man","Hulk"],answer:"Deadpool"},
-  {img:"cartoons/dora .jpg",choices:["Dora","Diego","Boots","Swiper"],answer:"Dora"},
-  {img:"cartoons/mrbean.jpg",choices:["Mr Bean","Johnny Bravo","Shaggy","Tom"],answer:"Mr Bean"},
-  {img:"cartoons/robin.jpg",choices:["Robin","Batman","Cyborg","Starfire"],answer:"Robin"},
-  {img:"cartoons/tom and jerry.jpg",choices:["Tom and Jerry","Spike","Tyke"],answer:"Tom and Jerry"},
-  {img:"cartoons/toystory.jpg",choices:["Woody","Buzz","Jessie","Rex"],answer:"Buzz"},
-  {img:"cartoons/moana.jpg",choices:["Moana","Elsa","Anna","Rapunzel"],answer:"Moana"},
-{img:"cartoons/ben 10.jpg",choices:["Ben 10","Danny Phantom","Finn","Jake"],answer:"Ben 10"},
-{img:"cartoons/Rapunzel.jpg",choices:["Rapunzel","Cinderella","Elsa","Belle"],answer:"Rapunzel"},
-{img:"cartoons/mabel.jpg",choices:["Mabel","Dipper","Wendy","Star"],answer:"Mabel"},
-{img:"cartoons/sofia.jpg",choices:["Sofia","Elsa","Anna","Moana"],answer:"Sofia"},
-{img:"cartoons/snow white .jpg",choices:["Snow White","Cinderella","Aurora","Belle"],answer:"Snow White"},
-{img:"cartoons/masha.jpg",choices:["Masha","Peppa","Dora","Skye"],answer:"Masha"},
-{img:"cartoons/balarina.jpg",choices:["Ballerina","Elsa","Barbie","Rapunzel"],answer:"Ballerina"},
-{img:"cartoons/olaf.jpg",choices:["Olaf","Sven","Kristoff","Marshmallow"],answer:"Olaf"},
-{img:"cartoons/grinch.jpg",choices:["Grinch","Shrek","Sullivan","Hulk"],answer:"Grinch"},
-{img:"cartoons/pumba and timao.jpg",choices:["Pumbaa and timon","Simba","Scar"],answer:"Pumbaa and timon"},
-{img:"cartoons/bunny.jpg",choices:["bunny","Pumbaa","Simba","Zazu"],answer:"bunny"},
-{img:"cartoons/shrek.jpg",choices:["Shrek","Donkey","Fiona","Po"],answer:"Shrek"},
-{img:"cartoons/dragonball.jpg",choices:["Goku","Vegeta","Gohan","Piccolo"],answer:"Goku"},
-{img:"cartoons/alvin .jpg",choices:["Alvin","Simon","Theodore","Dave"],answer:"Alvin"},
-{img:"cartoons/po.jpg",choices:["Po","Tigress","Tai Lung","Shifu"],answer:"Po"},
-{img:"cartoons/boss baby.jpg",choices:["Boss Baby","Tim","Stacy","Ted"],answer:"Boss Baby"},
-{img:"cartoons/sonic.jpg",choices:["Sonic","Tails","Knuckles","Shadow"],answer:"Sonic"},
-{img:"cartoons/oggey.jpg",choices:["Oggey","Dee Dee","Marky","Jack"],answer:"Oggey"},
-{img:"cartoons/zootopia.jpg",choices:["Judy Hopps and Nick Wilde","Clawhauser","Bellwether"],answer:"Judy Hopps and Nick Wilde"},
+// --- Cartoon BANK (50+ questions) ---
+const CARTOON_BANK = [
+  // Image-based questions (39)
+  { img: "cartoons/Cinderella.jpg", q: "Which character is this?", choices: ["Cinderella", "Snow White", "Aurora", "Belle"], a: 0 },
+  { img: "cartoons/Mikey.jpg", q: "Which character is this?", choices: ["Mickey", "Donald", "Goofy", "Pluto"], a: 0 },
+  { img: "cartoons/spongebob.jpg", q: "Which characters are these?", choices: ["SpongeBob and Patrick", "Sandy", "Squidward", "Mr. Krabs"], a: 0 },
+  { img: "cartoons/Phineas and ferb.jpg", q: "Which characters are these?", choices: ["Phineas and Ferb", "Mickey", "Donald", "Tom and Jerry"], a: 0 },
+  { img: "cartoons/mordecia and rigby.jpg", q: "Which characters are these?", choices: ["Mordecai and Rigby", "Phineas and Ferb", "Mickey", "Donald"], a: 0 },
+  { img: "cartoons/Scooby-Doo.jpg", q: "Which character is this?", choices: ["Scooby-Doo", "Shaggy", "Tom", "Jerry"], a: 0 },
+  { img: "cartoons/smurfs.jpg", q: "Which character is this?", choices: ["Smurf", "Gargamel", "Hefty", "Papa Smurf"], a: 0 },
+  { img: "cartoons/stitch.jpg", q: "Which character is this?", choices: ["Stitch", "Lilo", "Mickey", "Donald"], a: 0 },
+  { img: "cartoons/Pikachu.jpg", q: "Which character is this?", choices: ["Pikachu", "Charizard", "Bulbasaur", "Squirtle"], a: 0 },
+  { img: "cartoons/pawpatrol.jpg", q: "Which character is this?", choices: ["Chase", "Marshall", "Skye", "Rubble"], a: 0 },
+  { img: "cartoons/angry birds.jpg", q: "Which character is this?", choices: ["Red", "Chuck", "Bomb", "Mighty Eagle"], a: 0 },
+  { img: "cartoons/Winniepooh.jpg", q: "Which character is this?", choices: ["Winnie the Pooh", "Piglet", "Tigger", "Eeyore"], a: 0 },
+  { img: "cartoons/batman.jpg", q: "Which character is this?", choices: ["Batman", "Superman", "Robin", "Joker"], a: 0 },
+  { img: "cartoons/deadpool.jpg", q: "Which character is this?", choices: ["Deadpool", "Spider-Man", "Iron Man", "Hulk"], a: 0 },
+  { img: "cartoons/dora .jpg", q: "Which character is this?", choices: ["Dora", "Diego", "Boots", "Swiper"], a: 0 },
+  { img: "cartoons/mrbean.jpg", q: "Which character is this?", choices: ["Mr Bean", "Johnny Bravo", "Shaggy", "Tom"], a: 0 },
+  { img: "cartoons/robin.jpg", q: "Which character is this?", choices: ["Robin", "Batman", "Cyborg", "Starfire"], a: 0 },
+  { img: "cartoons/tom and jerry.jpg", q: "Which characters are these?", choices: ["Tom and Jerry", "Spike", "Tyke", "Mickey"], a: 0 },
+  { img: "cartoons/toystory.jpg", q: "Which character is this?", choices: ["Buzz Lightyear", "Woody", "Jessie", "Rex"], a: 0 },
+  { img: "cartoons/moana.jpg", q: "Which character is this?", choices: ["Moana", "Elsa", "Anna", "Rapunzel"], a: 0 },
+  { img: "cartoons/ben 10.jpg", q: "Which character is this?", choices: ["Ben 10", "Danny Phantom", "Finn", "Jake"], a: 0 },
+  { img: "cartoons/Rapunzel.jpg", q: "Which character is this?", choices: ["Rapunzel", "Cinderella", "Elsa", "Belle"], a: 0 },
+  { img: "cartoons/mabel.jpg", q: "Which character is this?", choices: ["Mabel", "Dipper", "Wendy", "Star"], a: 0 },
+  { img: "cartoons/sofia.jpg", q: "Which character is this?", choices: ["Sofia", "Elsa", "Anna", "Moana"], a: 0 },
+  { img: "cartoons/snow white .jpg", q: "Which character is this?", choices: ["Snow White", "Cinderella", "Aurora", "Belle"], a: 0 },
+  { img: "cartoons/masha.jpg", q: "Which character is this?", choices: ["Masha", "Peppa", "Dora", "Skye"], a: 0 },
+  { img: "cartoons/balarina.jpg", q: "Which character is this?", choices: ["Ballerina", "Elsa", "Barbie", "Rapunzel"], a: 0 },
+  { img: "cartoons/olaf.jpg", q: "Which character is this?", choices: ["Olaf", "Sven", "Kristoff", "Marshmallow"], a: 0 },
+  { img: "cartoons/grinch.jpg", q: "Which character is this?", choices: ["Grinch", "Shrek", "Sullivan", "Hulk"], a: 0 },
+  { img: "cartoons/pumba and timao.jpg", q: "Which characters are these?", choices: ["Pumbaa and Timon", "Simba", "Scar", "Nala"], a: 0 },
+  { img: "cartoons/bunny.jpg", q: "Which character is this?", choices: ["Bunny", "Pumbaa", "Simba", "Zazu"], a: 0 },
+  { img: "cartoons/shrek.jpg", q: "Which character is this?", choices: ["Shrek", "Donkey", "Fiona", "Po"], a: 0 },
+  { img: "cartoons/dragonball.jpg", q: "Which character is this?", choices: ["Goku", "Vegeta", "Gohan", "Piccolo"], a: 0 },
+  { img: "cartoons/alvin .jpg", q: "Which character is this?", choices: ["Alvin", "Simon", "Theodore", "Dave"], a: 0 },
+  { img: "cartoons/po.jpg", q: "Which character is this?", choices: ["Po", "Tigress", "Tai Lung", "Shifu"], a: 0 },
+  { img: "cartoons/boss baby.jpg", q: "Which character is this?", choices: ["Boss Baby", "Tim", "Stacy", "Ted"], a: 0 },
+  { img: "cartoons/sonic.jpg", q: "Which character is this?", choices: ["Sonic", "Tails", "Knuckles", "Shadow"], a: 0 },
+  { img: "cartoons/oggey.jpg", q: "Which character is this?", choices: ["Oggy", "Dee Dee", "Marky", "Jack"], a: 0 },
+  { img: "cartoons/zootopia.jpg", q: "Which characters are these?", choices: ["Judy Hopps and Nick Wilde", "Clawhauser", "Bellwether", "Flash"], a: 0 },
 
-// --- Text Questions (20) ---
-{q:"Which cartoon is Stitch from?",choices:["Lilo & Stitch","Toy Story","Tom & Jerry","Scooby-Doo"],answer:"Lilo & Stitch"},
-{q:"Which cartoon features a talking dog solving mysteries?",choices:["Scooby-Doo","Paw Patrol","Tom & Jerry","SpongeBob"],answer:"Scooby-Doo"},
-{q:"Which cartoon lives in a pineapple under the sea?",choices:["SpongeBob","Tom & Jerry","Paw Patrol","Smurfs"],answer:"SpongeBob"},
-{q:"Which character is from Toy Story?",choices:["Woody","Buzz","Stitch","Mickey"],answer:"Woody"},
-{q:"Which character is known for his red suit and swords?",choices:["Deadpool","Batman","Robin","Iron Man"],answer:"Deadpool"},
-{q:"Which cartoon has a flying superhero in black?",choices:["Batman","Superman","Spiderman","Robin"],answer:"Batman"},
-{q:"Which character is a talking bear?",choices:["Winnie the Pooh","Baloo","Yogi","Paddington"],answer:"Winnie the Pooh"},
-{q:"Which character is Mickey's pet dog?",choices:["Pluto","Goofy","Spike","Scooby-Doo"],answer:"Pluto"},
-{q:"Which character is SpongeBob's best friend?",choices:["Patrick","Squidward","Sandy","Mr. Krabs"],answer:"Patrick"},
-{q:"Which cartoon is Phineas from?",choices:["Phineas and Ferb","SpongeBob","Toy Story","Tom & Jerry"],answer:"Phineas and Ferb"},
-{q:"Which cartoon is Dora from?",choices:["Dora the Explorer","Bluey","Paw Patrol","Smurfs"],answer:"Dora the Explorer"},
-{q:"Which character is known for eating honey?",choices:["Winnie the Pooh","Piglet","Tigger","Eeyore"],answer:"Winnie the Pooh"},
-{q:"Which cartoon is Pikachu from?",choices:["Pokemon","Digimon","Yu-Gi-Oh","Dragon Ball"],answer:"Pokemon"},
-{q:"Which character is a pink panther?",choices:["None of these","Mickey","SpongeBob","Dora"],answer:"None of these"},
-{q:"Which character is Robin's sidekick?",choices:["Batman","Superman","Deadpool","Spiderman"],answer:"Batman"},
-{q:"Which cartoon features Mr Bean?",choices:["Mr Bean","Tom & Jerry","SpongeBob","Mickey"],answer:"Mr Bean"},
-{q:"Which character is part of Paw Patrol?",choices:["Chase","Marshall","Skye","All of the above"],answer:"All of the above"},
-{q:"Which character is SpongeBob's boss at work?",choices:["Mr. Krabs","Plankton","Squidward","Patrick"],answer:"Mr. Krabs"},
-{q:"Which character is Tom chasing?",choices:["Jerry","Spike","Tyke","Pluto"],answer:"Jerry"},
-{q:"Which character is Ferb's best friend?",choices:["Phineas","Mickey","Donald","Buzz"],answer:"Phineas"},
-{q:"Which character is Angry Birds Red?",choices:["Red","Chuck","Bomb","Mighty Eagle"],answer:"Red"},
-{q:"Which cartoon is Stitch's partner?",choices:["Lilo","Mickey","Dora","Winnie the Pooh"],answer:"Lilo"}
+  // Text-based questions (20+)
+  { q: "Which cartoon is Stitch from?", choices: ["Lilo & Stitch", "Toy Story", "Tom & Jerry", "Scooby-Doo"], a: 0 },
+  { q: "Which cartoon features a talking dog solving mysteries?", choices: ["Scooby-Doo", "Paw Patrol", "Tom & Jerry", "SpongeBob"], a: 0 },
+  { q: "Which cartoon lives in a pineapple under the sea?", choices: ["SpongeBob SquarePants", "Tom & Jerry", "Paw Patrol", "The Smurfs"], a: 0 },
+  { q: "Which character is from Toy Story?", choices: ["Woody", "Buzz Lightyear", "Stitch", "Mickey Mouse"], a: 0 },
+  { q: "Which character is known for his red suit and swords?", choices: ["Deadpool", "Batman", "Robin", "Iron Man"], a: 0 },
+  { q: "Which cartoon has a flying superhero in black?", choices: ["Batman", "Superman", "Spiderman", "Robin"], a: 0 },
+  { q: "Which character is a talking bear?", choices: ["Winnie the Pooh", "Baloo", "Yogi Bear", "Paddington"], a: 0 },
+  { q: "Which character is Mickey's pet dog?", choices: ["Pluto", "Goofy", "Spike", "Scooby-Doo"], a: 0 },
+  { q: "Who is SpongeBob's best friend?", choices: ["Patrick Star", "Squidward", "Sandy Cheeks", "Mr. Krabs"], a: 0 },
+  { q: "Which cartoon is Phineas from?", choices: ["Phineas and Ferb", "SpongeBob", "Toy Story", "Tom & Jerry"], a: 0 },
+  { q: "Which cartoon is Dora from?", choices: ["Dora the Explorer", "Bluey", "Paw Patrol", "The Smurfs"], a: 0 },
+  { q: "Which character is known for eating honey?", choices: ["Winnie the Pooh", "Piglet", "Tigger", "Eeyore"], a: 0 },
+  { q: "Which cartoon is Pikachu from?", choices: ["Pokémon", "Digimon", "Yu-Gi-Oh", "Dragon Ball"], a: 0 },
+  { q: "Who is Robin's sidekick?", choices: ["Batman", "Superman", "Deadpool", "Spiderman"], a: 0 },
+  { q: "Which cartoon features Mr. Bean?", choices: ["Mr. Bean: The Animated Series", "Tom & Jerry", "SpongeBob", "Mickey Mouse"], a: 0 },
+  { q: "Which character is part of Paw Patrol?", choices: ["Chase", "Marshall", "Skye", "All of the above"], a: 3 },
+  { q: "Who is SpongeBob's boss at work?", choices: ["Mr. Krabs", "Plankton", "Squidward", "Patrick"], a: 0 },
+  { q: "Who is Tom constantly chasing?", choices: ["Jerry", "Spike", "Tyke", "Pluto"], a: 0 },
+  { q: "Who is Ferb's step-brother?", choices: ["Phineas", "Mickey", "Donald", "Buzz"], a: 0 },
+  { q: "Which Angry Birds character is Red?", choices: ["Red", "Chuck", "Bomb", "Mighty Eagle"], a: 0 },
+  { q: "Who is Stitch's best friend?", choices: ["Lilo", "Mickey", "Dora", "Winnie the Pooh"], a: 0 },
+  { q: "What is the name of the blue character in The Smurfs?", choices: ["Smurfette", "Papa Smurf", "Brainy Smurf", "Clumsy Smurf"], a: 0 },
+  { q: "Which cartoon features a family of yellow characters?", choices: ["The Simpsons", "Family Guy", "South Park", "Bob's Burgers"], a: 0 },
+  { q: "Which cartoon is about a boy who turns into a dragon?", choices: ["American Dragon: Jake Long", "Dragon Tales", "How to Train Your Dragon", "Dragon Ball Z"], a: 0 },
+  { q: "Which cartoon features a sponge and a starfish?", choices: ["SpongeBob SquarePants", "The Adventures of Jimmy Neutron", "The Fairly OddParents", "Dora the Explorer"], a: 0 },
+  { q: "Which character is from The Lion King?", choices: ["Simba", "Mufasa", "Scar", "All of the above"], a: 3 },
+  { q: "Which cartoon is about a boy who finds a magical lamp?", choices: ["Aladdin", "The Prince of Egypt", "Sinbad", "Hercules"], a: 0 }
 ];
 
-let currentSet=[],currentQ=0,score=0;
-let totalCoins=Number(localStorage.getItem('totalCoins'))||0;
-const pointsPerQ=10;
-let timerInterval,timeLeft=15;
+// --- Elements ---
+let currentSet = [], currentQ = 0, score = 0;
 
-const logoImg=document.getElementById('logoImg');
-const questionEl=document.getElementById('question');
-const choicesEl=document.getElementById('choices');
-const progressFill=document.getElementById('progressFill');
-const qcountEl=document.getElementById('qcount');
-const finalEl=document.getElementById('final');
-const finalScoreEl=document.getElementById('finalScore');
-const coinSummaryEl=document.getElementById('coinSummary');
-const headerCoinsEl=document.getElementById('headerCoins');
-const playAgainBtn=document.getElementById('playAgain');
-const goHomeBtn=document.getElementById('goHome');
-const clickS=document.getElementById('clickS');
-const coinS=document.getElementById('coinS');
-const cheerS=document.getElementById('cheerS');
-const bgMusic=document.getElementById('bgMusic');
+// 🔴 FIXED: Load username and user's saved coins from leaderboard
+let username = localStorage.getItem('username') || null;
+let rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
 
-headerCoinsEl.textContent=totalCoins;
+// Load user's coins from leaderboard or use existing totalCoins
+let totalCoins = 0;
+if (username) {
+  const userEntry = rushersLeague.find(e => e.name === username);
+  if (userEntry) {
+    totalCoins = userEntry.coins;  // Load user's OWN saved coins
+  } else {
+    totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+  }
+} else {
+  totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+}
+
+// Save the loaded coins back to localStorage
+localStorage.setItem('totalCoins', totalCoins);
+
+const pointsPerQ = 10;
+let timerInterval, timeLeft = 15;
+
+const logoImg = document.getElementById('logoImg');
+const questionEl = document.getElementById('question');
+const choicesEl = document.getElementById('choices');
+const progressFill = document.getElementById('progressFill');
+const qcountEl = document.getElementById('qcount');
+const finalEl = document.getElementById('final');
+const finalScoreEl = document.getElementById('finalScore');
+const coinSummaryEl = document.getElementById('coinSummary');
+const headerCoinsEl = document.getElementById('headerCoins');
+const playAgainBtn = document.getElementById('playAgain');
+const goHomeBtn = document.getElementById('goHome');
+const clickS = document.getElementById('clickS');
+const coinS = document.getElementById('coinS');
+const cheerS = document.getElementById('cheerS');
+const bgMusic = document.getElementById('bgMusic');
+const timerProgress = document.getElementById('timerProgress');
+const timerText = document.getElementById('timerText');
+
+headerCoinsEl.textContent = totalCoins;
+
+// ====== LEADERBOARD UPDATE FUNCTION ======
+function updateLeaderboardEntry() {
+  if (!username) return;
+  
+  rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+  const existing = rushersLeague.find(e => e.name === username);
+  
+  if (existing) {
+    existing.coins = totalCoins;
+  } else {
+    rushersLeague.push({ name: username, coins: totalCoins });
+  }
+  
+  rushersLeague.sort((a, b) => b.coins - a.coins);
+  localStorage.setItem('rushersLeague', JSON.stringify(rushersLeague));
+}
 
 // --- Helper Functions ---
-function shuffleArray(arr){return arr.sort(()=>Math.random()-0.5);}
-function newSet(){
-  currentSet=shuffleArray([...CARTOON_BANK]).slice(0,10).map(q=>{
-    if(q.choices){return {...q, choices:shuffleArray([...q.choices])};}else{return q;}
-  });
-  currentQ=0;score=0;
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
-function loadQuestion(){
-  if(currentQ>=currentSet.length){ finishQuiz(); return; }
-  let current=currentSet[currentQ];
 
-  if(current.img){
-    logoImg.style.display='block';
-    logoImg.src=current.img;
-    questionEl.style.fontSize='2rem';
-    questionEl.style.minHeight='60px';
+function newSet() {
+  let shuffled = shuffleArray([...CARTOON_BANK]);
+  currentSet = shuffled.slice(0, 10).map(q => {
+    return { ...q, choices: shuffleArray([...q.choices]) };
+  });
+  currentQ = 0;
+  score = 0;
+  progressFill.style.width = '0%';
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = 15;
+  updateTimer();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimer();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      if (currentQ < currentSet.length - 1) {
+        currentQ++;
+        loadQuestion();
+      } else {
+        finishQuiz();
+      }
+    }
+  }, 1000);
+}
+
+function updateTimer() {
+  timerText.textContent = timeLeft;
+  // 188.4 is the circumference for r=30 (2 * π * 30)
+  const dashOffset = 188.4 * (1 - timeLeft / 15);
+  timerProgress.style.strokeDashoffset = dashOffset;
+}
+
+function loadQuestion() {
+  if (currentQ >= currentSet.length) {
+    finishQuiz();
+    return;
+  }
+  
+  let current = currentSet[currentQ];
+
+  // Handle image vs text questions
+  if (current.img) {
+    logoImg.style.display = 'block';
+    logoImg.src = current.img;
+    questionEl.style.fontSize = '2rem';
+    questionEl.style.minHeight = '60px';
+    questionEl.textContent = current.q || "Which character/cartoon is this?";
   } else {
-    logoImg.style.display='none';
-    questionEl.style.fontSize='3rem';
-    questionEl.style.minHeight='150px';
+    logoImg.style.display = 'none';
+    questionEl.style.fontSize = '2.5rem';
+    questionEl.style.minHeight = '100px';
+    questionEl.textContent = current.q;
   }
 
-  questionEl.textContent=current.q||"Which character/cartoon is this?";
-  choicesEl.innerHTML='';
-  current.choices.forEach(c=>{
-    const btn=document.createElement('div');
-    btn.className='choice';
-    btn.textContent=c;
-    btn.addEventListener('click',()=>selectAnswer(btn,current.answer));
+  choicesEl.innerHTML = '';
+  
+  current.choices.forEach((c, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'choice';
+    btn.textContent = c;
+    btn.dataset.index = i;
+    btn.addEventListener('click', () => selectAnswer(btn, i, current.a));
     choicesEl.appendChild(btn);
   });
-  qcountEl.textContent=`Question ${currentQ+1} / ${currentSet.length}`;
+  
+  qcountEl.textContent = `Question ${currentQ + 1} / ${currentSet.length}`;
+  progressFill.style.width = `${(currentQ / currentSet.length) * 100}%`;
+  startTimer();
 }
 
-function selectAnswer(btn,answer){
-  if(bgMusic.paused) bgMusic.play();
-  clickS.currentTime=0;clickS.play();
+function selectAnswer(btn, selectedIndex, correctIndex) {
+  if (bgMusic.paused) bgMusic.play();
+  clickS.currentTime = 0;
+  clickS.play();
   clearInterval(timerInterval);
-  if(btn.textContent===answer){btn.classList.add('correct');score++;totalCoins+=pointsPerQ;localStorage.setItem('totalCoins',totalCoins);headerCoinsEl.textContent=totalCoins;coinS.currentTime=0;coinS.play();}
-  else{btn.classList.add('wrong');Array.from(choicesEl.children).forEach(c=>{if(c.textContent===answer)c.classList.add('correct');})}
-  Array.from(choicesEl.children).forEach(c=>c.style.pointerEvents='none');
-  setTimeout(()=>{currentQ++;loadQuestion();},800);
+
+  if (selectedIndex === correctIndex) {
+    btn.classList.add('correct');
+    score++;
+    totalCoins += pointsPerQ;
+    localStorage.setItem('totalCoins', totalCoins);
+    headerCoinsEl.textContent = totalCoins;
+    coinS.currentTime = 0;
+    coinS.play();
+    coinPop(pointsPerQ);
+    
+    // 🔴 Update leaderboard immediately when coins change
+    updateLeaderboardEntry();
+  } else {
+    btn.classList.add('wrong');
+    // Highlight the correct answer
+    Array.from(choicesEl.children).forEach(c => {
+      if (parseInt(c.dataset.index) === correctIndex) {
+        c.classList.add('correct');
+      }
+    });
+  }
+  
+  Array.from(choicesEl.children).forEach(c => c.style.pointerEvents = 'none');
+  
+  setTimeout(() => {
+    if (currentQ < currentSet.length - 1) {
+      currentQ++;
+      loadQuestion();
+    } else {
+      finishQuiz();
+    }
+  }, 800);
 }
 
-function finishQuiz(){
-  finalEl.style.display='flex';
-  finalScoreEl.textContent=`You answered ${score} / ${currentSet.length} correctly`;
-  coinSummaryEl.textContent=`You earned ${score*pointsPerQ} 🪙 this round`;
-  cheerS.currentTime=0;cheerS.play();
-  progressFill.style.width='100%';
+function finishQuiz() {
+  finalEl.style.display = 'flex';
+  finalScoreEl.textContent = `You answered ${score} / ${currentSet.length} correctly`;
+  coinSummaryEl.textContent = `You earned ${score * pointsPerQ} 🪙 this round`;
+  
+  // 🔴 Final leaderboard update
+  updateLeaderboardEntry();
+  
+  cheerS.currentTime = 0;
+  cheerS.play();
+  progressFill.style.width = '100%';
+  confetti();
 }
 
-playAgainBtn.addEventListener('click',()=>{finalEl.style.display='none';newSet();loadQuestion();});
-goHomeBtn.addEventListener('click',()=>window.location.href='index.html');
+function coinPop(amount) {
+  const pop = document.createElement('div');
+  pop.textContent = `+${amount} 🪙`;
+  pop.style.position = 'absolute';
+  pop.style.top = '30px';
+  pop.style.right = '30px';
+  pop.style.fontWeight = '900';
+  pop.style.color = '#fbc531';
+  pop.style.zIndex = '100';
+  pop.style.opacity = '1';
+  pop.style.transition = 'all 1s ease-out';
+  document.body.appendChild(pop);
+  setTimeout(() => {
+    pop.style.transform = 'translateY(-50px)';
+    pop.style.opacity = '0';
+  }, 50);
+  setTimeout(() => pop.remove(), 1000);
+}
 
-// --- Init ---
+function confetti() {
+  for (let i = 0; i < 120; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.backgroundColor = `hsl(${Math.random() * 360},100%,50%)`;
+    c.style.left = `${Math.random() * 100}vw`;
+    c.style.animationDuration = `${Math.random() * 2 + 1.5}s`;
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 2200);
+  }
+}
+
+playAgainBtn.addEventListener('click', () => {
+  finalEl.style.display = 'none';
+  newSet();
+  loadQuestion();
+});
+
+// 🔴 FIXED: Home button with proper leaderboard update
+goHomeBtn.addEventListener('click', () => {
+  // Final save of coins
+  localStorage.setItem('totalCoins', totalCoins);
+  
+  // Update leaderboard
+  updateLeaderboardEntry();
+  
+  // Trigger storage event for home page to refresh
+  localStorage.setItem('totalCoins', totalCoins);
+  if (username) {
+    localStorage.setItem('rushersLeague', localStorage.getItem('rushersLeague'));
+  }
+  
+  // Navigate to home
+  window.location.href = 'index.html';
+});
+
+// --- Background Music Autoplay Fix ---
+let musicStarted = false;
+function startMusic() {
+  if (!musicStarted) {
+    bgMusic.volume = 0.3;
+    bgMusic.play().catch(e => console.log("Music play blocked", e));
+    musicStarted = true;
+    document.removeEventListener('click', startMusic);
+  }
+}
+document.addEventListener('click', startMusic);
+
+// --- Start Quiz ---
 newSet();
 loadQuestion();
 </script>

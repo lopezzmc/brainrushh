@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Brain Rush — community service </title>
+  <title>Brain Rush — Community Service</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Inter:wght@400;700;900&display=swap"
     rel="stylesheet">
@@ -189,6 +189,7 @@
       gap: 12px;
       align-items: stretch;
       transform-origin: center;
+      position: relative;
     }
 
     .topbar {
@@ -415,13 +416,13 @@
   <div class="overlay" aria-hidden="true"></div>
 
   <div class="stage">
-    <div class="book" role="main" aria-label="Brain Rush geography game">
+    <div class="book" role="main" aria-label="Brain Rush community service game">
       <div class="header">
         <div class="leftHeader">
           <div class="logoBox"><img src="logo.png" alt="logo" onerror="this.style.display='none'"></div>
           <div class="titleWrap">
             <div class="title">Brain Rush</div>
-            <div class="subtitle">Level 1 • community service </div>
+            <div class="subtitle">Level 1 • Community Service</div>
           </div>
           <div style="margin-left:14px;">
             <div class="qcount" id="qcount">Question 1 / 10</div>
@@ -481,63 +482,100 @@
     <source src="background-music.mp3" type="audio/mpeg">
   </audio>
 
-<script>
-const BANK = [
-  { q: "What is the main purpose of community service?", choices: ["Earn money", "Help the community", "Travel abroad", "Skip school"], a: 1 },
-  { q: "Which of the following is an example of community service?", choices: ["Tree planting", "Playing games", "Shopping", "Sleeping"], a: 0 },
-  { q: "Why do schools encourage community service?", choices: ["Improve responsibility", "Punish students", "Lose time", "Avoid learning"], a: 0 },
-  { q: "Which value is most associated with community service?", choices: ["Generosity", "Greed", "Selfishness", "Anger"], a: 0 },
-  { q: "Volunteering means:", choices: ["Helping without pay", "Working for salary", "Avoiding work", "Only supervising"], a: 0 },
-  { q: "Which activity supports environmental protection?", choices: ["Beach clean-up", "Eating snacks", "Online shopping", "Watching movies"], a: 0 },
-  { q: "Who benefits from community service?", choices: ["Only volunteers", "Only leaders", "Both community and volunteer", "No one"], a: 2 },
-  { q: "What skill can be learned during community service?", choices: ["Teamwork", "Cheating", "Laziness", "Fighting"], a: 0 },
-  { q: "Helping elderly people is an example of:", choices: ["Social service", "Sports", "Entertainment", "Shopping"], a: 0 },
-  { q: "Which organization is known for community service?", choices: ["Red Cross", "TikTok", "Xbox", "Toyota"], a: 0 },
-  { q: "A good volunteer should be:", choices: ["Responsible", "Lazy", "Rude", "Selfish"], a: 0 },
-  { q: "Which activity helps reduce pollution?", choices: ["Recycling waste", "Playing music", "Online gaming", "Eating fast food"], a: 0 },
-  { q: "What do volunteers usually receive?", choices: ["Experience and skills", "A house", "A car", "Nothing at all"], a: 0 },
-  { q: "Community service encourages:", choices: ["Leadership", "Bullying", "Cheating", "Violence"], a: 0 },
-  { q: "Helping in a food bank involves:", choices: ["Distributing food", "Installing software", "Car racing", "Sleeping"], a: 0 },
-  { q: "Why is teamwork important in community service?", choices: ["To share tasks", "To compete", "To gossip", "To waste time"], a: 0 },
-  { q: "Cleaning a school campus is an example of:", choices: ["Service activity", "Entertainment", "Sports", "Shopping"], a: 0 },
-  { q: "Which of the following is a nonprofit group?", choices: ["UNICEF", "Nike", "Sony", "Tesla"], a: 0 },
-  { q: "What is empathy?", choices: ["Understanding others’ feelings", "Ignoring others", "Focusing on self only", "Being angry"], a: 0 },
-  { q: "An environmental volunteer may:", choices: ["Plant trees", "Break windows", "Throw trash", "Burn waste"], a: 0 },
-  { q: "Which task supports animal welfare?", choices: ["Feeding stray animals", "Hunting", "Littering", "Ignoring animals"], a: 0 },
-  { q: "Why should volunteers be punctual?", choices: ["Shows respect and responsibility", "To leave early", "To avoid tasks", "To impress friends"], a: 0 },
-  { q: "A blood donation drive is an example of:", choices: ["Health-related service", "Sports event", "Dance show", "Business meeting"], a: 0 },
-  { q: "Which quality makes a good volunteer?", choices: ["Honesty", "Dishonesty", "Rudeness", "Greed"], a: 0 },
-  { q: "What is a community?", choices: ["A group of people living together", "One person alone", "Only rich people", "Only students"], a: 0 },
-  { q: "Why is communication important in volunteer work?", choices: ["To coordinate tasks", "To argue", "To show off", "To waste time"], a: 0 },
-  { q: "Teaching young children to read is an example of:", choices: ["Educational service", "Sports", "Gaming", "Cooking"], a: 0 },
-  { q: "A volunteer must follow:", choices: ["Rules and instructions", "Random guesswork", "Only their own ideas", "No rules"], a: 0 },
-  { q: "What is meant by 'community outreach'?", choices: ["Connecting and helping people", "Selling products", "Playing games", "Ignoring problems"], a: 0 },
-  { q: "Charity work focuses on:", choices: ["Helping those in need", "Making profit", "Wasting time", "Buying luxury items"], a: 0 },
-  { q: "Why is reflection important after community service?", choices: ["To learn from the experience", "To forget everything", "To avoid improvement", "To punish volunteers"], a: 0 },
-  { q: "Which activity protects nature?", choices: ["Planting mangroves", "Burning plastic", "Cutting trees", "Throwing trash"], a: 0 },
-  { q: "Helping classmates understand lessons is:", choices: ["Peer tutoring", "Cheating", "Bullying", "Competing"], a: 0 },
-  { q: "Which item is often donated to the poor?", choices: ["Clothes", "Broken glass", "Trash", "Expired food"], a: 0 },
-  { q: "What should volunteers do before an event?", choices: ["Prepare materials", "Ignore instructions", "Sleep all day", "Skip the briefing"], a: 0 },
-  { q: "Why is safety important in community work?", choices: ["To avoid injury", "To waste time", "To avoid teamwork", "To break rules"], a: 0 },
-  { q: "Which of these is a clean-up activity?", choices: ["Picking up litter", "Drawing graffiti", "Cooking lunch", "Playing sports"], a: 0 },
-  { q: "What does CSR stand for?", choices: ["Corporate Social Responsibility", "Community Service Recruitment", "Customer Support Role", "Citizen Safety Regulation"], a: 0 },
-  { q: "A food donation drive supports:", choices: ["Hunger relief", "Video gaming", "Shopping malls", "Sports clubs"], a: 0 },
-  { q: "Why must volunteers respect others?", choices: ["To build trust", "To start arguments", "To show anger", "To exclude people"], a: 0 },
-  { q: "A volunteer in a hospital might:", choices: ["Assist nurses", "Break equipment", "Ignore patients", "Sleep on duty"], a: 0 },
-  { q: "Community service strengthens:", choices: ["Social bonds", "Selfish habits", "Violence", "Wastefulness"], a: 0 },
-  { q: "Which activity helps protect marine life?", choices: ["Coastal cleanup", "Throwing bottles", "Fishing illegally", "Polluting water"], a: 0 },
-  { q: "Why should volunteers listen carefully?", choices: ["To understand tasks", "To argue", "To gossip", "To ignore leaders"], a: 0 },
-  { q: "A donation box is used to collect:", choices: ["Money or goods for charity", "Toys for fun", "Trash", "Broken items"], a: 0 },
-  { q: "What does a community leader do?", choices: ["Guides and supports the group", "Sleeps during events", "Starts conflicts", "Avoids decisions"], a: 0 },
-  { q: "Community service helps develop:", choices: ["Life skills", "Bad habits", "Laziness", "Selfishness"], a: 0 },
-  { q: "What is the first step before volunteering?", choices: ["Understanding the task", "Running away", "Ignoring rules", "Avoiding briefing"], a: 0 },
-  { q: "Which behavior is expected from volunteers?", choices: ["Respect and responsibility", "Rudeness", "Disobedience", "Violence"], a: 0 },
-  { q: "What is the benefit of joining youth service clubs?", choices: ["Skill development", "More stress", "Less teamwork", "More fights"], a: 0 }
-];
+  <script>
+    // ====== COMMUNITY SERVICE QUESTIONS BANK (65+ questions) ======
+    const BANK = [
+      { q: "What is the main purpose of community service?", choices: ["Earn money", "Help the community", "Travel abroad", "Skip school"], a: 1 },
+      { q: "Which of the following is an example of community service?", choices: ["Tree planting", "Playing games", "Shopping", "Sleeping"], a: 0 },
+      { q: "Why do schools encourage community service?", choices: ["Improve responsibility", "Punish students", "Lose time", "Avoid learning"], a: 0 },
+      { q: "Which value is most associated with community service?", choices: ["Generosity", "Greed", "Selfishness", "Anger"], a: 0 },
+      { q: "Volunteering means:", choices: ["Helping without pay", "Working for salary", "Avoiding work", "Only supervising"], a: 0 },
+      { q: "Which activity supports environmental protection?", choices: ["Beach clean-up", "Eating snacks", "Online shopping", "Watching movies"], a: 0 },
+      { q: "Who benefits from community service?", choices: ["Only volunteers", "Only leaders", "Both community and volunteer", "No one"], a: 2 },
+      { q: "What skill can be learned during community service?", choices: ["Teamwork", "Cheating", "Laziness", "Fighting"], a: 0 },
+      { q: "Helping elderly people is an example of:", choices: ["Social service", "Sports", "Entertainment", "Shopping"], a: 0 },
+      { q: "Which organization is known for community service?", choices: ["Red Cross", "TikTok", "Xbox", "Toyota"], a: 0 },
+      { q: "A good volunteer should be:", choices: ["Responsible", "Lazy", "Rude", "Selfish"], a: 0 },
+      { q: "Which activity helps reduce pollution?", choices: ["Recycling waste", "Playing music", "Online gaming", "Eating fast food"], a: 0 },
+      { q: "What do volunteers usually receive?", choices: ["Experience and skills", "A house", "A car", "Nothing at all"], a: 0 },
+      { q: "Community service encourages:", choices: ["Leadership", "Bullying", "Cheating", "Violence"], a: 0 },
+      { q: "Helping in a food bank involves:", choices: ["Distributing food", "Installing software", "Car racing", "Sleeping"], a: 0 },
+      { q: "Why is teamwork important in community service?", choices: ["To share tasks", "To compete", "To gossip", "To waste time"], a: 0 },
+      { q: "Cleaning a school campus is an example of:", choices: ["Service activity", "Entertainment", "Sports", "Shopping"], a: 0 },
+      { q: "Which of the following is a nonprofit group?", choices: ["UNICEF", "Nike", "Sony", "Tesla"], a: 0 },
+      { q: "What is empathy?", choices: ["Understanding others’ feelings", "Ignoring others", "Focusing on self only", "Being angry"], a: 0 },
+      { q: "An environmental volunteer may:", choices: ["Plant trees", "Break windows", "Throw trash", "Burn waste"], a: 0 },
+      { q: "Which task supports animal welfare?", choices: ["Feeding stray animals", "Hunting", "Littering", "Ignoring animals"], a: 0 },
+      { q: "Why should volunteers be punctual?", choices: ["Shows respect and responsibility", "To leave early", "To avoid tasks", "To impress friends"], a: 0 },
+      { q: "A blood donation drive is an example of:", choices: ["Health-related service", "Sports event", "Dance show", "Business meeting"], a: 0 },
+      { q: "Which quality makes a good volunteer?", choices: ["Honesty", "Dishonesty", "Rudeness", "Greed"], a: 0 },
+      { q: "What is a community?", choices: ["A group of people living together", "One person alone", "Only rich people", "Only students"], a: 0 },
+      { q: "Why is communication important in volunteer work?", choices: ["To coordinate tasks", "To argue", "To show off", "To waste time"], a: 0 },
+      { q: "Teaching young children to read is an example of:", choices: ["Educational service", "Sports", "Gaming", "Cooking"], a: 0 },
+      { q: "A volunteer must follow:", choices: ["Rules and instructions", "Random guesswork", "Only their own ideas", "No rules"], a: 0 },
+      { q: "What is meant by 'community outreach'?", choices: ["Connecting and helping people", "Selling products", "Playing games", "Ignoring problems"], a: 0 },
+      { q: "Charity work focuses on:", choices: ["Helping those in need", "Making profit", "Wasting time", "Buying luxury items"], a: 0 },
+      { q: "Why is reflection important after community service?", choices: ["To learn from the experience", "To forget everything", "To avoid improvement", "To punish volunteers"], a: 0 },
+      { q: "Which activity protects nature?", choices: ["Planting mangroves", "Burning plastic", "Cutting trees", "Throwing trash"], a: 0 },
+      { q: "Helping classmates understand lessons is:", choices: ["Peer tutoring", "Cheating", "Bullying", "Competing"], a: 0 },
+      { q: "Which item is often donated to the poor?", choices: ["Clothes", "Broken glass", "Trash", "Expired food"], a: 0 },
+      { q: "What should volunteers do before an event?", choices: ["Prepare materials", "Ignore instructions", "Sleep all day", "Skip the briefing"], a: 0 },
+      { q: "Why is safety important in community work?", choices: ["To avoid injury", "To waste time", "To avoid teamwork", "To break rules"], a: 0 },
+      { q: "Which of these is a clean-up activity?", choices: ["Picking up litter", "Drawing graffiti", "Cooking lunch", "Playing sports"], a: 0 },
+      { q: "What does CSR stand for?", choices: ["Corporate Social Responsibility", "Community Service Recruitment", "Customer Support Role", "Citizen Safety Regulation"], a: 0 },
+      { q: "A food donation drive supports:", choices: ["Hunger relief", "Video gaming", "Shopping malls", "Sports clubs"], a: 0 },
+      { q: "Why must volunteers respect others?", choices: ["To build trust", "To start arguments", "To show anger", "To exclude people"], a: 0 },
+      { q: "A volunteer in a hospital might:", choices: ["Assist nurses", "Break equipment", "Ignore patients", "Sleep on duty"], a: 0 },
+      { q: "Community service strengthens:", choices: ["Social bonds", "Selfish habits", "Violence", "Wastefulness"], a: 0 },
+      { q: "Which activity helps protect marine life?", choices: ["Coastal cleanup", "Throwing bottles", "Fishing illegally", "Polluting water"], a: 0 },
+      { q: "Why should volunteers listen carefully?", choices: ["To understand tasks", "To argue", "To gossip", "To ignore leaders"], a: 0 },
+      { q: "A donation box is used to collect:", choices: ["Money or goods for charity", "Toys for fun", "Trash", "Broken items"], a: 0 },
+      { q: "What does a community leader do?", choices: ["Guides and supports the group", "Sleeps during events", "Starts conflicts", "Avoids decisions"], a: 0 },
+      { q: "Community service helps develop:", choices: ["Life skills", "Bad habits", "Laziness", "Selfishness"], a: 0 },
+      { q: "What is the first step before volunteering?", choices: ["Understanding the task", "Running away", "Ignoring rules", "Avoiding briefing"], a: 0 },
+      { q: "Which behavior is expected from volunteers?", choices: ["Respect and responsibility", "Rudeness", "Disobedience", "Violence"], a: 0 },
+      { q: "What is the benefit of joining youth service clubs?", choices: ["Skill development", "More stress", "Less teamwork", "More fights"], a: 0 },
+      // Additional questions
+      { q: "What is a common community service project for students?", choices: ["Food drive", "Video game tournament", "Movie marathon", "Sleepover"], a: 0 },
+      { q: "Which of these is a benefit of volunteering?", choices: ["Builds resume", "Makes you rich", "Gives you fame", "Wastes time"], a: 0 },
+      { q: "What is the main goal of a charity?", choices: ["Help those in need", "Make profit", "Entertain people", "Sell products"], a: 0 },
+      { q: "Which age group can volunteer?", choices: ["All ages", "Only adults", "Only teenagers", "Only children"], a: 0 },
+      { q: "What is a soup kitchen?", choices: ["Place that serves free meals", "Restaurant", "Cooking class", "Food store"], a: 0 },
+      { q: "How can you help at an animal shelter?", choices: ["Walk dogs", "Buy pets", "Ignore animals", "Close the shelter"], a: 0 },
+      { q: "What does 'pro bono' mean?", choices: ["Professional work done for free", "Paid work", "Quick work", "Hard work"], a: 0 },
+      { q: "What is a fundraising event?", choices: ["Event to raise money for charity", "Party", "Concert", "Sports game"], a: 0 },
+      { q: "Why do people volunteer at hospitals?", choices: ["To comfort patients", "To get free treatment", "To sleep", "To eat"], a: 0 },
+      { q: "What is a mentorship program?", choices: ["Experienced person guides another", "Sports team", "Cooking class", "Dance club"], a: 0 },
+      { q: "How can you help the environment?", choices: ["Plant trees", "Burn plastic", "Cut forests", "Throw trash"], a: 0 },
+      { q: "What is a community garden?", choices: ["Garden maintained by community", "Private garden", "Park", "Farm"], a: 0 },
+      { q: "What is disaster relief?", choices: ["Helping after disasters", "Causing disasters", "Watching disasters", "Ignoring disasters"], a: 0 },
+      { q: "What is a blood drive?", choices: ["Event to collect blood donations", "Car race", "Blood test", "Medical exam"], a: 0 },
+      { q: "What is the main quality of a volunteer?", choices: ["Compassion", "Wealth", "Fame", "Strength"], a: 0 }
+    ];
 
-   // ====== VARIABLES ======
-    let currentSet = [0], currentQ = 0, score = 0;
-    let totalCoins = Number(localStorage.getItem('totalCoins')) || 0;
+    // ====== VARIABLES ======
+    let currentSet = [], currentQ = 0, score = 0;
+    
+    // 🔴 FIXED: Load username and user's saved coins from leaderboard
+    let username = localStorage.getItem('username') || null;
+    let rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+    
+    // Load user's coins from leaderboard or use existing totalCoins
+    let totalCoins = 0;
+    if (username) {
+      const userEntry = rushersLeague.find(e => e.name === username);
+      if (userEntry) {
+        totalCoins = userEntry.coins;
+      } else {
+        totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+      }
+    } else {
+      totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+    }
+    
+    // Save the loaded coins back to localStorage
+    localStorage.setItem('totalCoins', totalCoins);
+    
     let pointsPerQ = 10, usedIndexes = [];
     let timeLeft = 15, timerInterval;
 
@@ -562,31 +600,75 @@ const BANK = [
     // ====== INITIAL SETUP ======
     headerCoinsEl.textContent = totalCoins;
 
-    function shuffleBank() {
-      let indexes = [];
-      while (indexes.length < 10) {
-        let rand = Math.floor(Math.random() * BANK.length);
-        if (!usedIndexes.includes(rand)) {
-          indexes.push(rand);
-          usedIndexes.push(rand);
-          if (usedIndexes.length >= BANK.length) usedIndexes = [];
-        }
+    // ====== LEADERBOARD UPDATE FUNCTION ======
+    function updateLeaderboardEntry() {
+      if (!username) return;
+      
+      rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+      const existing = rushersLeague.find(e => e.name === username);
+      
+      if (existing) {
+        existing.coins = totalCoins;
+      } else {
+        rushersLeague.push({ name: username, coins: totalCoins });
       }
-      currentSet = indexes.map(i => BANK[i]);
+      
+      rushersLeague.sort((a, b) => b.coins - a.coins);
+      localStorage.setItem('rushersLeague', JSON.stringify(rushersLeague));
+    }
+
+    // ====== HELPER FUNCTIONS ======
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+    
+    function shuffleBank() {
+      usedIndexes = [];
+      let shuffled = shuffleArray([...BANK]);
+      currentSet = shuffled.slice(0, 10);
     }
 
     function loadQuestion() {
+      if (currentQ >= currentSet.length) {
+        finishQuiz();
+        return;
+      }
+      
       questionEl.textContent = currentSet[currentQ].q;
       choicesEl.innerHTML = '';
-      currentSet[currentQ].choices.forEach((c, i) => {
+      
+      // Get the current question
+      const question = currentSet[currentQ];
+      
+      // Create array of choice objects with their original indices
+      let choiceObjects = question.choices.map((text, index) => ({
+        text: text,
+        originalIndex: index
+      }));
+      
+      // Shuffle the choice objects
+      choiceObjects = shuffleArray(choiceObjects);
+      
+      // Find where the correct answer moved to
+      const correctIndex = choiceObjects.findIndex(c => c.originalIndex === question.a);
+      
+      // Display shuffled choices
+      choiceObjects.forEach((choice, i) => {
         let btn = document.createElement('div');
         btn.className = 'choice';
-        btn.textContent = c;
-        btn.addEventListener('click', () => selectAnswer(i, btn));
+        btn.textContent = choice.text;
+        btn.dataset.originalIndex = choice.originalIndex;
+        btn.dataset.isCorrect = (choice.originalIndex === question.a);
+        btn.addEventListener('click', () => selectAnswer(i, btn, correctIndex));
         choicesEl.appendChild(btn);
       });
-      qcountEl.textContent = `Question ${currentQ + 1} / 10`;
-      progressFill.style.width = `${(currentQ / 10) * 100}%`;
+      
+      qcountEl.textContent = `Question ${currentQ + 1} / ${currentSet.length}`;
+      progressFill.style.width = `${(currentQ / currentSet.length) * 100}%`;
       startTimer();
     }
 
@@ -599,7 +681,12 @@ const BANK = [
         updateTimerVisual();
         if (timeLeft <= 0) {
           clearInterval(timerInterval);
-          nextQuestion();
+          if (currentQ < currentSet.length - 1) {
+            currentQ++;
+            loadQuestion();
+          } else {
+            finishQuiz();
+          }
         }
       }, 1000);
     }
@@ -610,13 +697,12 @@ const BANK = [
       document.getElementById('timerCircle').style.strokeDashoffset = dashOffset;
     }
 
-    function selectAnswer(i, btn) {
+    function selectAnswer(i, btn, correctIndex) {
       if (bgMusic.paused) bgMusic.play();
       clickS.currentTime = 0; clickS.play();
       clearInterval(timerInterval);
 
-      const correct = currentSet[currentQ].a;
-      if (i === correct) {
+      if (i === correctIndex) {
         btn.classList.add('correct');
         score++;
         totalCoins += pointsPerQ;
@@ -624,38 +710,38 @@ const BANK = [
         headerCoinsEl.textContent = totalCoins;
         coinS.currentTime = 0; coinS.play();
         coinPop(pointsPerQ);
+        
+        // 🔴 Update leaderboard immediately when coins change
+        updateLeaderboardEntry();
       } else {
         btn.classList.add('wrong');
-        Array.from(choicesEl.children)[correct].classList.add('correct');
+        // Highlight the correct answer
+        Array.from(choicesEl.children)[correctIndex].classList.add('correct');
       }
       Array.from(choicesEl.children).forEach(ch => ch.style.pointerEvents = 'none');
-      setTimeout(() => nextQuestion(), 800);
-    }
-
-    function nextQuestion() {
-      currentQ++;
-      if (currentQ < 10) loadQuestion();
-      else finishQuiz();
+      
+      setTimeout(() => {
+        if (currentQ < currentSet.length - 1) {
+          currentQ++;
+          loadQuestion();
+        } else {
+          finishQuiz();
+        }
+      }, 800);
     }
 
     function finishQuiz() {
       finalEl.style.display = 'flex';
-      finalScoreEl.textContent = `You answered ${score} / 10 correctly`;
+      finalScoreEl.textContent = `You answered ${score} / ${currentSet.length} correctly`;
       coinSummaryEl.textContent = `You earned ${score * pointsPerQ} 🪙 this round`;
+      
+      // 🔴 Final leaderboard update
+      updateLeaderboardEntry();
+      
       cheerS.currentTime = 0; cheerS.play();
       progressFill.style.width = '100%';
       confetti();
     }
-
-    playAgainBtn.addEventListener('click', () => {
-      finalEl.style.display = 'none';
-      score = 0;
-      shuffleBank();
-      currentQ = 0;
-      loadQuestion();
-    });
-
-    goHomeBtn.addEventListener('click', () => window.location.href = "index.html");
 
     function coinPop(amount) {
       const pop = document.createElement('div');
@@ -669,7 +755,10 @@ const BANK = [
       pop.style.opacity = '1';
       pop.style.transition = 'all 1s ease-out';
       document.body.appendChild(pop);
-      setTimeout(() => { pop.style.transform = 'translateY(-50px)'; pop.style.opacity = '0'; }, 50);
+      setTimeout(() => { 
+        pop.style.transform = 'translateY(-50px)'; 
+        pop.style.opacity = '0'; 
+      }, 50);
       setTimeout(() => pop.remove(), 1000);
     }
 
@@ -685,6 +774,47 @@ const BANK = [
       }
     }
 
+    // ====== BACKGROUND MUSIC ======
+    let musicStarted = false;
+    function startMusic() {
+      if (!musicStarted) {
+        bgMusic.volume = 0.3;
+        bgMusic.play().catch(e => console.log("Music play blocked", e));
+        musicStarted = true;
+        document.removeEventListener('click', startMusic);
+      }
+    }
+    document.addEventListener('click', startMusic);
+
+    // ====== EVENT LISTENERS ======
+    playAgainBtn.addEventListener('click', () => {
+      finalEl.style.display = 'none';
+      score = 0;
+      usedIndexes = [];
+      shuffleBank();
+      currentQ = 0;
+      loadQuestion();
+    });
+
+    // 🔴 FIXED: Home button with proper leaderboard update
+    goHomeBtn.addEventListener('click', () => {
+      // Final save of coins
+      localStorage.setItem('totalCoins', totalCoins);
+      
+      // Update leaderboard
+      updateLeaderboardEntry();
+      
+      // Trigger storage event for home page to refresh
+      localStorage.setItem('totalCoins', totalCoins);
+      if (username) {
+        localStorage.setItem('rushersLeague', localStorage.getItem('rushersLeague'));
+      }
+      
+      // Navigate to home
+      window.location.href = "index.html";
+    });
+
+    // ====== INITIAL SETUP ======
     shuffleBank();
     loadQuestion();
   </script>

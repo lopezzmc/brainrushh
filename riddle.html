@@ -16,7 +16,7 @@
   --coin-size: 20px;
 }
 * { box-sizing: border-box; }
-html, body { height:100%; margin:0; background:var(--paper-white); font-family:Inter,sans-serif; color:#111; }
+html, body { height:100%; margin:0; background:var(--paper-white); font-family:Inter,sans-serif; color:#111; overflow:hidden; }
 .bg { position:fixed; inset:0; z-index:0; background-image:url('https://media.istockphoto.com/id/1469529416/vector/decorative-lined-paper-with-children-two-pages-funny-vector-illustration-eps.jpg?s=612x612&w=0&k=20&c=R9ntFhhrR3Hf8jlql_b-5ES_19Cxsjjx1HcbyScyf68='); background-size:cover; background-position:center; filter:brightness(.98) contrast(.98); }
 .overlay { position:fixed; inset:0; z-index:1; pointer-events:none; background:linear-gradient(180deg, rgba(255,255,255,0.0), rgba(255,255,255,0.0)); }
 .stage { position:relative; z-index:2; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:36px; }
@@ -117,25 +117,74 @@ svg.timer { width:70px; height:70px; }
 <audio id="bgMusic" loop><source src="background-music.mp3" type="audio/mpeg"></audio>
 
 <script>
-(() => {
+// ====== RIDDLES BANK (Expanded to 40+ questions) ======
 const BANK = [
-  {q:"I speak without a mouth and hear without ears. I have nobody, but I come alive with wind. What am I?", choices:["Echo","Shadow","Fire","Wave"], answer:"Echo"},
-  {q:"I’m tall when I’m young, and I’m short when I’m old. What am I?", choices:["Candle","Pencil","Tree","Clock"], answer:"Candle"},
-  {q:"What has keys but can’t open locks?", choices:["Piano","Map","Locksmith","Keyboard"], answer:"Piano"},
-  {q:"What has a heart that doesn’t beat?", choices:["Artichoke","Stone","Clock","Tree"], answer:"Artichoke"},
-  {q:"The more you take, the more you leave behind. What am I?", choices:["Footsteps","Shadow","Time","Air"], answer:"Footsteps"},
-  {q:"What can travel around the world while staying in a corner?", choices:["Stamp","Coin","Book","Globe"], answer:"Stamp"},
-  {q:"What has to be broken before you can use it?", choices:["Egg","Glass","Seal","Nut"], answer:"Egg"},
-  {q:"I’m always hungry and will die if not fed, but whatever I touch will soon turn red. What am I?", choices:["Fire","Ice","Sun","Blood"], answer:"Fire"},
-  {q:"What goes up but never comes down?", choices:["Age","Smoke","Kite","Balloon"], answer:"Age"},
-  {q:"I have cities, but no houses; forests, but no trees; and water, but no fish. What am I?", choices:["Map","Dream","Painting","Maze"], answer:"Map"}
+  { q: "I speak without a mouth and hear without ears. I have nobody, but I come alive with wind. What am I?", choices: ["Echo", "Shadow", "Fire", "Wave"], a: 0 },
+  { q: "I'm tall when I'm young, and I'm short when I'm old. What am I?", choices: ["Candle", "Pencil", "Tree", "Clock"], a: 0 },
+  { q: "What has keys but can't open locks?", choices: ["Piano", "Map", "Locksmith", "Keyboard"], a: 0 },
+  { q: "What has a heart that doesn't beat?", choices: ["Artichoke", "Stone", "Clock", "Tree"], a: 0 },
+  { q: "The more you take, the more you leave behind. What am I?", choices: ["Footsteps", "Shadow", "Time", "Air"], a: 0 },
+  { q: "What can travel around the world while staying in a corner?", choices: ["Stamp", "Coin", "Book", "Globe"], a: 0 },
+  { q: "What has to be broken before you can use it?", choices: ["Egg", "Glass", "Seal", "Nut"], a: 0 },
+  { q: "I'm always hungry and will die if not fed, but whatever I touch will soon turn red. What am I?", choices: ["Fire", "Ice", "Sun", "Blood"], a: 0 },
+  { q: "What goes up but never comes down?", choices: ["Age", "Smoke", "Kite", "Balloon"], a: 0 },
+  { q: "I have cities, but no houses; forests, but no trees; and water, but no fish. What am I?", choices: ["Map", "Dream", "Painting", "Maze"], a: 0 },
+  { q: "What has an eye but cannot see?", choices: ["Needle", "Storm", "Potato", "Cyclone"], a: 0 },
+  { q: "What has a face and two hands but no arms or legs?", choices: ["Clock", "Watch", "Robot", "Doll"], a: 0 },
+  { q: "What gets wetter as it dries?", choices: ["Towel", "Sponge", "Paper", "Cloth"], a: 0 },
+  { q: "What can you catch but not throw?", choices: ["Cold", "Ball", "Fish", "Train"], a: 0 },
+  { q: "What has words but never speaks?", choices: ["Book", "Newspaper", "Letter", "Sign"], a: 0 },
+  { q: "What is full of holes but still holds water?", choices: ["Sponge", "Sieve", "Bucket", "Net"], a: 0 },
+  { q: "What has a neck but no head?", choices: ["Bottle", "Shirt", "Guitar", "Lamp"], a: 0 },
+  { q: "What has a thumb and four fingers but is not alive?", choices: ["Glove", "Hand", "Mitten", "Puppet"], a: 0 },
+  { q: "What has a ring but no finger?", choices: ["Phone", "Bell", "Jewelry", "Tree"], a: 0 },
+  { q: "What has a head and a tail but no body?", choices: ["Coin", "Snake", "Fish", "Comet"], a: 0 },
+  { q: "What has a bank but no money?", choices: ["River", "Bank", "Pond", "Lake"], a: 0 },
+  { q: "What has a bed but never sleeps?", choices: ["River", "Bedroom", "Flower", "Garden"], a: 0 },
+  { q: "What has a tongue but cannot taste?", choices: ["Shoe", "Bell", "Tree", "Flower"], a: 0 },
+  { q: "What has a roof but no house?", choices: ["Car", "Tent", "Cave", "Umbrella"], a: 0 },
+  { q: "What has a lock but no door?", choices: ["Hair", "Safe", "Padlock", "Chest"], a: 0 },
+  { q: "What has a root that nobody sees? Is taller than trees. Up, up it goes, and yet never grows?", choices: ["Mountain", "Building", "Cloud", "Sky"], a: 0 },
+  { q: "What has a bottom at the top?", choices: ["Legs", "Mountain", "Tree", "Building"], a: 0 },
+  { q: "What has one eye but cannot see?", choices: ["Needle", "Cyclone", "Potato", "Storm"], a: 0 },
+  { q: "What has a spine but no bones?", choices: ["Book", "Cactus", "Fish", "Snake"], a: 0 },
+  { q: "What has a head, a tail, is brown, and has no legs?", choices: ["Penny", "Coin", "Snake", "Worm"], a: 0 },
+  { q: "What has a mouth but never eats?", choices: ["River", "Volcano", "Cave", "Well"], a: 0 },
+  { q: "What has a bark but no bite?", choices: ["Tree", "Dog", "Seal", "Cat"], a: 0 },
+  { q: "What has a face that doesn't frown, hands that don't wave, and numbers that don't count?", choices: ["Clock", "Calendar", "Phone", "Computer"], a: 0 },
+  { q: "What has a needle but cannot sew?", choices: ["Pine tree", "Cactus", "Syringe", "Compass"], a: 0 },
+  { q: "What has a blade but cannot cut?", choices: ["Fan", "Windmill", "Knife", "Sword"], a: 0 },
+  { q: "What has a body but no soul?", choices: ["Doll", "Robot", "Statue", "Puppet"], a: 0 },
+  { q: "What has a wave but no ocean?", choices: ["Hair", "Sound", "Light", "Heat"], a: 0 },
+  { q: "What has a star but no sky?", choices: ["Movie", "Celebrity", "Flag", "Fruit"], a: 0 },
+  { q: "What has a note but no music?", choices: ["Book", "Letter", "Memo", "Text"], a: 0 },
+  { q: "What has a key but no lock?", choices: ["Piano", "Map", "Code", "Answer"], a: 0 }
 ];
 
-let currentSet=[], currentQ=0, score=0;
-let totalCoins = Number(localStorage.getItem('totalCoins')) || 0;
+// ====== VARIABLES ======
+let currentSet = [], currentQ = 0, score = 0;
+
+// 🔴 FIXED: Load username and user's saved coins from leaderboard
+let username = localStorage.getItem('username') || null;
+let rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+
+let totalCoins = 0;
+if (username) {
+  const userEntry = rushersLeague.find(e => e.name === username);
+  if (userEntry) {
+    totalCoins = userEntry.coins;
+  } else {
+    totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+  }
+} else {
+  totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+}
+
+localStorage.setItem('totalCoins', totalCoins);
+
 const pointsPerQ = 10;
-let timeLeft=15, timerInterval;
-let answering=false;
+let timeLeft = 15, timerInterval;
+let answering = false;
 
 const questionEl = document.getElementById('question');
 const choicesEl = document.getElementById('choices');
@@ -155,138 +204,214 @@ const bgMusic = document.getElementById('bgMusic');
 
 headerCoinsEl.textContent = totalCoins;
 
-function shuffle(array){
-  let arr=[...array];
-  for(let i=arr.length-1;i>0;i--){
-    let j=Math.floor(Math.random()*(i+1));
-    [arr[i],arr[j]]=[arr[j],arr[i]];
+// ====== LEADERBOARD UPDATE FUNCTION ======
+function updateLeaderboardEntry() {
+  if (!username) return;
+  
+  rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+  const existing = rushersLeague.find(e => e.name === username);
+  
+  if (existing) {
+    existing.coins = totalCoins;
+  } else {
+    rushersLeague.push({ name: username, coins: totalCoins });
+  }
+  
+  rushersLeague.sort((a, b) => b.coins - a.coins);
+  localStorage.setItem('rushersLeague', JSON.stringify(rushersLeague));
+}
+
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
 }
 
-function shuffleBank(){
-  currentSet = shuffle(BANK).slice(0,10).map(q=>{
-    let shuffledChoices = shuffle(q.choices);
-    let correctIndex = shuffledChoices.indexOf(q.answer);
-    return {...q, choices:shuffledChoices, correct: correctIndex};
+function newSet() {
+  let shuffled = shuffleArray([...BANK]);
+  currentSet = shuffled.slice(0, 10).map(q => {
+    let shuffledChoices = shuffleArray([...q.choices]);
+    let correctIndex = shuffledChoices.indexOf(q.choices[q.a]);
+    return { ...q, choices: shuffledChoices, correct: correctIndex };
   });
 }
 
-function loadQuestion(){
-  answering=false;
+function loadQuestion() {
+  if (currentQ >= currentSet.length) {
+    finishQuiz();
+    return;
+  }
+  
+  answering = false;
   let current = currentSet[currentQ];
   questionEl.textContent = current.q;
-  choicesEl.innerHTML='';
-  current.choices.forEach((c,i)=>{
-    let btn=document.createElement('div');
-    btn.className='choice';
-    btn.setAttribute('role','listitem');
-    btn.textContent=c;
-    btn.addEventListener('click',()=>selectAnswer(i,btn));
+  choicesEl.innerHTML = '';
+  
+  current.choices.forEach((c, i) => {
+    let btn = document.createElement('div');
+    btn.className = 'choice';
+    btn.setAttribute('role', 'listitem');
+    btn.textContent = c;
+    btn.dataset.index = i;
+    btn.addEventListener('click', () => selectAnswer(i, btn));
     choicesEl.appendChild(btn);
   });
-  qcountEl.textContent=`Question ${currentQ+1} / 10`;
-  progressFill.style.width=`${(currentQ/10)*100}%`;
+  
+  qcountEl.textContent = `Question ${currentQ + 1} / ${currentSet.length}`;
+  progressFill.style.width = `${(currentQ / currentSet.length) * 100}%`;
   startTimer();
 }
 
-function startTimer(){
+function startTimer() {
   clearInterval(timerInterval);
-  timeLeft=15;
+  timeLeft = 15;
   updateTimerVisual();
-  timerInterval=setInterval(()=>{
+  timerInterval = setInterval(() => {
     timeLeft--;
     updateTimerVisual();
-    if(timeLeft<=0){
+    if (timeLeft <= 0) {
       clearInterval(timerInterval);
-      nextQuestion();
+      if (currentQ < currentSet.length - 1) {
+        currentQ++;
+        loadQuestion();
+      } else {
+        finishQuiz();
+      }
     }
-  },1000);
+  }, 1000);
 }
 
-function updateTimerVisual(){
-  document.getElementById('timerText').textContent=timeLeft;
-  document.getElementById('timerCircle').style.strokeDashoffset = 282.6*(1-timeLeft/15);
+function updateTimerVisual() {
+  document.getElementById('timerText').textContent = timeLeft;
+  document.getElementById('timerCircle').style.strokeDashoffset = 282.6 * (1 - timeLeft / 15);
 }
 
-function selectAnswer(i,btn){
-  if(answering) return;
-  answering=true;
-  if(bgMusic.paused){ try{ bgMusic.play(); }catch(e){} }
-  try{ clickS.currentTime=0; clickS.play(); }catch(e){}
+function selectAnswer(i, btn) {
+  if (answering) return;
+  answering = true;
+  
+  if (bgMusic.paused) { try { bgMusic.play(); } catch(e) {} }
+  try { clickS.currentTime = 0; clickS.play(); } catch(e) {}
   clearInterval(timerInterval);
+  
   let current = currentSet[currentQ];
-  if(i===current.correct){
+  
+  if (i === current.correct) {
     btn.classList.add('correct');
     score++;
-    totalCoins+=pointsPerQ;
-    localStorage.setItem('totalCoins',totalCoins);
-    headerCoinsEl.textContent=totalCoins;
-    try{ coinS.currentTime=0; coinS.play(); }catch(e){}
+    totalCoins += pointsPerQ;
+    localStorage.setItem('totalCoins', totalCoins);
+    headerCoinsEl.textContent = totalCoins;
+    try { coinS.currentTime = 0; coinS.play(); } catch(e) {}
     coinPop(pointsPerQ);
+    
+    // 🔴 Update leaderboard immediately
+    updateLeaderboardEntry();
   } else {
     btn.classList.add('wrong');
-    Array.from(choicesEl.children)[current.correct].classList.add('correct');
+    // Highlight the correct answer
+    Array.from(choicesEl.children).forEach(ch => {
+      if (parseInt(ch.dataset.index) === current.correct) {
+        ch.classList.add('correct');
+      }
+    });
   }
-  Array.from(choicesEl.children).forEach(c=>c.style.pointerEvents='none');
-  setTimeout(()=>nextQuestion(),800);
+  
+  Array.from(choicesEl.children).forEach(c => c.style.pointerEvents = 'none');
+  
+  setTimeout(() => {
+    if (currentQ < currentSet.length - 1) {
+      currentQ++;
+      loadQuestion();
+    } else {
+      finishQuiz();
+    }
+  }, 800);
 }
 
-function nextQuestion(){
-  currentQ++;
-  if(currentQ<10) loadQuestion();
-  else finishQuiz();
-}
-
-function finishQuiz(){
-  finalEl.style.display='flex';
-  finalScoreEl.textContent=`You answered ${score} / 10 correctly`;
-  coinSummaryEl.textContent=`You earned ${score*pointsPerQ} 🪙 this round`;
-  try{ cheerS.currentTime=0; cheerS.play(); }catch(e){}
-  progressFill.style.width='100%';
+function finishQuiz() {
+  finalEl.style.display = 'flex';
+  finalScoreEl.textContent = `You answered ${score} / ${currentSet.length} correctly`;
+  coinSummaryEl.textContent = `You earned ${score * pointsPerQ} 🪙 this round`;
+  
+  // 🔴 Final leaderboard update
+  updateLeaderboardEntry();
+  
+  try { cheerS.currentTime = 0; cheerS.play(); } catch(e) {}
+  progressFill.style.width = '100%';
   confetti();
 }
 
-playAgainBtn.addEventListener('click',()=>{
-  finalEl.style.display='none';
-  score=0;
-  currentQ=0;
-  shuffleBank();
+playAgainBtn.addEventListener('click', () => {
+  finalEl.style.display = 'none';
+  score = 0;
+  currentQ = 0;
+  newSet();
   loadQuestion();
 });
 
-goHomeBtn.addEventListener('click',()=>window.location.href='index.html');
+// 🔴 FIXED: Home button with proper leaderboard update
+goHomeBtn.addEventListener('click', () => {
+  // Final save of coins
+  localStorage.setItem('totalCoins', totalCoins);
+  
+  // Update leaderboard
+  updateLeaderboardEntry();
+  
+  // Trigger storage event for home page to refresh
+  localStorage.setItem('totalCoins', totalCoins);
+  if (username) {
+    localStorage.setItem('rushersLeague', localStorage.getItem('rushersLeague'));
+  }
+  
+  // Navigate to home
+  window.location.href = 'index.html';
+});
 
-function coinPop(amount){
-  const pop=document.createElement('div');
-  pop.textContent=`+${amount} 🪙`;
-  Object.assign(pop.style,{
-    position:'absolute', top:'30px', right:'30px', fontWeight:'900',
-    color:'#fbc531', zIndex:'100', opacity:'1', transition:'all 1s ease-out'
+function coinPop(amount) {
+  const pop = document.createElement('div');
+  pop.textContent = `+${amount} 🪙`;
+  Object.assign(pop.style, {
+    position: 'absolute', top: '30px', right: '30px', fontWeight: '900',
+    color: '#fbc531', zIndex: '100', opacity: '1', transition: 'all 1s ease-out'
   });
   document.body.appendChild(pop);
-  requestAnimationFrame(()=>{
-    pop.style.transform='translateY(-50px)';
-    pop.style.opacity='0';
-  });
-  setTimeout(()=>pop.remove(),1000);
+  setTimeout(() => {
+    pop.style.transform = 'translateY(-50px)';
+    pop.style.opacity = '0';
+  }, 50);
+  setTimeout(() => pop.remove(), 1000);
 }
 
-function confetti(){
-  for(let i=0;i<120;i++){
-    const c=document.createElement('div');
-    c.className='confetti';
-    c.style.backgroundColor=`hsl(${Math.random()*360},100%,50%)`;
-    c.style.left=`${Math.random()*100}vw`;
-    c.style.animationDuration=`${Math.random()*2+1.5}s`;
+function confetti() {
+  for (let i = 0; i < 120; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.backgroundColor = `hsl(${Math.random() * 360},100%,50%)`;
+    c.style.left = `${Math.random() * 100}vw`;
+    c.style.animationDuration = `${Math.random() * 2 + 1.5}s`;
     document.body.appendChild(c);
-    setTimeout(()=>c.remove(),2200);
+    setTimeout(() => c.remove(), 2200);
   }
 }
 
-shuffleBank();
+// ====== BACKGROUND MUSIC ======
+let musicStarted = false;
+function startMusic() {
+  if (!musicStarted) {
+    bgMusic.volume = 0.3;
+    bgMusic.play().catch(e => console.log("Music play blocked", e));
+    musicStarted = true;
+    document.removeEventListener('click', startMusic);
+  }
+}
+document.addEventListener('click', startMusic);
+
+// ====== INIT ======
+newSet();
 loadQuestion();
-})();
 </script>
 </body>
 </html>

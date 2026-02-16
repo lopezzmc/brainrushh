@@ -189,6 +189,7 @@
       gap: 12px;
       align-items: stretch;
       transform-origin: center;
+      position: relative;
     }
 
     .topbar {
@@ -482,7 +483,7 @@
   </audio>
 
   <script>
-    // ====== GEOGRAPHY QUESTIONS BANK ======
+    // ====== GEOGRAPHY QUESTIONS BANK (Expanded) ======
     const BANK = [
       { q: "What is the largest continent by area?", choices: ["Africa", "Asia", "Europe", "Antarctica"], a: 1 },
       { q: "Which country has the largest population?", choices: ["India", "USA", "China", "Russia"], a: 2 },
@@ -540,8 +541,26 @@
     ];
 
     // ====== VARIABLES ======
-    let currentSet = [0], currentQ = 0, score = 0;
-    let totalCoins = Number(localStorage.getItem('totalCoins')) || 0;
+    let currentSet = [], currentQ = 0, score = 0;
+    
+    // 🔴 FIXED: Load username and user's saved coins from leaderboard
+    let username = localStorage.getItem('username') || null;
+    let rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+    
+    let totalCoins = 0;
+    if (username) {
+      const userEntry = rushersLeague.find(e => e.name === username);
+      if (userEntry) {
+        totalCoins = userEntry.coins;
+      } else {
+        totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+      }
+    } else {
+      totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+    }
+    
+    localStorage.setItem('totalCoins', totalCoins);
+    
     let pointsPerQ = 10, usedIndexes = [];
     let timeLeft = 15, timerInterval;
 
@@ -563,34 +582,65 @@
     const cheerS = document.getElementById('cheerS');
     const bgMusic = document.getElementById('bgMusic');
 
-    // ====== INITIAL SETUP ======
     headerCoinsEl.textContent = totalCoins;
 
-    function shuffleBank() {
-      let indexes = [];
-      while (indexes.length < 10) {
-        let rand = Math.floor(Math.random() * BANK.length);
-        if (!usedIndexes.includes(rand)) {
-          indexes.push(rand);
-          usedIndexes.push(rand);
-          if (usedIndexes.length >= BANK.length) usedIndexes = [];
-        }
+    // ====== LEADERBOARD UPDATE FUNCTION ======
+    function updateLeaderboardEntry() {
+      if (!username) return;
+      
+      rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+      const existing = rushersLeague.find(e => e.name === username);
+      
+      if (existing) {
+        existing.coins = totalCoins;
+      } else {
+        rushersLeague.push({ name: username, coins: totalCoins });
       }
-      currentSet = indexes.map(i => BANK[i]);
+      
+      rushersLeague.sort((a, b) => b.coins - a.coins);
+      localStorage.setItem('rushersLeague', JSON.stringify(rushersLeague));
+    }
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function shuffleBank() {
+      usedIndexes = [];
+      let shuffled = shuffleArray([...BANK]);
+      currentSet = shuffled.slice(0, 10);
     }
 
     function loadQuestion() {
+      if (currentQ >= currentSet.length) {
+        finishQuiz();
+        return;
+      }
+      
       questionEl.textContent = currentSet[currentQ].q;
       choicesEl.innerHTML = '';
-      currentSet[currentQ].choices.forEach((c, i) => {
+      
+      let choices = [...currentSet[currentQ].choices];
+      choices = shuffleArray(choices);
+      
+      const correctAnswerText = currentSet[currentQ].choices[currentSet[currentQ].a];
+      const correctIndexInShuffled = choices.indexOf(correctAnswerText);
+      
+      choices.forEach((c, i) => {
         let btn = document.createElement('div');
         btn.className = 'choice';
         btn.textContent = c;
-        btn.addEventListener('click', () => selectAnswer(i, btn));
+        btn.dataset.correct = (c === correctAnswerText).toString();
+        btn.addEventListener('click', () => selectAnswer(i, btn, correctIndexInShuffled));
         choicesEl.appendChild(btn);
       });
-      qcountEl.textContent = `Question ${currentQ + 1} / 10`;
-      progressFill.style.width = `${(currentQ / 10) * 100}%`;
+      
+      qcountEl.textContent = `Question ${currentQ + 1} / ${currentSet.length}`;
+      progressFill.style.width = `${(currentQ / currentSet.length) * 100}%`;
       startTimer();
     }
 
@@ -603,7 +653,12 @@
         updateTimerVisual();
         if (timeLeft <= 0) {
           clearInterval(timerInterval);
-          nextQuestion();
+          if (currentQ < currentSet.length - 1) {
+            currentQ++;
+            loadQuestion();
+          } else {
+            finishQuiz();
+          }
         }
       }, 1000);
     }
@@ -614,13 +669,12 @@
       document.getElementById('timerCircle').style.strokeDashoffset = dashOffset;
     }
 
-    function selectAnswer(i, btn) {
+    function selectAnswer(i, btn, correctIndex) {
       if (bgMusic.paused) bgMusic.play();
       clickS.currentTime = 0; clickS.play();
       clearInterval(timerInterval);
 
-      const correct = currentSet[currentQ].a;
-      if (i === correct) {
+      if (i === correctIndex) {
         btn.classList.add('correct');
         score++;
         totalCoins += pointsPerQ;
@@ -628,24 +682,44 @@
         headerCoinsEl.textContent = totalCoins;
         coinS.currentTime = 0; coinS.play();
         coinPop(pointsPerQ);
+        
+        updateLeaderboardEntry();
       } else {
         btn.classList.add('wrong');
-        Array.from(choicesEl.children)[correct].classList.add('correct');
+        Array.from(choicesEl.children).forEach(ch => {
+          if (ch.dataset.correct === 'true') {
+            ch.classList.add('correct');
+          }
+        });
       }
       Array.from(choicesEl.children).forEach(ch => ch.style.pointerEvents = 'none');
-      setTimeout(() => nextQuestion(), 800);
+      
+      setTimeout(() => {
+        if (currentQ < currentSet.length - 1) {
+          currentQ++;
+          loadQuestion();
+        } else {
+          finishQuiz();
+        }
+      }, 800);
     }
 
     function nextQuestion() {
-      currentQ++;
-      if (currentQ < 10) loadQuestion();
-      else finishQuiz();
+      if (currentQ < currentSet.length - 1) {
+        currentQ++;
+        loadQuestion();
+      } else {
+        finishQuiz();
+      }
     }
 
     function finishQuiz() {
       finalEl.style.display = 'flex';
-      finalScoreEl.textContent = `You answered ${score} / 10 correctly`;
+      finalScoreEl.textContent = `You answered ${score} / ${currentSet.length} correctly`;
       coinSummaryEl.textContent = `You earned ${score * pointsPerQ} 🪙 this round`;
+      
+      updateLeaderboardEntry();
+      
       cheerS.currentTime = 0; cheerS.play();
       progressFill.style.width = '100%';
       confetti();
@@ -654,12 +728,21 @@
     playAgainBtn.addEventListener('click', () => {
       finalEl.style.display = 'none';
       score = 0;
+      usedIndexes = [];
       shuffleBank();
       currentQ = 0;
       loadQuestion();
     });
 
-    goHomeBtn.addEventListener('click', () => window.location.href = "index.html");
+    goHomeBtn.addEventListener('click', () => {
+      localStorage.setItem('totalCoins', totalCoins);
+      updateLeaderboardEntry();
+      localStorage.setItem('totalCoins', totalCoins);
+      if (username) {
+        localStorage.setItem('rushersLeague', localStorage.getItem('rushersLeague'));
+      }
+      window.location.href = "index.html";
+    });
 
     function coinPop(amount) {
       const pop = document.createElement('div');
@@ -688,6 +771,18 @@
         setTimeout(() => c.remove(), 2200);
       }
     }
+
+    // ====== BACKGROUND MUSIC ======
+    let musicStarted = false;
+    function startMusic() {
+      if (!musicStarted) {
+        bgMusic.volume = 0.3;
+        bgMusic.play().catch(e => console.log("Music play blocked", e));
+        musicStarted = true;
+        document.removeEventListener('click', startMusic);
+      }
+    }
+    document.addEventListener('click', startMusic);
 
     shuffleBank();
     loadQuestion();

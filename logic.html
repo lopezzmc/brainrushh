@@ -484,7 +484,27 @@
 
     // ====== VARIABLES ======
     let currentSet = [0], currentQ = 0, score = 0;
-    let totalCoins = Number(localStorage.getItem('totalCoins')) || 0;
+    
+    // 🔴 FIXED: Get username and load user's saved coins
+    let username = localStorage.getItem('username') || null;
+    let rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+    
+    // Load user's coins from leaderboard or use existing totalCoins
+    let totalCoins = 0;
+    if (username) {
+      const userEntry = rushersLeague.find(e => e.name === username);
+      if (userEntry) {
+        totalCoins = userEntry.coins;
+      } else {
+        totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+      }
+    } else {
+      totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+    }
+    
+    // Save the loaded coins back to localStorage
+    localStorage.setItem('totalCoins', totalCoins);
+    
     let pointsPerQ = 10, usedIndexes = [];
     let timeLeft = 15, timerInterval;
 
@@ -506,7 +526,25 @@
     const cheerS = document.getElementById('cheerS');
     const bgMusic = document.getElementById('bgMusic');
 
+    // Update header with loaded coins
     headerCoinsEl.textContent = totalCoins;
+
+    // ====== LEADERBOARD UPDATE FUNCTION ======
+    function updateLeaderboardEntry() {
+      if (!username) return;
+      
+      rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+      const existing = rushersLeague.find(e => e.name === username);
+      
+      if (existing) {
+        existing.coins = totalCoins;
+      } else {
+        rushersLeague.push({ name: username, coins: totalCoins });
+      }
+      
+      rushersLeague.sort((a, b) => b.coins - a.coins);
+      localStorage.setItem('rushersLeague', JSON.stringify(rushersLeague));
+    }
 
     function shuffleBank() {
       let indexes = [];
@@ -570,6 +608,9 @@
         headerCoinsEl.textContent = totalCoins;
         coinS.currentTime = 0; coinS.play();
         coinPop(pointsPerQ);
+        
+        // 🔴 Update leaderboard when coins change
+        updateLeaderboardEntry();
       } else {
         btn.classList.add('wrong');
         Array.from(choicesEl.children)[correct].classList.add('correct');
@@ -588,6 +629,10 @@
       finalEl.style.display = 'flex';
       finalScoreEl.textContent = `You answered ${score} / 10 correctly`;
       coinSummaryEl.textContent = `You earned ${score * pointsPerQ} 🪙 this round`;
+      
+      // 🔴 Final leaderboard update
+      updateLeaderboardEntry();
+      
       cheerS.currentTime = 0; cheerS.play();
       progressFill.style.width = '100%';
       confetti();
@@ -596,12 +641,29 @@
     playAgainBtn.addEventListener('click', () => {
       finalEl.style.display = 'none';
       score = 0;
+      usedIndexes = [];
       shuffleBank();
       currentQ = 0;
       loadQuestion();
     });
 
-    goHomeBtn.addEventListener('click', () => window.location.href = "index.html");
+    // 🔴 FIXED: Home button with leaderboard update
+    goHomeBtn.addEventListener('click', () => {
+      // Final save of coins
+      localStorage.setItem('totalCoins', totalCoins);
+      
+      // Update leaderboard
+      updateLeaderboardEntry();
+      
+      // Trigger storage event for home page
+      localStorage.setItem('totalCoins', totalCoins);
+      if (username) {
+        localStorage.setItem('rushersLeague', localStorage.getItem('rushersLeague'));
+      }
+      
+      // Navigate to home
+      window.location.href = "index.html";
+    });
 
     function coinPop(amount) {
       const pop = document.createElement('div');
@@ -631,6 +693,7 @@
       }
     }
 
+    // Initial shuffle and load
     shuffleBank();
     loadQuestion();
   </script>

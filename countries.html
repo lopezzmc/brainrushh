@@ -42,7 +42,7 @@ html,body{height:100%;margin:0;background:var(--paper-white);font-family:Inter,s
 .coins .coinEmoji{ font-size:20px; margin-right:6px }
 .coins #headerCoins{ font-size:18px; color:#222 }
 
-.card{ margin-top:12px; background:none; border-radius:12px; padding:28px; min-height:62vh; display:flex; flex-direction:column; gap:12px; align-items:stretch; transform-origin:center; }
+.card{ margin-top:12px; background:none; border-radius:12px; padding:28px; min-height:62vh; display:flex; flex-direction:column; gap:12px; align-items:stretch; transform-origin:center; position:relative; }
 
 .topbar{ display:flex; justify-content:space-between; align-items:center; gap:12px; }
 .qcount{ font-weight:900; color:#222; padding:8px 12px; background:rgba(255,255,255,0.8); border-radius:10px; box-shadow:0 6px 20px rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.02) }
@@ -163,7 +163,7 @@ svg.timer{ width:70px; height:70px }
 <audio id="bgMusic" loop><source src="background-music.mp3" type="audio/mpeg"></audio>
 
 <script>
-// ====== COUNTRIES QUESTIONS BANK ======
+// ====== COUNTRIES QUESTIONS BANK (50+ questions) ======
 const BANK = [
   { q:"Which country has the largest land area?", choices:["USA","China","Russia","Canada"], a:2 },
   { q:"Which country has the highest population?", choices:["India","China","USA","Indonesia"], a:1 },
@@ -184,159 +184,318 @@ const BANK = [
   { q:"Which South American country is the largest?", choices:["Brazil","Argentina","Colombia","Peru"], a:0 },
   { q:"Which European country has the largest population?", choices:["Germany","France","UK","Italy"], a:0 },
   { q:"Which country has the capital city of Brasília?", choices:["Argentina","Brazil","Peru","Chile"], a:1 },
-  { q:"Which country has the largest rainforest?", choices:["Brazil","Congo","Indonesia","Peru"], a:0 }
+  { q:"Which country has the largest rainforest?", choices:["Brazil","Congo","Indonesia","Peru"], a:0 },
+  // Additional Countries Questions (30 more)
+  { q:"Which country is home to the Great Wall?", choices:["Japan","China","India","Mongolia"], a:1 },
+  { q:"Which country has the Eiffel Tower?", choices:["Italy","Spain","France","Germany"], a:2 },
+  { q:"Which country is known for the Taj Mahal?", choices:["Pakistan","India","Bangladesh","Sri Lanka"], a:1 },
+  { q:"Which country is famous for pizza and pasta?", choices:["France","Greece","Italy","Spain"], a:2 },
+  { q:"Which country is home to the Great Barrier Reef?", choices:["Australia","New Zealand","Fiji","Indonesia"], a:0 },
+  { q:"Which country has the Pyramids of Giza?", choices:["Sudan","Egypt","Libya","Algeria"], a:1 },
+  { q:"Which country is the largest in Africa?", choices:["Sudan","Algeria","DR Congo","Nigeria"], a:1 },
+  { q:"Which country has the most people in Africa?", choices:["Egypt","Ethiopia","Nigeria","Kenya"], a:2 },
+  { q:"Which country is the smallest in Africa?", choices:["Gambia","Eswatini","Djibouti","Seychelles"], a:3 },
+  { q:"Which country has the capital city of Tokyo?", choices:["China","South Korea","Japan","Thailand"], a:2 },
+  { q:"Which country has the capital city of London?", choices:["UK","Ireland","Scotland","Wales"], a:0 },
+  { q:"Which country has the capital city of Paris?", choices:["Belgium","Switzerland","France","Luxembourg"], a:2 },
+  { q:"Which country has the capital city of Berlin?", choices:["Austria","Switzerland","Germany","Poland"], a:2 },
+  { q:"Which country has the capital city of Rome?", choices:["Greece","Spain","Italy","Portugal"], a:2 },
+  { q:"Which country has the capital city of Madrid?", choices:["Portugal","Spain","France","Italy"], a:1 },
+  { q:"Which country has the capital city of Moscow?", choices:["Ukraine","Belarus","Russia","Kazakhstan"], a:2 },
+  { q:"Which country has the capital city of Beijing?", choices:["Japan","South Korea","China","Mongolia"], a:2 },
+  { q:"Which country has the capital city of New Delhi?", choices:["Pakistan","India","Bangladesh","Nepal"], a:1 },
+  { q:"Which country has the capital city of Ottawa?", choices:["USA","Mexico","Canada","Greenland"], a:2 },
+  { q:"Which country has the capital city of Canberra?", choices:["New Zealand","Australia","Fiji","Papua New Guinea"], a:1 },
+  { q:"Which country is known for the Amazon River?", choices:["Peru","Colombia","Brazil","Ecuador"], a:2 },
+  { q:"Which country is known for the Rocky Mountains?", choices:["USA","Canada","Mexico","Both A and B"], a:3 },
+  { q:"Which country is known for the Alps?", choices:["Switzerland","Austria","France","All of the above"], a:3 },
+  { q:"Which country is the largest in Europe?", choices:["Germany","France","Ukraine","Russia"], a:3 },
+  { q:"Which country is the smallest in Europe?", choices:["Monaco","Vatican City","San Marino","Malta"], a:1 },
+  { q:"Which country is known for kangaroos?", choices:["New Zealand","Australia","South Africa","Brazil"], a:1 },
+  { q:"Which country is known for pandas?", choices:["Japan","China","Vietnam","Thailand"], a:1 },
+  { q:"Which country is known for maple syrup?", choices:["USA","Canada","France","Sweden"], a:1 },
+  { q:"Which country is known for the Northern Lights?", choices:["Norway","Iceland","Finland","All of the above"], a:3 },
+  { q:"Which country is the most visited in the world?", choices:["USA","Spain","France","Italy"], a:2 },
+  { q:"Which country has the most UNESCO World Heritage sites?", choices:["Italy","China","Spain","France"], a:0 },
+  { q:"Which country is known for its neutrality?", choices:["Sweden","Switzerland","Austria","Finland"], a:1 },
+  { q:"Which country is the largest producer of coffee?", choices:["Colombia","Vietnam","Brazil","Ethiopia"], a:2 },
+  { q:"Which country is the largest producer of oil?", choices:["Saudi Arabia","USA","Russia","Canada"], a:1 },
+  { q:"Which country is the largest producer of wine?", choices:["France","Italy","Spain","USA"], a:1 },
+  { q:"Which country has the longest river (Nile)?", choices:["Egypt","Sudan","Ethiopia","Uganda"], a:0 },
+  { q:"Which country has the highest mountain (Everest)?", choices:["India","China","Nepal","Both China and Nepal"], a:3 },
+  { q:"Which country has the deepest lake (Baikal)?", choices:["Mongolia","Russia","Kazakhstan","China"], a:1 },
+  { q:"Which country has the largest salt flat (Uyuni)?", choices:["Chile","Argentina","Bolivia","Peru"], a:2 },
+  { q:"Which country is home to the ancient city of Petra?", choices:["Egypt","Jordan","Israel","Syria"], a:1 },
+  { q:"Which country is home to Machu Picchu?", choices:["Chile","Peru","Ecuador","Colombia"], a:1 },
+  { q:"Which country is home to the Colosseum?", choices:["Greece","Italy","Spain","Turkey"], a:1 },
+  { q:"Which country is home to the Statue of Liberty?", choices:["USA","France","UK","Canada"], a:0 },
+  { q:"Which country is home to the Sydney Opera House?", choices:["New Zealand","Australia","South Africa","Singapore"], a:1 },
+  { q:"Which country is home to the Leaning Tower of Pisa?", choices:["France","Italy","Spain","Greece"], a:1 },
+  { q:"Which country is home to the Acropolis?", choices:["Italy","Turkey","Greece","Egypt"], a:2 }
 ];
 
 // ====== VARIABLES ======
-let currentSet=[0], currentQ=0, score=0;
-let totalCoins = Number(localStorage.getItem('totalCoins')) || 0;
-let pointsPerQ = 10, usedIndexes=[];
+let currentSet = [], currentQ = 0, score = 0;
+
+// 🔴 FIXED: Load username and user's saved coins from leaderboard
+let username = localStorage.getItem('username') || null;
+let rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+
+// Load user's coins from leaderboard or use existing totalCoins
+let totalCoins = 0;
+if (username) {
+  const userEntry = rushersLeague.find(e => e.name === username);
+  if (userEntry) {
+    totalCoins = userEntry.coins;  // Load user's OWN saved coins
+  } else {
+    totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+  }
+} else {
+  totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+}
+
+// Save the loaded coins back to localStorage
+localStorage.setItem('totalCoins', totalCoins);
+
+let pointsPerQ = 10, usedIndexes = [];
 let timeLeft = 15, timerInterval;
 
 // ====== ELEMENTS ======
-const questionEl=document.getElementById('question');
-const choicesEl=document.getElementById('choices');
-const progressFill=document.getElementById('progressFill');
-const qcountEl=document.getElementById('qcount');
-const finalEl=document.getElementById('final');
-const finalScoreEl=document.getElementById('finalScore');
-const coinSummaryEl=document.getElementById('coinSummary');
-const headerCoinsEl=document.getElementById('headerCoins');
+const questionEl = document.getElementById('question');
+const choicesEl = document.getElementById('choices');
+const progressFill = document.getElementById('progressFill');
+const qcountEl = document.getElementById('qcount');
+const finalEl = document.getElementById('final');
+const finalScoreEl = document.getElementById('finalScore');
+const coinSummaryEl = document.getElementById('coinSummary');
+const headerCoinsEl = document.getElementById('headerCoins');
 
-const playAgainBtn=document.getElementById('playAgain');
-const goHomeBtn=document.getElementById('goHome');
+const playAgainBtn = document.getElementById('playAgain');
+const goHomeBtn = document.getElementById('goHome');
 
-const clickS=document.getElementById('clickS');
-const coinS=document.getElementById('coinS');
-const cheerS=document.getElementById('cheerS');
-const bgMusic=document.getElementById('bgMusic');
+const clickS = document.getElementById('clickS');
+const coinS = document.getElementById('coinS');
+const cheerS = document.getElementById('cheerS');
+const bgMusic = document.getElementById('bgMusic');
 
 // ====== INITIAL SETUP ======
 headerCoinsEl.textContent = totalCoins;
 
-function shuffleBank() {
-  let indexes = [];
-  while(indexes.length < 10){
-    let rand = Math.floor(Math.random()*BANK.length);
-    if(!usedIndexes.includes(rand)){
-      indexes.push(rand);
-      usedIndexes.push(rand);
-      if(usedIndexes.length>=BANK.length) usedIndexes=[];
-    }
+// ====== LEADERBOARD UPDATE FUNCTION ======
+function updateLeaderboardEntry() {
+  if (!username) return;
+  
+  rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+  const existing = rushersLeague.find(e => e.name === username);
+  
+  if (existing) {
+    existing.coins = totalCoins;
+  } else {
+    rushersLeague.push({ name: username, coins: totalCoins });
   }
-  currentSet = indexes.map(i=>BANK[i]);
+  
+  rushersLeague.sort((a, b) => b.coins - a.coins);
+  localStorage.setItem('rushersLeague', JSON.stringify(rushersLeague));
 }
 
+// ====== SHUFFLE BANK ======
+function shuffleBank() {
+  usedIndexes = []; // Reset used indexes for new game
+  
+  // Shuffle and pick 10 random questions
+  let shuffled = [...BANK];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  
+  currentSet = shuffled.slice(0, 10);
+}
+
+// ====== LOAD QUESTION ======
 function loadQuestion() {
+  if (currentQ >= currentSet.length) {
+    finishQuiz();
+    return;
+  }
+  
   questionEl.textContent = currentSet[currentQ].q;
   choicesEl.innerHTML = '';
-  currentSet[currentQ].choices.forEach((c,i)=>{
-    let btn=document.createElement('div');
-    btn.className='choice';
-    btn.textContent=c;
-    btn.addEventListener('click',()=>selectAnswer(i,btn));
+  
+  // Shuffle choices for each question
+  let choices = [...currentSet[currentQ].choices];
+  for (let i = choices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [choices[i], choices[j]] = [choices[j], choices[i]];
+  }
+  
+  // Store the correct answer index after shuffling
+  const correctAnswerText = currentSet[currentQ].choices[currentSet[currentQ].a];
+  const correctIndexInShuffled = choices.indexOf(correctAnswerText);
+  
+  choices.forEach((c, i) => {
+    let btn = document.createElement('div');
+    btn.className = 'choice';
+    btn.textContent = c;
+    btn.dataset.correct = (c === correctAnswerText).toString();
+    btn.addEventListener('click', () => selectAnswer(i, btn, correctIndexInShuffled));
     choicesEl.appendChild(btn);
   });
-  qcountEl.textContent=`Question ${currentQ+1} / 10`;
-  progressFill.style.width = `${(currentQ/10)*100}%`;
+  
+  qcountEl.textContent = `Question ${currentQ + 1} / ${currentSet.length}`;
+  progressFill.style.width = `${(currentQ / currentSet.length) * 100}%`;
   startTimer();
 }
 
-function startTimer(){
+// ====== TIMER FUNCTIONS ======
+function startTimer() {
   clearInterval(timerInterval);
-  timeLeft=15;
+  timeLeft = 15;
   updateTimerVisual();
-  timerInterval=setInterval(()=>{
+  timerInterval = setInterval(() => {
     timeLeft--;
     updateTimerVisual();
-    if(timeLeft<=0){
+    if (timeLeft <= 0) {
       clearInterval(timerInterval);
-      nextQuestion();
+      if (currentQ < currentSet.length - 1) {
+        currentQ++;
+        loadQuestion();
+      } else {
+        finishQuiz();
+      }
     }
-  },1000);
+  }, 1000);
 }
 
-function updateTimerVisual(){
-  document.getElementById('timerText').textContent=timeLeft;
-  const dashOffset = 282.6 * (1 - timeLeft/15);
-  document.getElementById('timerCircle').style.strokeDashoffset=dashOffset;
+function updateTimerVisual() {
+  document.getElementById('timerText').textContent = timeLeft;
+  const dashOffset = 282.6 * (1 - timeLeft / 15);
+  document.getElementById('timerCircle').style.strokeDashoffset = dashOffset;
 }
 
-function selectAnswer(i,btn){
-  if(bgMusic.paused) bgMusic.play();
-  clickS.currentTime=0; clickS.play();
+// ====== ANSWER SELECTION ======
+function selectAnswer(i, btn, correctIndex) {
+  if (bgMusic.paused) bgMusic.play();
+  clickS.currentTime = 0; clickS.play();
   clearInterval(timerInterval);
 
-  const correct=currentSet[currentQ].a;
-  if(i===correct){
+  if (i === correctIndex) {
     btn.classList.add('correct');
     score++;
-    totalCoins+=pointsPerQ;
+    totalCoins += pointsPerQ;
     localStorage.setItem('totalCoins', totalCoins);
-    headerCoinsEl.textContent=totalCoins;
-    coinS.currentTime=0; coinS.play();
+    headerCoinsEl.textContent = totalCoins;
+    coinS.currentTime = 0; coinS.play();
     coinPop(pointsPerQ);
+    
+    // 🔴 Update leaderboard immediately when coins change
+    updateLeaderboardEntry();
   } else {
     btn.classList.add('wrong');
-    Array.from(choicesEl.children)[correct].classList.add('correct');
+    // Highlight the correct answer
+    Array.from(choicesEl.children).forEach(ch => {
+      if (ch.dataset.correct === 'true') {
+        ch.classList.add('correct');
+      }
+    });
   }
-  Array.from(choicesEl.children).forEach(ch=>ch.style.pointerEvents='none');
-  setTimeout(()=>nextQuestion(),800);
+  Array.from(choicesEl.children).forEach(ch => ch.style.pointerEvents = 'none');
+  
+  setTimeout(() => {
+    if (currentQ < currentSet.length - 1) {
+      currentQ++;
+      loadQuestion();
+    } else {
+      finishQuiz();
+    }
+  }, 800);
 }
 
-function nextQuestion(){
-  currentQ++;
-  if(currentQ<10) loadQuestion();
-  else finishQuiz();
-}
-
-function finishQuiz(){
-  finalEl.style.display='flex';
-  finalScoreEl.textContent=`You answered ${score} / 10 correctly`;
-  coinSummaryEl.textContent=`You earned ${score*pointsPerQ} 🪙 this round`;
-  cheerS.currentTime=0; cheerS.play();
+// ====== FINISH QUIZ ======
+function finishQuiz() {
+  finalEl.style.display = 'flex';
+  finalScoreEl.textContent = `You answered ${score} / ${currentSet.length} correctly`;
+  coinSummaryEl.textContent = `You earned ${score * pointsPerQ} 🪙 this round`;
+  
+  // 🔴 Final leaderboard update
+  updateLeaderboardEntry();
+  
+  cheerS.currentTime = 0; cheerS.play();
   progressFill.style.width = '100%';
   confetti();
 }
 
-playAgainBtn.addEventListener('click',()=>{
-  finalEl.style.display='none';
-  score=0;
+// ====== BUTTON EVENT LISTENERS ======
+playAgainBtn.addEventListener('click', () => {
+  finalEl.style.display = 'none';
+  score = 0;
+  usedIndexes = [];
   shuffleBank();
-  currentQ=0;
+  currentQ = 0;
   loadQuestion();
 });
 
-goHomeBtn.addEventListener('click',()=>window.location.href="index.html");
+// 🔴 FIXED: Home button with proper leaderboard update
+goHomeBtn.addEventListener('click', () => {
+  // Final save of coins
+  localStorage.setItem('totalCoins', totalCoins);
+  
+  // Update leaderboard
+  updateLeaderboardEntry();
+  
+  // Trigger storage event for home page to refresh
+  localStorage.setItem('totalCoins', totalCoins);
+  if (username) {
+    localStorage.setItem('rushersLeague', localStorage.getItem('rushersLeague'));
+  }
+  
+  // Navigate to home
+  window.location.href = "index.html";
+});
 
-function coinPop(amount){
-  const pop=document.createElement('div');
-  pop.textContent=`+${amount} 🪙`;
-  pop.style.position='absolute';
-  pop.style.top='30px';
-  pop.style.right='30px';
-  pop.style.fontWeight='900';
-  pop.style.color='#fbc531';
-  pop.style.zIndex='100';
-  pop.style.opacity='1';
-  pop.style.transition='all 1s ease-out';
+// ====== COIN POPUP ======
+function coinPop(amount) {
+  const pop = document.createElement('div');
+  pop.textContent = `+${amount} 🪙`;
+  pop.style.position = 'absolute';
+  pop.style.top = '30px';
+  pop.style.right = '30px';
+  pop.style.fontWeight = '900';
+  pop.style.color = '#fbc531';
+  pop.style.zIndex = '100';
+  pop.style.opacity = '1';
+  pop.style.transition = 'all 1s ease-out';
   document.body.appendChild(pop);
-  setTimeout(()=>{ pop.style.transform='translateY(-50px)'; pop.style.opacity='0'; },50);
-  setTimeout(()=>pop.remove(),1000);
+  setTimeout(() => { pop.style.transform = 'translateY(-50px)'; pop.style.opacity = '0'; }, 50);
+  setTimeout(() => pop.remove(), 1000);
 }
 
-function confetti(){
-  for(let i=0;i<120;i++){
-    const c=document.createElement('div');
-    c.className='confetti';
-    c.style.backgroundColor=`hsl(${Math.random()*360},100%,50%)`;
-    c.style.left=`${Math.random()*100}vw`;
-    c.style.animationDuration=`${Math.random()*2+1.5}s`;
+// ====== CONFETTI ======
+function confetti() {
+  for (let i = 0; i < 120; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.backgroundColor = `hsl(${Math.random() * 360},100%,50%)`;
+    c.style.left = `${Math.random() * 100}vw`;
+    c.style.animationDuration = `${Math.random() * 2 + 1.5}s`;
     document.body.appendChild(c);
-    setTimeout(()=>c.remove(),2200);
+    setTimeout(() => c.remove(), 2200);
   }
 }
 
+// ====== BACKGROUND MUSIC ======
+let musicStarted = false;
+function startMusic() {
+  if (!musicStarted) {
+    bgMusic.volume = 0.3;
+    bgMusic.play().catch(e => console.log("Music play blocked", e));
+    musicStarted = true;
+    document.removeEventListener('click', startMusic);
+  }
+}
+document.addEventListener('click', startMusic);
+
+// ====== START QUIZ ======
 shuffleBank();
 loadQuestion();
 </script>

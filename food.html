@@ -33,8 +33,53 @@ html,body{height:100%;margin:0;background:var(--paper-white);font-family:Inter,s
 .coins{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;background:#fff;box-shadow:0 6px 30px rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.03);font-weight:900;}
 .coins .coinEmoji{font-size:20px;margin-right:6px;}
 .coins #headerCoins{font-size:18px;color:#222;}
-.card{margin-top:12px;background:none;border-radius:12px;padding:28px;min-height:60vh;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:flex-start;transform-origin:center;}
-#logoImg{width:250px;height:250px;object-fit:contain;border-radius:20px;}
+.card{margin-top:12px;background:none;border-radius:12px;padding:28px;min-height:60vh;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:flex-start;transform-origin:center;position:relative;}
+#logoImg{width:250px;height:250px;object-fit:contain;border-radius:20px;background:#f5f5f5;padding:10px;}
+
+/* Timer Styles */
+.timerWrap {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-svg {
+  transform: rotate(-90deg);
+  width: 70px;
+  height: 70px;
+  position: absolute;
+}
+
+.timer-circle-bg {
+  stroke: #ddd;
+  stroke-width: 6;
+  fill: none;
+}
+
+.timer-circle-progress {
+  stroke: #7b3af6;
+  stroke-width: 6;
+  fill: none;
+  stroke-dasharray: 188.4; /* 2 * π * 30 */
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear;
+  filter: drop-shadow(0 0 5px rgba(123,58,246,0.5));
+}
+
+.timer-text {
+  position: absolute;
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: #7b3af6;
+  text-shadow: 0 0 10px rgba(123,58,246,0.3);
+  z-index: 2;
+}
+
 .question{font-family:"Patrick Hand", Inter;font-weight:900;text-align:center;margin:12px 0;line-height:1.4;display:flex;align-items:center;justify-content:center;padding:12px 24px;position:relative;transition:all .3s ease;}
 .question::before{content:'';position:absolute;inset:-12px;background:rgba(255,255,255,0.92);border-radius:16px;z-index:-1;}
 .choices{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px;width:100%;}
@@ -52,7 +97,6 @@ html,body{height:100%;margin:0;background:var(--paper-white);font-family:Inter,s
 .btn{padding:10px 16px;border-radius:10px;border:none;cursor:pointer;font-weight:900;background:linear-gradient(90deg,#7b3af6,#00e5ff);color:#fff;box-shadow:0 12px 36px rgba(0,0,0,0.12);}
 .confetti{position:fixed;width:10px;height:8px;top:-20px;pointer-events:none;z-index:40;opacity:0.95;border-radius:2px;transform:translateY(0) rotate(0deg);animation:confettiFall 2200ms linear forwards;}
 @keyframes confettiFall{to{transform:translateY(110vh) rotate(720deg);opacity:0.95}}
-#timerCircle{transition: stroke-dashoffset 1s linear;}
 @media(max-width:760px){.choice{height:50px;font-size:16px;flex:1 1 45%;min-width:100px;}.title{font-size:22px;}.question{font-size:1.8rem;}}
 </style>
 </head>
@@ -76,7 +120,16 @@ html,body{height:100%;margin:0;background:var(--paper-white);font-family:Inter,s
         <div class="coins"><span class="coinEmoji">💰</span><span id="headerCoins">0</span></div>
       </div>
     </div>
-    <div class="card">
+    <div class="card" id="card">
+      <!-- Timer -->
+      <div class="timerWrap">
+        <svg class="timer-svg" viewBox="0 0 70 70">
+          <circle class="timer-circle-bg" cx="35" cy="35" r="30"></circle>
+          <circle class="timer-circle-progress" id="timerProgress" cx="35" cy="35" r="30"></circle>
+        </svg>
+        <div class="timer-text" id="timerText">15</div>
+      </div>
+      
       <img id="logoImg" src="" alt="Food/Drink Image">
       <div class="question" id="question">Loading…</div>
       <div class="choices" id="choices" role="list" aria-live="polite"></div>
@@ -102,163 +155,300 @@ html,body{height:100%;margin:0;background:var(--paper-white);font-family:Inter,s
 <audio id="bgMusic" loop><source src="background-music.mp3" type="audio/mpeg"></audio>
 
 <script>
-// --- Food & Drink BANK ---
-const FOOD_BANK=[
-{img:"foods/pizaa.jpg",choices:["Pizza","Burger","Sushi","Pasta"],answer:"Pizza"},
-{img:"foods/sushi.jpg",choices:["Sushi","Taco","Ramen","Salad"],answer:"Sushi"},
-{img:"foods/burger.jpg",choices:["Burger","Hotdog","Sandwich","Pizza"],answer:"Burger"},
-{img:"foods/ice cream.jpg",choices:["Ice Cream","Cake","Donut","Pudding"],answer:"Ice Cream"},
-{img:"foods/orange_juice.jpg",choices:["Orange Juice","Apple Juice","Lemonade","Grape Juice"],answer:"Orange Juice"},
-{img:"foods/coffee.jpg",choices:["Coffee","Tea","Hot Chocolate","Latte"],answer:"Coffee"},
-{img:"foods/chocolate.jpg",choices:["Chocolate","Candy","Brownie","Cake"],answer:"Chocolate"},
-{img:"foods/donuts.jpg",choices:["Donut","Cake","Muffin","Croissant"],answer:"Donut"},
-{img:"foods/spaghetti.jpg",choices:["Spaghetti","Pizza","Burger","Ramen"],answer:"Spaghetti"},
-{img:"foods/taco.jpg",choices:["Taco","Burrito","Sandwich","Hotdog"],answer:"Taco"},
-{img:"foods/pancake.jpg",choices:["Pancake","Waffle","Cake","Pie"],answer:"Pancake"},
-{img:"foods/milkshake.jpg",choices:["Milkshake","Smoothie","Soda","Coffee"],answer:"Milkshake"},
-{img:"foods/sushi.jpg",choices:["Sushi","Ramen","Noodles","Dumplings"],answer:"Sushi"},
-{img:"foods/steak.jpg",choices:["Steak","Chicken","Pork","Lamb"],answer:"Steak"},
-{img:"foods/salad.jpg",choices:["Salad","Soup","Pasta","Pizza"],answer:"Salad"},
-{img:"foods/lemonade.jpg",choices:["Lemonade","Soda","Water","Tea"],answer:"Lemonade"},
-{img:"foods/wine.jpg",choices:["Wine","Beer","Juice","Soda"],answer:"Wine"},
-{img:"foods/beer.jpg",choices:["Beer","Wine","Soda","Juice"],answer:"Beer"},
-{img:"foods/pancake.jpg",choices:["Pancake","Waffle","Cake","Pie"],answer:"Pancake"},
-{q:"Which country is famous for sushi?",choices:["Japan","China","Korea","Thailand"],answer:"Japan"},
-{q:"Which country is famous for pizza?",choices:["Italy","France","USA","Spain"],answer:"Italy"},
-{q:"Which ingredient is in a Mojito?",choices:["Mint","Basil","Cinnamon","Lemon"],answer:"Mint"},
-{q:"Which fruit is used to make guacamole?",choices:["Avocado","Banana","Tomato","Apple"],answer:"Avocado"},
-{q:"Which drink is served hot?",choices:["Coffee","Soda","Water","Lemonade"],answer:"Coffee"},
-{q:"Which ingredient is in a Caesar salad?",choices:["Lettuce","Tomato","Carrot","Onion"],answer:"Lettuce"},
-{q:"Which spice is used in pumpkin pie?",choices:["Cinnamon","Paprika","Cumin","Basil"],answer:"Cinnamon"},
-{q:"Which nut is used to make peanut butter?",choices:["Peanut","Almond","Cashew","Hazelnut"],answer:"Peanut"},
-{q:"Which drink is carbonated?",choices:["Soda","Water","Coffee","Milk"],answer:"Soda"},
-{q:"Which food comes from cows?",choices:["Cheese","Chicken","Pork","Fish"],answer:"Cheese"},
-{q:"Which fruit is yellow and curved?",choices:["Banana","Lemon","Mango","Pineapple"],answer:"Banana"},
-{q:"Which drink is made from fermented grapes?",choices:["Wine","Beer","Vodka","Whiskey"],answer:"Wine"},
-{q:"Which food is made of dough and tomato sauce?",choices:["Pizza","Burger","Sushi","Salad"],answer:"Pizza"},
-{q:"Which dessert is frozen?",choices:["Ice Cream","Cake","Pie","Brownie"],answer:"Ice Cream"},
-{q:"Which herb is used in pesto sauce?",choices:["Basil","Mint","Thyme","Cilantro"],answer:"Basil"},
-{q:"Which fruit is red and often in pies?",choices:["Strawberry","Blueberry","Banana","Orange"],answer:"Strawberry"},
-{q:"Which pasta is shaped like tubes?",choices:["Penne","Spaghetti","Fusilli","Ravioli"],answer:"Penne"},
-{q:"Which drink is made from cocoa?",choices:["Hot Chocolate","Coffee","Tea","Soda"],answer:"Hot Chocolate"},
-{q:"Which food is deep-fried and cylindrical?",choices:["Spring Roll","Pizza","Salad","Burger"],answer:"Spring Roll"},
-{q:"Which drink is popular for breakfast?",choices:["Orange Juice","Beer","Wine","Soda"],answer:"Orange Juice"}
+// --- Food & Drink BANK (Expanded) ---
+const FOOD_BANK = [
+  {img:"foods/pizaa.jpg", q:"Which food is this?", choices:["Pizza","Burger","Sushi","Pasta"], a:0},
+  {img:"foods/sushi.jpg", q:"Which food is this?", choices:["Sushi","Taco","Ramen","Salad"], a:0},
+  {img:"foods/burger.jpg", q:"Which food is this?", choices:["Burger","Hotdog","Sandwich","Pizza"], a:0},
+  {img:"foods/ice cream.jpg", q:"Which dessert is this?", choices:["Ice Cream","Cake","Donut","Pudding"], a:0},
+  {img:"foods/orange_juice.jpg", q:"Which drink is this?", choices:["Orange Juice","Apple Juice","Lemonade","Grape Juice"], a:0},
+  {img:"foods/coffee.jpg", q:"Which drink is this?", choices:["Coffee","Tea","Hot Chocolate","Latte"], a:0},
+  {img:"foods/chocolate.jpg", q:"Which treat is this?", choices:["Chocolate","Candy","Brownie","Cake"], a:0},
+  {img:"foods/donuts.jpg", q:"Which pastry is this?", choices:["Donut","Cake","Muffin","Croissant"], a:0},
+  {img:"foods/spaghetti.jpg", q:"Which pasta is this?", choices:["Spaghetti","Pizza","Burger","Ramen"], a:0},
+  {img:"foods/taco.jpg", q:"Which Mexican dish is this?", choices:["Taco","Burrito","Sandwich","Hotdog"], a:0},
+  {img:"foods/pancake.jpg", q:"Which breakfast food is this?", choices:["Pancake","Waffle","Cake","Pie"], a:0},
+  {img:"foods/milkshake.jpg", q:"Which drink is this?", choices:["Milkshake","Smoothie","Soda","Coffee"], a:0},
+  {img:"foods/steak.jpg", q:"Which meat dish is this?", choices:["Steak","Chicken","Pork","Lamb"], a:0},
+  {img:"foods/salad.jpg", q:"Which healthy dish is this?", choices:["Salad","Soup","Pasta","Pizza"], a:0},
+  {img:"foods/lemonade.jpg", q:"Which drink is this?", choices:["Lemonade","Soda","Water","Tea"], a:0},
+  {img:"foods/wine.jpg", q:"Which alcoholic drink is this?", choices:["Wine","Beer","Juice","Soda"], a:0},
+  {img:"foods/beer.jpg", q:"Which alcoholic drink is this?", choices:["Beer","Wine","Soda","Juice"], a:0},
+  {q:"Which country is famous for sushi?", choices:["Japan","China","Korea","Thailand"], a:0},
+  {q:"Which country is famous for pizza?", choices:["Italy","France","USA","Spain"], a:0},
+  {q:"Which ingredient is in a Mojito?", choices:["Mint","Basil","Cinnamon","Lemon"], a:0},
+  {q:"Which fruit is used to make guacamole?", choices:["Avocado","Banana","Tomato","Apple"], a:0},
+  {q:"Which drink is served hot?", choices:["Coffee","Soda","Water","Lemonade"], a:0},
+  {q:"Which ingredient is in a Caesar salad?", choices:["Lettuce","Tomato","Carrot","Onion"], a:0},
+  {q:"Which spice is used in pumpkin pie?", choices:["Cinnamon","Paprika","Cumin","Basil"], a:0},
+  {q:"Which nut is used to make peanut butter?", choices:["Peanut","Almond","Cashew","Hazelnut"], a:0},
+  {q:"Which drink is carbonated?", choices:["Soda","Water","Coffee","Milk"], a:0},
+  {q:"Which food comes from cows?", choices:["Cheese","Chicken","Pork","Fish"], a:0},
+  {q:"Which fruit is yellow and curved?", choices:["Banana","Lemon","Mango","Pineapple"], a:0},
+  {q:"Which drink is made from fermented grapes?", choices:["Wine","Beer","Vodka","Whiskey"], a:0},
+  {q:"Which dessert is frozen?", choices:["Ice Cream","Cake","Pie","Brownie"], a:0},
+  {q:"Which herb is used in pesto sauce?", choices:["Basil","Mint","Thyme","Cilantro"], a:0},
+  {q:"Which pasta is shaped like tubes?", choices:["Penne","Spaghetti","Fusilli","Ravioli"], a:0},
+  {q:"Which drink is made from cocoa?", choices:["Hot Chocolate","Coffee","Tea","Soda"], a:0},
+  {q:"Which drink is popular for breakfast?", choices:["Orange Juice","Beer","Wine","Soda"], a:0},
+  {q:"What is the main ingredient in bread?", choices:["Flour","Sugar","Salt","Oil"], a:0},
+  {q:"Which fruit is red and often in pies?", choices:["Strawberry","Blueberry","Banana","Orange"], a:0},
+  {q:"Which vegetable is used to make french fries?", choices:["Potato","Carrot","Onion","Tomato"], a:0},
+  {q:"Which meat is used in a hamburger?", choices:["Beef","Chicken","Pork","Fish"], a:0},
+  {q:"Which seafood is used in sushi?", choices:["Fish","Chicken","Beef","Pork"], a:0},
+  {q:"Which dairy product is fermented?", choices:["Yogurt","Milk","Butter","Cream"], a:0}
 ];
 
-let currentSet=[],currentQ=0,score=0;
-let totalCoins=Number(localStorage.getItem('totalCoins'))||0;
-const pointsPerQ=10;
-let timerInterval,timeLeft=15;
+// --- Elements ---
+let currentSet = [], currentQ = 0, score = 0;
 
-const logoImg=document.getElementById('logoImg');
-const questionEl=document.getElementById('question');
-const choicesEl=document.getElementById('choices');
-const progressFill=document.getElementById('progressFill');
-const qcountEl=document.getElementById('qcount');
-const finalEl=document.getElementById('final');
-const finalScoreEl=document.getElementById('finalScore');
-const coinSummaryEl=document.getElementById('coinSummary');
-const headerCoinsEl=document.getElementById('headerCoins');
-const playAgainBtn=document.getElementById('playAgain');
-const goHomeBtn=document.getElementById('goHome');
-const clickS=document.getElementById('clickS');
-const coinS=document.getElementById('coinS');
-const cheerS=document.getElementById('cheerS');
-const bgMusic=document.getElementById('bgMusic');
-const timerText=document.createElement('div');
-const timerCircle=document.createElement('div');
+// 🔴 FIXED: Load username and user's saved coins from leaderboard
+let username = localStorage.getItem('username') || null;
+let rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
 
-headerCoinsEl.textContent=totalCoins;
+// Load user's coins from leaderboard or use existing totalCoins
+let totalCoins = 0;
+if (username) {
+  const userEntry = rushersLeague.find(e => e.name === username);
+  if (userEntry) {
+    totalCoins = userEntry.coins;
+  } else {
+    totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+  }
+} else {
+  totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+}
+
+localStorage.setItem('totalCoins', totalCoins);
+
+const pointsPerQ = 10;
+let timerInterval, timeLeft = 15;
+
+const logoImg = document.getElementById('logoImg');
+const questionEl = document.getElementById('question');
+const choicesEl = document.getElementById('choices');
+const progressFill = document.getElementById('progressFill');
+const qcountEl = document.getElementById('qcount');
+const finalEl = document.getElementById('final');
+const finalScoreEl = document.getElementById('finalScore');
+const coinSummaryEl = document.getElementById('coinSummary');
+const headerCoinsEl = document.getElementById('headerCoins');
+const playAgainBtn = document.getElementById('playAgain');
+const goHomeBtn = document.getElementById('goHome');
+const clickS = document.getElementById('clickS');
+const coinS = document.getElementById('coinS');
+const cheerS = document.getElementById('cheerS');
+const bgMusic = document.getElementById('bgMusic');
+const timerProgress = document.getElementById('timerProgress');
+const timerText = document.getElementById('timerText');
+
+headerCoinsEl.textContent = totalCoins;
+
+// ====== LEADERBOARD UPDATE FUNCTION ======
+function updateLeaderboardEntry() {
+  if (!username) return;
+  
+  rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+  const existing = rushersLeague.find(e => e.name === username);
+  
+  if (existing) {
+    existing.coins = totalCoins;
+  } else {
+    rushersLeague.push({ name: username, coins: totalCoins });
+  }
+  
+  rushersLeague.sort((a, b) => b.coins - a.coins);
+  localStorage.setItem('rushersLeague', JSON.stringify(rushersLeague));
+}
 
 // --- Helper Functions ---
-function shuffleArray(arr){return arr.sort(()=>Math.random()-0.5);}
-function newSet(){
-  currentSet=shuffleArray([...FOOD_BANK]).slice(0,10).map(q=>{
-    if(q.choices){return {...q, choices:shuffleArray([...q.choices])};}else{return q;}
-  });
-  currentQ=0;score=0;
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
-function loadQuestion(){
-  if(currentQ>=currentSet.length){ finishQuiz(); return; }
-  let current=currentSet[currentQ];
 
-  if(current.img){
-    logoImg.style.display='block';
-    logoImg.src=current.img;
-    questionEl.style.fontSize='2rem';
-    questionEl.style.minHeight='60px';
+function newSet() {
+  let shuffled = shuffleArray([...FOOD_BANK]);
+  currentSet = shuffled.slice(0, 10).map(q => {
+    let shuffledChoices = shuffleArray([...q.choices]);
+    let correctIndex = shuffledChoices.indexOf(q.choices[q.a]);
+    return { ...q, choices: shuffledChoices, correct: correctIndex };
+  });
+  currentQ = 0;
+  score = 0;
+  progressFill.style.width = '0%';
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = 15;
+  updateTimer();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimer();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      if (currentQ < currentSet.length - 1) {
+        currentQ++;
+        loadQuestion();
+      } else {
+        finishQuiz();
+      }
+    }
+  }, 1000);
+}
+
+function updateTimer() {
+  timerText.textContent = timeLeft;
+  const dashOffset = 188.4 * (1 - timeLeft / 15);
+  timerProgress.style.strokeDashoffset = dashOffset;
+}
+
+function loadQuestion() {
+  if (currentQ >= currentSet.length) {
+    finishQuiz();
+    return;
+  }
+  let current = currentSet[currentQ];
+
+  if (current.img) {
+    logoImg.style.display = 'block';
+    logoImg.src = current.img;
   } else {
-    logoImg.style.display='none';
-    questionEl.style.fontSize='3rem';
-    questionEl.style.minHeight='150px';
+    logoImg.style.display = 'none';
   }
 
-  questionEl.textContent=current.q||"Which food/drink is this?";
-  choicesEl.innerHTML='';
-  current.choices.forEach(c=>{
-    const btn=document.createElement('div');
-    btn.className='choice';
-    btn.textContent=c;
-    btn.addEventListener('click',()=>selectAnswer(btn,current.answer));
+  questionEl.textContent = current.q || "Which food/drink is this?";
+  choicesEl.innerHTML = '';
+  
+  current.choices.forEach((c, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'choice';
+    btn.textContent = c;
+    btn.dataset.index = i;
+    btn.addEventListener('click', () => selectAnswer(btn, i, current.correct));
     choicesEl.appendChild(btn);
   });
-  qcountEl.textContent=`Question ${currentQ+1} / ${currentSet.length}`;
+  
+  qcountEl.textContent = `Question ${currentQ + 1} / ${currentSet.length}`;
+  progressFill.style.width = `${(currentQ / currentSet.length) * 100}%`;
   startTimer();
 }
 
-function startTimer(){clearInterval(timerInterval);timeLeft=15;updateTimer();timerInterval=setInterval(()=>{timeLeft--;updateTimer();if(timeLeft<=0){clearInterval(timerInterval);currentQ++;loadQuestion();}},1000);}
-function updateTimer(){/* optional timer visual update can be added */}
-
-// --- Answer Handling ---
-function selectAnswer(btn,answer){
-  if(bgMusic.paused) bgMusic.play();
-  clickS.currentTime=0;clickS.play();
+function selectAnswer(btn, selectedIndex, correctIndex) {
+  if (bgMusic.paused) bgMusic.play();
+  clickS.currentTime = 0;
+  clickS.play();
   clearInterval(timerInterval);
-  if(btn.textContent===answer){btn.classList.add('correct');score++;totalCoins+=pointsPerQ;localStorage.setItem('totalCoins',totalCoins);headerCoinsEl.textContent=totalCoins;coinS.currentTime=0;coinS.play();coinPop(pointsPerQ);}
-  else{btn.classList.add('wrong');Array.from(choicesEl.children).forEach(c=>{if(c.textContent===answer)c.classList.add('correct');})}
-  Array.from(choicesEl.children).forEach(c=>c.style.pointerEvents='none');
-  setTimeout(()=>{currentQ++;loadQuestion();},800);
+
+  if (selectedIndex === correctIndex) {
+    btn.classList.add('correct');
+    score++;
+    totalCoins += pointsPerQ;
+    localStorage.setItem('totalCoins', totalCoins);
+    headerCoinsEl.textContent = totalCoins;
+    coinS.currentTime = 0;
+    coinS.play();
+    coinPop(pointsPerQ);
+    
+    // 🔴 Update leaderboard immediately
+    updateLeaderboardEntry();
+  } else {
+    btn.classList.add('wrong');
+    Array.from(choicesEl.children).forEach(ch => {
+      if (parseInt(ch.dataset.index) === correctIndex) {
+        ch.classList.add('correct');
+      }
+    });
+  }
+  Array.from(choicesEl.children).forEach(c => c.style.pointerEvents = 'none');
+  
+  setTimeout(() => {
+    if (currentQ < currentSet.length - 1) {
+      currentQ++;
+      loadQuestion();
+    } else {
+      finishQuiz();
+    }
+  }, 800);
 }
 
-function finishQuiz(){
-  finalEl.style.display='flex';
-  finalScoreEl.textContent=`You answered ${score} / ${currentSet.length} correctly`;
-  coinSummaryEl.textContent=`You earned ${score*pointsPerQ} 🪙 this round`;
-  cheerS.currentTime=0;cheerS.play();
-  progressFill.style.width='100%';
+function finishQuiz() {
+  finalEl.style.display = 'flex';
+  finalScoreEl.textContent = `You answered ${score} / ${currentSet.length} correctly`;
+  coinSummaryEl.textContent = `You earned ${score * pointsPerQ} 🪙 this round`;
+  
+  // 🔴 Final leaderboard update
+  updateLeaderboardEntry();
+  
+  cheerS.currentTime = 0;
+  cheerS.play();
+  progressFill.style.width = '100%';
   confetti();
 }
 
-playAgainBtn.addEventListener('click',()=>{finalEl.style.display='none';newSet();loadQuestion();});
-goHomeBtn.addEventListener('click',()=>window.location.href='index.html');
+playAgainBtn.addEventListener('click', () => {
+  finalEl.style.display = 'none';
+  newSet();
+  loadQuestion();
+});
 
-function coinPop(amount){
-  const pop=document.createElement('div');
-  pop.textContent=`+${amount} 🪙`;
-  pop.style.position='absolute';
-  pop.style.top='30px';
-  pop.style.right='30px';
-  pop.style.fontWeight='900';
-  pop.style.color='#fbc531';
-  pop.style.zIndex='100';
-  pop.style.opacity='1';
-  pop.style.transition='all 1s ease-out';
+// 🔴 FIXED: Home button with proper leaderboard update
+goHomeBtn.addEventListener('click', () => {
+  localStorage.setItem('totalCoins', totalCoins);
+  updateLeaderboardEntry();
+  localStorage.setItem('totalCoins', totalCoins);
+  if (username) {
+    localStorage.setItem('rushersLeague', localStorage.getItem('rushersLeague'));
+  }
+  window.location.href = 'index.html';
+});
+
+function coinPop(amount) {
+  const pop = document.createElement('div');
+  pop.textContent = `+${amount} 🪙`;
+  pop.style.position = 'absolute';
+  pop.style.top = '30px';
+  pop.style.right = '30px';
+  pop.style.fontWeight = '900';
+  pop.style.color = '#fbc531';
+  pop.style.zIndex = '100';
+  pop.style.opacity = '1';
+  pop.style.transition = 'all 1s ease-out';
   document.body.appendChild(pop);
-  setTimeout(()=>{pop.style.transform='translateY(-50px)';pop.style.opacity='0';},50);
-  setTimeout(()=>pop.remove(),1000);
+  setTimeout(() => {
+    pop.style.transform = 'translateY(-50px)';
+    pop.style.opacity = '0';
+  }, 50);
+  setTimeout(() => pop.remove(), 1000);
 }
 
-function confetti(){
-  for(let i=0;i<120;i++){
-    const c=document.createElement('div');
-    c.className='confetti';
-    c.style.backgroundColor=`hsl(${Math.random()*360},100%,50%)`;
-    c.style.left=`${Math.random()*100}vw`;
-    c.style.animationDuration=`${Math.random()*2+1.5}s`;
+function confetti() {
+  for (let i = 0; i < 120; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.backgroundColor = `hsl(${Math.random() * 360},100%,50%)`;
+    c.style.left = `${Math.random() * 100}vw`;
+    c.style.animationDuration = `${Math.random() * 2 + 1.5}s`;
     document.body.appendChild(c);
-    setTimeout(()=>c.remove(),2200);
+    setTimeout(() => c.remove(), 2200);
   }
 }
+
+// ====== BACKGROUND MUSIC ======
+let musicStarted = false;
+function startMusic() {
+  if (!musicStarted) {
+    bgMusic.volume = 0.3;
+    bgMusic.play().catch(e => console.log("Music play blocked", e));
+    musicStarted = true;
+    document.removeEventListener('click', startMusic);
+  }
+}
+document.addEventListener('click', startMusic);
 
 // --- Init ---
 newSet();

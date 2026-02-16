@@ -4,12 +4,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Brain Rush — home science</title>
+  <title>Brain Rush — Home Science</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Inter:wght@400;700;900&display=swap"
     rel="stylesheet">
   <style>
-    /* ===== STYLES SAME AS GEOGRAPHY PAGE ===== */
     :root {
       --paper-white: #fbfbf8;
       --neon1: #7b3af6;
@@ -18,49 +17,389 @@
       --bad: #ff4757;
       --coin-size: 20px;
     }
-    * { box-sizing: border-box }
-    html, body { height:100%; margin:0; background:var(--paper-white); font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial; color:#111; -webkit-font-smoothing: antialiased; }
-    .bg { position: fixed; inset:0; z-index:0; background-image: url('https://media.istockphoto.com/id/1469529416/vector/decorative-lined-paper-with-children-two-pages-funny-vector-illustration-eps.jpg?s=612x612&w=0&k=20&c=R9ntFhhrR3Hf8jlql_b-5ES_19Cxsjjx1HcbyScyf68='); background-size:cover; background-position:center; filter:brightness(.98) contrast(.98); }
-    .overlay { position: fixed; inset:0; z-index:1; pointer-events:none; background:linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0)); }
-    .stage { position: relative; z-index:2; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:36px; }
-    .book { width:95vw; max-width:1400px; border-radius:10px; padding:18px; position:relative; background:none; box-shadow:none; border:none; }
-    .header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:6px; }
-    .leftHeader { display:flex; align-items:center; gap:14px; }
-    .logoBox { width:84px; height:84px; border-radius:10px; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 28px rgba(0,0,0,0.08); overflow:hidden; border:1px solid rgba(0,0,0,0.04) }
-    .logoBox img { width:82%; height:82%; object-fit:contain; display:block; }
-    .titleWrap { display:flex; flex-direction:column; gap:4px }
-    .title { font-family:"Patrick Hand", Inter, system-ui, sans-serif; font-size:34px; margin:0; font-weight:900; color:#111; position:relative; }
-    .title::after { content:""; position:absolute; left:0; right:0; bottom:-6px; height:6px; border-radius:6px; background:linear-gradient(90deg, var(--neon1), var(--neon2)); opacity:.18; animation:titlePulse 3.6s ease-in-out infinite; }
-    @keyframes titlePulse { 0%{opacity:.14} 50%{opacity:.3} 100%{opacity:.14} }
-    .subtitle { font-size:13px; color:#333; font-weight:700; opacity:.9; margin-top:2px; font-family:Inter; }
-    .coins { display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:12px; background:#fff; box-shadow:0 6px 30px rgba(0,0,0,0.06); border:1px solid rgba(0,0,0,0.03); font-weight:900; }
-    .coins .coinEmoji { font-size:20px; margin-right:6px }
-    .coins #headerCoins { font-size:18px; color:#222 }
-    .card { margin-top:12px; background:none; border-radius:12px; padding:28px; min-height:62vh; display:flex; flex-direction:column; gap:12px; align-items:stretch; transform-origin:center; }
-    .topbar { display:flex; justify-content:space-between; align-items:center; gap:12px; }
-    .qcount { font-weight:900; color:#222; padding:8px 12px; background:rgba(255,255,255,.8); border-radius:10px; box-shadow:0 6px 20px rgba(0,0,0,.04); border:1px solid rgba(0,0,0,.02) }
-    .timerWrap { display:flex; align-items:center; gap:10px; justify-content:center; margin-top:12px; }
-    .timerText { font-weight:900; color:#111; min-width:56px; text-align:center; font-size:20px; }
-    svg.timer { width:70px; height:70px }
-    .question { font-family:"Patrick Hand", Inter, system-ui, sans-serif; font-size:2.5rem; font-weight:900; color:#000; text-align:center; margin:20px 0; line-height:1.4; padding:20px 40px; position:relative; z-index:10; }
-    .question::before { content:''; position:absolute; inset:-15px; background:rgba(255,255,255,0.92); border-radius:16px; z-index:-1; }
-    .choices { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:20px auto; }
-    .choice { flex:1 1 20%; min-width:120px; height:60px; border-radius:999px; display:flex; align-items:center; justify-content:center; gap:12px; cursor:pointer; user-select:none; font-weight:900; font-size:1.2rem; font-family:"Patrick Hand",Inter,sans-serif; color:#fff; background:linear-gradient(-45deg,#1a9850,#2ecc71,#27ae60,#1a9850); background-size:400% 400%; border:6px solid #057d05; box-shadow:none; transition:all .3s ease; position:relative; overflow:visible; animation:gradientBG 8s ease infinite; }
-    .choice.correct { border-color:#00ff00; background:linear-gradient(-45deg,#1a9850,#2ecc71); box-shadow:0 0 16px #00ff00; }
-    .choice.wrong { border-color:#ff0000; background:linear-gradient(-45deg,#c62828,#ef5350); }
-    .feedback { min-height:28px; font-weight:800; text-align:center; color:#333; }
-    .progressWrap { margin-top:6px; display:flex; flex-direction:column; gap:8px; align-items:stretch; }
-    .progressBar { height:10px; background:linear-gradient(90deg, rgba(0,0,0,.02), rgba(0,0,0,.01)); border-radius:999px; overflow:hidden; }
-    .progressFill { height:100%; width:0%; background:linear-gradient(90deg, rgba(123,58,246,.85), rgba(0,229,255,.8)); transition:width .35s ease; }
-    .final { position:absolute; inset:0; z-index:12; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.96)); border-radius:10px; padding:28px; box-shadow:0 40px 120px rgba(0,0,0,.08); text-align:center; display:none; }
-    .final h2 { font-family:"Patrick Hand",Inter; font-size:2rem; margin:6px 0; color:#0b6b3a; }
-    .final .score { font-weight:900; color:#222; font-size:1.15rem }
-    .final .btns { display:flex; gap:12px; margin-top:8px }
-    .btn { padding:10px 16px; border-radius:10px; border:none; cursor:pointer; font-weight:900; background:linear-gradient(90deg,#7b3af6,#00e5ff); color:#fff; box-shadow:0 12px 36px rgba(0,0,0,.12) }
-    .confetti { position:fixed; width:10px; height:8px; top:-20px; pointer-events:none; z-index:40; opacity:.95; border-radius:2px; transform:translateY(0) rotate(0deg); animation:confettiFall 2200ms linear forwards; }
-    @keyframes confettiFall { to { transform:translateY(110vh) rotate(720deg); opacity:.95; } }
-    #timerCircle { transition: stroke-dashoffset 1s linear; }
-    @media(max-width:760px){.choice{height:50px;font-size:16px;flex:1 1 45%;min-width:100px;}.title{font-size:22px}}
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      background: var(--paper-white);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color: #111;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image: url('https://media.istockphoto.com/id/1469529416/vector/decorative-lined-paper-with-children-two-pages-funny-vector-illustration-eps.jpg?s=612x612&w=0&k=20&c=R9ntFhhrR3Hf8jlql_b-5ES_19Cxsjjx1HcbyScyf68=');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(.98) contrast(.98);
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.00), rgba(255, 255, 255, 0.00));
+    }
+
+    .stage {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 36px;
+    }
+
+    .book {
+      width: 95vw;
+      max-width: 1400px;
+      border-radius: 10px;
+      padding: 18px;
+      position: relative;
+      background: none;
+      box-shadow: none;
+      border: none;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .leftHeader {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logoBox {
+      width: 84px;
+      height: 84px;
+      border-radius: 10px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, 0.04)
+    }
+
+    .logoBox img {
+      width: 82%;
+      height: 82%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .titleWrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px
+    }
+
+    .title {
+      font-family: "Patrick Hand", "Patrick Hand SC", Inter, system-ui, sans-serif;
+      font-size: 34px;
+      margin: 0;
+      font-weight: 900;
+      color: #111;
+      position: relative;
+    }
+
+    .title::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -6px;
+      height: 6px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, var(--neon1), var(--neon2));
+      opacity: .18;
+      animation: titlePulse 3.6s ease-in-out infinite;
+    }
+
+    @keyframes titlePulse {
+      0% { opacity: .14 }
+      50% { opacity: .3 }
+      100% { opacity: .14 }
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #333;
+      font-weight: 700;
+      opacity: .9;
+      margin-top: 2px;
+      font-family: Inter;
+    }
+
+    .coins {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+      font-weight: 900;
+    }
+
+    .coins .coinEmoji {
+      font-size: 20px;
+      margin-right: 6px
+    }
+
+    .coins #headerCoins {
+      font-size: 18px;
+      color: #222
+    }
+
+    .card {
+      margin-top: 12px;
+      background: none;
+      border-radius: 12px;
+      padding: 28px;
+      min-height: 62vh;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: stretch;
+      transform-origin: center;
+      position: relative;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .qcount {
+      font-weight: 900;
+      color: #222;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+      border: 1px solid rgba(0, 0, 0, 0.02)
+    }
+
+    .timerWrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 12px;
+    }
+
+    .timerText {
+      font-weight: 900;
+      color: #111;
+      min-width: 56px;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    svg.timer {
+      width: 70px;
+      height: 70px
+    }
+
+    .question {
+      font-family: "Patrick Hand", "Patrick Hand SC", Inter, system-ui, sans-serif;
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: #000;
+      text-align: center;
+      margin: 20px 0;
+      line-height: 1.4;
+      padding: 20px 40px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .question::before {
+      content: '';
+      position: absolute;
+      inset: -15px;
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 16px;
+      z-index: -1;
+    }
+
+    .choices {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin: 20px auto;
+    }
+
+    .choice {
+      flex: 1 1 20%;
+      min-width: 120px;
+      height: 60px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+      font-weight: 900;
+      font-size: 1.2rem;
+      font-family: "Patrick Hand", Inter, sans-serif;
+      color: #fff;
+      background: linear-gradient(-45deg, #1a9850, #2ecc71, #27ae60, #1a9850);
+      background-size: 400% 400%;
+      border: 6px solid #057d05;
+      box-shadow: none;
+      transition: all .3s ease;
+      position: relative;
+      overflow: visible;
+      animation: gradientBG 8s ease infinite;
+    }
+
+    .choice.correct {
+      border-color: #00ff00;
+      background: linear-gradient(-45deg, #1a9850, #2ecc71);
+      box-shadow: 0 0 16px #00ff00;
+    }
+
+    .choice.wrong {
+      border-color: #ff0000;
+      background: linear-gradient(-45deg, #c62828, #ef5350);
+    }
+
+    .feedback {
+      min-height: 28px;
+      font-weight: 800;
+      text-align: center;
+      color: #333;
+    }
+
+    .progressWrap {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .progressBar {
+      height: 10px;
+      background: linear-gradient(90deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.01));
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progressFill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(123, 58, 246, 0.85), rgba(0, 229, 255, 0.8));
+      transition: width .35s ease;
+    }
+
+    .final {
+      position: absolute;
+      inset: 0;
+      z-index: 12;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.96));
+      border-radius: 10px;
+      padding: 28px;
+      box-shadow: 0 40px 120px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      display: none;
+    }
+
+    .final h2 {
+      font-family: "Patrick Hand", Inter;
+      font-size: 2rem;
+      margin: 6px 0;
+      color: #0b6b3a;
+    }
+
+    .final .score {
+      font-weight: 900;
+      color: #222;
+      font-size: 1.15rem
+    }
+
+    .final .btns {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: 900;
+      background: linear-gradient(90deg, #7b3af6, #00e5ff);
+      color: #fff;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12)
+    }
+
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 8px;
+      top: -20px;
+      pointer-events: none;
+      z-index: 40;
+      opacity: 0.95;
+      border-radius: 2px;
+      transform: translateY(0) rotate(0deg);
+      animation: confettiFall 2200ms linear forwards;
+    }
+
+    @keyframes confettiFall {
+      to {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 0.95;
+      }
+    }
+
+    #timerCircle {
+      transition: stroke-dashoffset 1s linear;
+    }
+
+    @media(max-width:760px) {
+      .choice {
+        height: 50px;
+        font-size: 16px;
+        flex: 1 1 45%;
+        min-width: 100px;
+      }
+
+      .title {
+        font-size: 22px
+      }
+    }
   </style>
 </head>
 
@@ -69,13 +408,13 @@
   <div class="overlay" aria-hidden="true"></div>
 
   <div class="stage">
-    <div class="book" role="main" aria-label="Brain Rush history game">
+    <div class="book" role="main" aria-label="Brain Rush home science game">
       <div class="header">
         <div class="leftHeader">
           <div class="logoBox"><img src="logo.png" alt="logo" onerror="this.style.display='none'"></div>
           <div class="titleWrap">
             <div class="title">Brain Rush</div>
-            <div class="subtitle">Level 1 • home science</div>
+            <div class="subtitle">Level 1 • Home Science</div>
           </div>
           <div style="margin-left:14px;">
             <div class="qcount" id="qcount">Question 1 / 10</div>
@@ -136,66 +475,82 @@
   </audio>
 
   <script>
-    // ====== HISTORY QUESTIONS BANK ======
-     // ====== HOME SCIENCE QUESTIONS BANK ======
-const BANK = [
-  { q: "What is Home Science mainly concerned with?", choices: ["Building houses", "Family health and nutrition", "Road construction", "Animal farming"], a: 1 },
-  { q: "Which food group builds the body?", choices: ["Carbohydrates", "Proteins", "Fats", "Vitamins"], a: 1 },
-  { q: "Which nutrient provides energy?", choices: ["Proteins", "Vitamins", "Carbohydrates", "Minerals"], a: 2 },
-  { q: "Which food is rich in protein?", choices: ["Rice", "Eggs", "Sugar", "Cooking oil"], a: 1 },
-  { q: "Which vitamin helps in good eyesight?", choices: ["Vitamin A", "Vitamin B", "Vitamin C", "Vitamin D"], a: 0 },
-  { q: "Which mineral helps in forming strong bones and teeth?", choices: ["Iron", "Calcium", "Iodine", "Sodium"], a: 1 },
-  { q: "Which food is a protective food?", choices: ["Vegetables", "Meat", "Bread", "Rice"], a: 0 },
-  { q: "What is a balanced diet?", choices: ["Eating one type of food", "Eating foods from all food groups", "Eating only fruits", "Eating twice a day"], a: 1 },
-  { q: "Which food provides fats?", choices: ["Vegetables", "Meat", "Sugar", "Salt"], a: 1 },
-  { q: "Which vitamin is obtained from sunlight?", choices: ["Vitamin A", "Vitamin B", "Vitamin C", "Vitamin D"], a: 3 },
-  { q: "What is hygiene?", choices: ["Eating a lot of food", "Keeping the body and surroundings clean", "Sleeping early", "Exercising daily"], a: 1 },
-  { q: "Which practice helps prevent diseases?", choices: ["Poor sanitation", "Good personal hygiene", "Skipping meals", "Wearing dirty clothes"], a: 1 },
-  { q: "Which food should be washed before cooking?", choices: ["Vegetables", "Salt", "Cooking oil", "Sugar"], a: 0 },
-  { q: "What is food preservation?", choices: ["Cooking food", "Keeping food from spoiling", "Eating food", "Selling food"], a: 1 },
-  { q: "Which method is used to preserve meat?", choices: ["Drying", "Washing", "Peeling", "Cutting"], a: 0 },
-  { q: "Which clothing material comes from animals?", choices: ["Cotton", "Silk", "Nylon", "Polyester"], a: 1 },
-  { q: "Which fabric is best for hot weather?", choices: ["Wool", "Cotton", "Nylon", "Silk"], a: 1 },
-  { q: "What is first aid?", choices: ["Hospital treatment", "Immediate care before medical help", "Long-term care", "Medication only"], a: 1 },
-  { q: "Which item is used to clean wounds?", choices: ["Dirty water", "Clean water", "Oil", "Soap only"], a: 1 },
-  { q: "Which appliance is used for cooking?", choices: ["Television", "Iron box", "Gas cooker", "Radio"], a: 2 },
-  { q: "Which fuel is commonly used in homes?", choices: ["Petrol", "Diesel", "Gas", "Kerosene"], a: 2 },
-  { q: "What is child care?", choices: ["Teaching adults", "Looking after children", "Selling food", "Building houses"], a: 1 },
-  { q: "Which food is rich in calcium?", choices: ["Milk", "Rice", "Beans", "Meat"], a: 0 },
-  { q: "Which practice keeps food safe?", choices: ["Leaving food uncovered", "Covering food", "Eating spoiled food", "Using dirty utensils"], a: 1 },
-  { q: "Which disease is caused by lack of vitamin C?", choices: ["Scurvy", "Rickets", "Goitre", "Anaemia"], a: 0 },
-  { q: "Which nutrient helps in healing wounds?", choices: ["Carbohydrates", "Proteins", "Fats", "Vitamins"], a: 1 },
-  { q: "Which household item is used for cleaning floors?", choices: ["Broom", "Plate", "Cup", "Spoon"], a: 0 },
-  { q: "What is laundry?", choices: ["Cooking food", "Washing clothes", "Cleaning utensils", "Storing food"], a: 1 },
-  { q: "Which fabric shrinks when washed in hot water?", choices: ["Cotton", "Wool", "Polyester", "Nylon"], a: 1 },
-  { q: "Which food group helps protect the body from diseases?", choices: ["Proteins", "Carbohydrates", "Protective foods", "Fats"], a: 2 },
-  { q: "What is sanitation?", choices: ["Clean cooking", "Proper waste disposal", "Eating balanced diet", "Sleeping early"], a: 1 },
-  { q: "Which vitamin helps in blood clotting?", choices: ["Vitamin A", "Vitamin B", "Vitamin C", "Vitamin K"], a: 3 },
-  { q: "Which item is used to measure ingredients?", choices: ["Cup", "Plate", "Spoon", "Measuring cup"], a: 3 },
-  { q: "Which food is a body-building food?", choices: ["Beans", "Rice", "Sugar", "Oil"], a: 0 },
-  { q: "Which disease is caused by lack of iron?", choices: ["Rickets", "Anaemia", "Scurvy", "Goitre"], a: 1 },
-  { q: "Which practice prevents accidents at home?", choices: ["Leaving spills", "Good housekeeping", "Running indoors", "Playing with fire"], a: 1 },
-  { q: "Which cooking method uses steam?", choices: ["Boiling", "Frying", "Steaming", "Roasting"], a: 2 },
-  { q: "Which item is used to store food?", choices: ["Basket", "Open plate", "Container with lid", "Dirty cloth"], a: 2 },
-  { q: "Which nutrient helps keep the body warm?", choices: ["Proteins", "Carbohydrates", "Fats", "Vitamins"], a: 2 },
-  { q: "Which food is best for breakfast?", choices: ["Soda", "Cake", "Porridge", "Sweets"], a: 2 },
-  { q: "Which appliance is used to preserve food?", choices: ["Refrigerator", "Iron box", "Television", "Radio"], a: 0 },
-  { q: "Which fabric is man-made?", choices: ["Cotton", "Wool", "Silk", "Nylon"], a: 3 },
-  { q: "Which practice helps save fuel?", choices: ["Using lid when cooking", "Leaving stove on", "Cooking small amounts", "Opening fridge often"], a: 0 },
-  { q: "Which disease is caused by lack of iodine?", choices: ["Anaemia", "Goitre", "Rickets", "Scurvy"], a: 1 },
-  { q: "Which item is used to iron clothes?", choices: ["Kettle", "Iron box", "Heater", "Fan"], a: 1 },
-  { q: "Which habit promotes good health?", choices: ["Skipping meals", "Balanced diet", "Eating junk food", "Sleeping late"], a: 1 },
-  { q: "Which food should be eaten in small amounts?", choices: ["Vegetables", "Fruits", "Fats and oils", "Proteins"], a: 2 },
-  { q: "Which activity helps children grow well?", choices: ["Playing", "Watching TV all day", "Skipping meals", "Sleeping late"], a: 0 },
-  { q: "Which method preserves food by removing water?", choices: ["Freezing", "Drying", "Boiling", "Cooling"], a: 1 },
-  { q: "Which nutrient helps in building muscles?", choices: ["Fats", "Carbohydrates", "Proteins", "Vitamins"], a: 2 },
-  { q: "Which practice keeps the kitchen safe?", choices: ["Good ventilation", "Spilling water", "Overcrowding", "Leaving gas on"], a: 0 }
-];
-   
+    // ====== HOME SCIENCE QUESTIONS BANK (Expanded) ======
+    const BANK = [
+      { q: "What is Home Science mainly concerned with?", choices: ["Building houses", "Family health and nutrition", "Road construction", "Animal farming"], a: 1 },
+      { q: "Which food group builds the body?", choices: ["Carbohydrates", "Proteins", "Fats", "Vitamins"], a: 1 },
+      { q: "Which nutrient provides energy?", choices: ["Proteins", "Vitamins", "Carbohydrates", "Minerals"], a: 2 },
+      { q: "Which food is rich in protein?", choices: ["Rice", "Eggs", "Sugar", "Cooking oil"], a: 1 },
+      { q: "Which vitamin helps in good eyesight?", choices: ["Vitamin A", "Vitamin B", "Vitamin C", "Vitamin D"], a: 0 },
+      { q: "Which mineral helps in forming strong bones and teeth?", choices: ["Iron", "Calcium", "Iodine", "Sodium"], a: 1 },
+      { q: "Which food is a protective food?", choices: ["Vegetables", "Meat", "Bread", "Rice"], a: 0 },
+      { q: "What is a balanced diet?", choices: ["Eating one type of food", "Eating foods from all food groups", "Eating only fruits", "Eating twice a day"], a: 1 },
+      { q: "Which food provides fats?", choices: ["Vegetables", "Meat", "Sugar", "Salt"], a: 1 },
+      { q: "Which vitamin is obtained from sunlight?", choices: ["Vitamin A", "Vitamin B", "Vitamin C", "Vitamin D"], a: 3 },
+      { q: "What is hygiene?", choices: ["Eating a lot of food", "Keeping the body and surroundings clean", "Sleeping early", "Exercising daily"], a: 1 },
+      { q: "Which practice helps prevent diseases?", choices: ["Poor sanitation", "Good personal hygiene", "Skipping meals", "Wearing dirty clothes"], a: 1 },
+      { q: "Which food should be washed before cooking?", choices: ["Vegetables", "Salt", "Cooking oil", "Sugar"], a: 0 },
+      { q: "What is food preservation?", choices: ["Cooking food", "Keeping food from spoiling", "Eating food", "Selling food"], a: 1 },
+      { q: "Which method is used to preserve meat?", choices: ["Drying", "Washing", "Peeling", "Cutting"], a: 0 },
+      { q: "Which clothing material comes from animals?", choices: ["Cotton", "Silk", "Nylon", "Polyester"], a: 1 },
+      { q: "Which fabric is best for hot weather?", choices: ["Wool", "Cotton", "Nylon", "Silk"], a: 1 },
+      { q: "What is first aid?", choices: ["Hospital treatment", "Immediate care before medical help", "Long-term care", "Medication only"], a: 1 },
+      { q: "Which item is used to clean wounds?", choices: ["Dirty water", "Clean water", "Oil", "Soap only"], a: 1 },
+      { q: "Which appliance is used for cooking?", choices: ["Television", "Iron box", "Gas cooker", "Radio"], a: 2 },
+      { q: "Which fuel is commonly used in homes?", choices: ["Petrol", "Diesel", "Gas", "Kerosene"], a: 2 },
+      { q: "What is child care?", choices: ["Teaching adults", "Looking after children", "Selling food", "Building houses"], a: 1 },
+      { q: "Which food is rich in calcium?", choices: ["Milk", "Rice", "Beans", "Meat"], a: 0 },
+      { q: "Which practice keeps food safe?", choices: ["Leaving food uncovered", "Covering food", "Eating spoiled food", "Using dirty utensils"], a: 1 },
+      { q: "Which disease is caused by lack of vitamin C?", choices: ["Scurvy", "Rickets", "Goitre", "Anaemia"], a: 0 },
+      { q: "Which nutrient helps in healing wounds?", choices: ["Carbohydrates", "Proteins", "Fats", "Vitamins"], a: 1 },
+      { q: "Which household item is used for cleaning floors?", choices: ["Broom", "Plate", "Cup", "Spoon"], a: 0 },
+      { q: "What is laundry?", choices: ["Cooking food", "Washing clothes", "Cleaning utensils", "Storing food"], a: 1 },
+      { q: "Which fabric shrinks when washed in hot water?", choices: ["Cotton", "Wool", "Polyester", "Nylon"], a: 1 },
+      { q: "Which food group helps protect the body from diseases?", choices: ["Proteins", "Carbohydrates", "Protective foods", "Fats"], a: 2 },
+      { q: "What is sanitation?", choices: ["Clean cooking", "Proper waste disposal", "Eating balanced diet", "Sleeping early"], a: 1 },
+      { q: "Which vitamin helps in blood clotting?", choices: ["Vitamin A", "Vitamin B", "Vitamin C", "Vitamin K"], a: 3 },
+      { q: "Which item is used to measure ingredients?", choices: ["Cup", "Plate", "Spoon", "Measuring cup"], a: 3 },
+      { q: "Which food is a body-building food?", choices: ["Beans", "Rice", "Sugar", "Oil"], a: 0 },
+      { q: "Which disease is caused by lack of iron?", choices: ["Rickets", "Anaemia", "Scurvy", "Goitre"], a: 1 },
+      { q: "Which practice prevents accidents at home?", choices: ["Leaving spills", "Good housekeeping", "Running indoors", "Playing with fire"], a: 1 },
+      { q: "Which cooking method uses steam?", choices: ["Boiling", "Frying", "Steaming", "Roasting"], a: 2 },
+      { q: "Which item is used to store food?", choices: ["Basket", "Open plate", "Container with lid", "Dirty cloth"], a: 2 },
+      { q: "Which nutrient helps keep the body warm?", choices: ["Proteins", "Carbohydrates", "Fats", "Vitamins"], a: 2 },
+      { q: "Which food is best for breakfast?", choices: ["Soda", "Cake", "Porridge", "Sweets"], a: 2 },
+      { q: "Which appliance is used to preserve food?", choices: ["Refrigerator", "Iron box", "Television", "Radio"], a: 0 },
+      { q: "Which fabric is man-made?", choices: ["Cotton", "Wool", "Silk", "Nylon"], a: 3 },
+      { q: "Which practice helps save fuel?", choices: ["Using lid when cooking", "Leaving stove on", "Cooking small amounts", "Opening fridge often"], a: 0 },
+      { q: "Which disease is caused by lack of iodine?", choices: ["Anaemia", "Goitre", "Rickets", "Scurvy"], a: 1 },
+      { q: "Which item is used to iron clothes?", choices: ["Kettle", "Iron box", "Heater", "Fan"], a: 1 },
+      { q: "Which habit promotes good health?", choices: ["Skipping meals", "Balanced diet", "Eating junk food", "Sleeping late"], a: 1 },
+      { q: "Which food should be eaten in small amounts?", choices: ["Vegetables", "Fruits", "Fats and oils", "Proteins"], a: 2 },
+      { q: "Which activity helps children grow well?", choices: ["Playing", "Watching TV all day", "Skipping meals", "Sleeping late"], a: 0 },
+      { q: "Which method preserves food by removing water?", choices: ["Freezing", "Drying", "Boiling", "Cooling"], a: 1 },
+      { q: "Which nutrient helps in building muscles?", choices: ["Fats", "Carbohydrates", "Proteins", "Vitamins"], a: 2 },
+      { q: "Which practice keeps the kitchen safe?", choices: ["Good ventilation", "Spilling water", "Overcrowding", "Leaving gas on"], a: 0 }
+    ];
 
     // ====== VARIABLES ======
-    let currentSet = [0], currentQ = 0, score = 0;
-    let totalCoins = Number(localStorage.getItem('totalCoins')) || 0;
+    let currentSet = [], currentQ = 0, score = 0;
+    
+    // 🔴 FIXED: Load username and user's saved coins from leaderboard
+    let username = localStorage.getItem('username') || null;
+    let rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+    
+    let totalCoins = 0;
+    if (username) {
+      const userEntry = rushersLeague.find(e => e.name === username);
+      if (userEntry) {
+        totalCoins = userEntry.coins;
+      } else {
+        totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+      }
+    } else {
+      totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+    }
+    
+    localStorage.setItem('totalCoins', totalCoins);
+    
     let pointsPerQ = 10, usedIndexes = [];
     let timeLeft = 15, timerInterval;
 
@@ -217,34 +572,65 @@ const BANK = [
     const cheerS = document.getElementById('cheerS');
     const bgMusic = document.getElementById('bgMusic');
 
-    // ====== INITIAL SETUP ======
     headerCoinsEl.textContent = totalCoins;
 
-    function shuffleBank() {
-      let indexes = [];
-      while (indexes.length < 10) {
-        let rand = Math.floor(Math.random() * BANK.length);
-        if (!usedIndexes.includes(rand)) {
-          indexes.push(rand);
-          usedIndexes.push(rand);
-          if (usedIndexes.length >= BANK.length) usedIndexes = [];
-        }
+    // ====== LEADERBOARD UPDATE FUNCTION ======
+    function updateLeaderboardEntry() {
+      if (!username) return;
+      
+      rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+      const existing = rushersLeague.find(e => e.name === username);
+      
+      if (existing) {
+        existing.coins = totalCoins;
+      } else {
+        rushersLeague.push({ name: username, coins: totalCoins });
       }
-      currentSet = indexes.map(i => BANK[i]);
+      
+      rushersLeague.sort((a, b) => b.coins - a.coins);
+      localStorage.setItem('rushersLeague', JSON.stringify(rushersLeague));
+    }
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function shuffleBank() {
+      usedIndexes = [];
+      let shuffled = shuffleArray([...BANK]);
+      currentSet = shuffled.slice(0, 10);
     }
 
     function loadQuestion() {
+      if (currentQ >= currentSet.length) {
+        finishQuiz();
+        return;
+      }
+      
       questionEl.textContent = currentSet[currentQ].q;
       choicesEl.innerHTML = '';
-      currentSet[currentQ].choices.forEach((c, i) => {
+      
+      let choices = [...currentSet[currentQ].choices];
+      choices = shuffleArray(choices);
+      
+      const correctAnswerText = currentSet[currentQ].choices[currentSet[currentQ].a];
+      const correctIndexInShuffled = choices.indexOf(correctAnswerText);
+      
+      choices.forEach((c, i) => {
         let btn = document.createElement('div');
         btn.className = 'choice';
         btn.textContent = c;
-        btn.addEventListener('click', () => selectAnswer(i, btn));
+        btn.dataset.correct = (c === correctAnswerText).toString();
+        btn.addEventListener('click', () => selectAnswer(i, btn, correctIndexInShuffled));
         choicesEl.appendChild(btn);
       });
-      qcountEl.textContent = `Question ${currentQ + 1} / 10`;
-      progressFill.style.width = `${(currentQ / 10) * 100}%`;
+      
+      qcountEl.textContent = `Question ${currentQ + 1} / ${currentSet.length}`;
+      progressFill.style.width = `${(currentQ / currentSet.length) * 100}%`;
       startTimer();
     }
 
@@ -257,7 +643,12 @@ const BANK = [
         updateTimerVisual();
         if (timeLeft <= 0) {
           clearInterval(timerInterval);
-          nextQuestion();
+          if (currentQ < currentSet.length - 1) {
+            currentQ++;
+            loadQuestion();
+          } else {
+            finishQuiz();
+          }
         }
       }, 1000);
     }
@@ -268,13 +659,12 @@ const BANK = [
       document.getElementById('timerCircle').style.strokeDashoffset = dashOffset;
     }
 
-    function selectAnswer(i, btn) {
+    function selectAnswer(i, btn, correctIndex) {
       if (bgMusic.paused) bgMusic.play();
       clickS.currentTime = 0; clickS.play();
       clearInterval(timerInterval);
 
-      const correct = currentSet[currentQ].a;
-      if (i === correct) {
+      if (i === correctIndex) {
         btn.classList.add('correct');
         score++;
         totalCoins += pointsPerQ;
@@ -282,24 +672,35 @@ const BANK = [
         headerCoinsEl.textContent = totalCoins;
         coinS.currentTime = 0; coinS.play();
         coinPop(pointsPerQ);
+        
+        updateLeaderboardEntry();
       } else {
         btn.classList.add('wrong');
-        Array.from(choicesEl.children)[correct].classList.add('correct');
+        Array.from(choicesEl.children).forEach(ch => {
+          if (ch.dataset.correct === 'true') {
+            ch.classList.add('correct');
+          }
+        });
       }
       Array.from(choicesEl.children).forEach(ch => ch.style.pointerEvents = 'none');
-      setTimeout(() => nextQuestion(), 800);
-    }
-
-    function nextQuestion() {
-      currentQ++;
-      if (currentQ < 10) loadQuestion();
-      else finishQuiz();
+      
+      setTimeout(() => {
+        if (currentQ < currentSet.length - 1) {
+          currentQ++;
+          loadQuestion();
+        } else {
+          finishQuiz();
+        }
+      }, 800);
     }
 
     function finishQuiz() {
       finalEl.style.display = 'flex';
-      finalScoreEl.textContent = `You answered ${score} / 10 correctly`;
+      finalScoreEl.textContent = `You answered ${score} / ${currentSet.length} correctly`;
       coinSummaryEl.textContent = `You earned ${score * pointsPerQ} 🪙 this round`;
+      
+      updateLeaderboardEntry();
+      
       cheerS.currentTime = 0; cheerS.play();
       progressFill.style.width = '100%';
       confetti();
@@ -308,12 +709,21 @@ const BANK = [
     playAgainBtn.addEventListener('click', () => {
       finalEl.style.display = 'none';
       score = 0;
+      usedIndexes = [];
       shuffleBank();
       currentQ = 0;
       loadQuestion();
     });
 
-    goHomeBtn.addEventListener('click', () => window.location.href = "index.html");
+    goHomeBtn.addEventListener('click', () => {
+      localStorage.setItem('totalCoins', totalCoins);
+      updateLeaderboardEntry();
+      localStorage.setItem('totalCoins', totalCoins);
+      if (username) {
+        localStorage.setItem('rushersLeague', localStorage.getItem('rushersLeague'));
+      }
+      window.location.href = "index.html";
+    });
 
     function coinPop(amount) {
       const pop = document.createElement('div');
@@ -342,6 +752,18 @@ const BANK = [
         setTimeout(() => c.remove(), 2200);
       }
     }
+
+    // ====== BACKGROUND MUSIC ======
+    let musicStarted = false;
+    function startMusic() {
+      if (!musicStarted) {
+        bgMusic.volume = 0.3;
+        bgMusic.play().catch(e => console.log("Music play blocked", e));
+        musicStarted = true;
+        document.removeEventListener('click', startMusic);
+      }
+    }
+    document.addEventListener('click', startMusic);
 
     shuffleBank();
     loadQuestion();

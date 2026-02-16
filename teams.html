@@ -31,7 +31,7 @@ html,body{height:100%;margin:0;font-family:Inter,sans-serif;color:#111;overflow:
 .coins .coinEmoji{font-size:20px;margin-right:6px;}
 .coins #headerCoins{font-size:18px;color:#222;}
 .card{margin-top:12px;background:none;border-radius:12px;padding:28px;min-height:60vh;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:flex-start;position:relative;transition:opacity .4s;}
-#logoImg{width:250px;height:250px;object-fit:contain;border-radius:20px;transition:opacity .4s;}
+#logoImg{width:250px;height:250px;object-fit:contain;border-radius:20px;transition:opacity .4s;background:#f5f5f5;padding:10px;}
 .question{font-family:"Patrick Hand", Inter;font-weight:900;text-align:center;margin:12px 0;line-height:1.4;display:flex;align-items:center;justify-content:center;padding:12px 24px;font-size:2.2rem;position:relative;transition:opacity .4s;}
 .question::before{content:'';position:absolute;inset:-12px;background:rgba(255,255,255,0.92);border-radius:16px;z-index:-1;}
 .choices{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px;width:100%;transition:opacity .4s;}
@@ -50,6 +50,8 @@ html,body{height:100%;margin:0;font-family:Inter,sans-serif;color:#111;overflow:
 .timerWrap{position:absolute;top:18px;right:18px;width:60px;height:60px;}
 #timerSvg{transform:rotate(-90deg);}
 #timerCircle{stroke:var(--timer-fg);stroke-width:6;fill:none;stroke-dasharray:94.2;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear;}
+.confetti{position:fixed;width:10px;height:8px;top:-20px;pointer-events:none;z-index:40;opacity:0.95;border-radius:2px;transform:translateY(0) rotate(0deg);animation:confettiFall 2200ms linear forwards;}
+@keyframes confettiFall{to{transform:translateY(110vh) rotate(720deg);opacity:0.95}}
 @media(max-width:760px){.choice{height:50px;font-size:16px;flex:1 1 45%;min-width:100px;}.title{font-size:22px;}.question{font-size:1.8rem;}}
 </style>
 </head>
@@ -81,7 +83,7 @@ html,body{height:100%;margin:0;font-family:Inter,sans-serif;color:#111;overflow:
       <div class="timerWrap">
         <svg width="60" height="60" id="timerSvg">
           <circle r="15" cx="30" cy="30" stroke="#ddd" stroke-width="6" fill="none"></circle>
-          <circle id="timerCircle" r="15" cx="30" cy="30"></circle>
+          <circle id="timerCircle" r="15" cx="30" cy="30" stroke="#7b3af6" stroke-width="6" fill="none"></circle>
         </svg>
       </div>
       <div id="final" class="final">
@@ -104,187 +106,284 @@ html,body{height:100%;margin:0;font-family:Inter,sans-serif;color:#111;overflow:
 
 <script>
 // ---------------- DATA ----------------
-const LOGO_QUESTIONS=[
-  { img: 'teams/bucks.jpg', question: 'Which team has this logo?', choices: ['Bucks','Lakers','Miami Heat','Chicago Bulls'], a:0 },
-  { img: 'teams/Lakers.jpg', question: 'Which team has this logo?', choices: ['Bucks','Lakers','Miami Heat','Chicago Bulls'], a:1 },
-  { img: 'teams/manchester u.jpg', question: 'Who is the manager of Manchester United?', choices: ['Erik ten Hag','Jürgen Klopp','Carlo Ancelotti','Diego Simeone'], a:0 },
-  { img: 'teams/Liverpool.jpg', question: 'Who is the manager of Liverpool?', choices: ['Erik ten Hag','Jürgen Klopp','Carlo Ancelotti','Diego Simeone'], a:1 },
-  { img: 'teams/napoli.jpg', question: 'Which team has this logo?', choices: ['Napoli','Real Madrid','Atletico Madrid','Santos'], a:0 },
-  { img: 'teams/miami heat home decor.jpg', question: 'Which team has this logo?', choices: ['Miami Heat','Bucks','Lakers','Chicago Bulls'], a:0 },
-  { img: 'teams/portugal.jpg', question: 'Which team has this logo?', choices: ['Portugal','Real Madrid','Manchester United','Liverpool'], a:0 },
-  { img: 'teams/real Madrid.jpg', question: 'Which team has this logo?', choices: ['Real Madrid','Atletico Madrid','Napoli','Santos'], a:0 },
-  { img: 'teams/santos.jpg', question: 'Which team has this logo?', choices: ['Santos','Napoli','Manchester United','Liverpool'], a:0 },
-  { img: 'teams/atletico madrid.jpg', question: 'Which team has this logo?', choices: ['Atletico Madrid','Real Madrid','Napoli','Liverpool'], a:0 }
+const LOGO_QUESTIONS = [
+  { img: 'teams/bucks.jpg', q: 'Which team has this logo?', choices: ['Bucks', 'Lakers', 'Miami Heat', 'Chicago Bulls'], a: 0 },
+  { img: 'teams/Lakers.jpg', q: 'Which team has this logo?', choices: ['Bucks', 'Lakers', 'Miami Heat', 'Chicago Bulls'], a: 1 },
+  { img: 'teams/manchester u.jpg', q: 'Who is the manager of Manchester United?', choices: ['Erik ten Hag', 'Jürgen Klopp', 'Carlo Ancelotti', 'Diego Simeone'], a: 0 },
+  { img: 'teams/Liverpool.jpg', q: 'Who is the manager of Liverpool?', choices: ['Erik ten Hag', 'Jürgen Klopp', 'Carlo Ancelotti', 'Diego Simeone'], a: 1 },
+  { img: 'teams/napoli.jpg', q: 'Which team has this logo?', choices: ['Napoli', 'Real Madrid', 'Atletico Madrid', 'Santos'], a: 0 },
+  { img: 'teams/miami heat home decor.jpg', q: 'Which team has this logo?', choices: ['Miami Heat', 'Bucks', 'Lakers', 'Chicago Bulls'], a: 0 },
+  { img: 'teams/portugal.jpg', q: 'Which team has this logo?', choices: ['Portugal', 'Real Madrid', 'Manchester United', 'Liverpool'], a: 0 },
+  { img: 'teams/real Madrid.jpg', q: 'Which team has this logo?', choices: ['Real Madrid', 'Atletico Madrid', 'Napoli', 'Santos'], a: 0 },
+  { img: 'teams/santos.jpg', q: 'Which team has this logo?', choices: ['Santos', 'Napoli', 'Manchester United', 'Liverpool'], a: 0 },
+  { img: 'teams/atletico madrid.jpg', q: 'Which team has this logo?', choices: ['Atletico Madrid', 'Real Madrid', 'Napoli', 'Liverpool'], a: 0 }
 ];
 
-const TEXT_QUESTIONS=[
-  { q: "Which team won the 2023 NBA Championship?", choices: ["Miami Heat","Los Angeles Lakers","Milwaukee Bucks","Boston Celtics"], a:2 },
-  { q: "Which team is nicknamed 'The Red Devils'?", choices: ["Liverpool","Manchester United","Atletico Madrid","Santos"], a:1 },
-  { q: "Which Italian club plays at Stadio Diego Armando Maradona?", choices: ["Napoli","Juventus","Atletico Madrid","Real Madrid"], a:0 },
-  { q: "Which NBA team plays in Los Angeles and wears purple and gold?", choices: ["Lakers","Bucks","Miami Heat","Chicago Bulls"], a:0 },
-  { q: "Which team is based in Milwaukee, Wisconsin?", choices: ["Miami Heat","Bucks","Lakers","Chicago Bulls"], a:1 },
-  { q: "Which team is known as 'The Reds' in English football?", choices: ["Liverpool","Manchester United","Santos","Atletico Madrid"], a:0 },
-  { q: "Which team won the UEFA Champions League in 2022?", choices: ["Real Madrid","Manchester United","Liverpool","Atletico Madrid"], a:0 },
-  { q: "Which Portuguese star plays for Portugal?", choices: ["Cristiano Ronaldo","Lionel Messi","Neymar","Kylian Mbappe"], a:0 },
-  { q: "Which team plays in Miami, Florida in the NBA?", choices: ["Miami Heat","Bucks","Chicago Bulls","Lakers"], a:0 },
-  { q: "Which Brazilian club is Pelé famous for playing?", choices: ["Santos","Napoli","Atletico Madrid","Liverpool"], a:0 }
+const TEXT_QUESTIONS = [
+  { q: "Which team won the 2023 NBA Championship?", choices: ["Miami Heat", "Los Angeles Lakers", "Milwaukee Bucks", "Boston Celtics"], a: 2 },
+  { q: "Which team is nicknamed 'The Red Devils'?", choices: ["Liverpool", "Manchester United", "Atletico Madrid", "Santos"], a: 1 },
+  { q: "Which Italian club plays at Stadio Diego Armando Maradona?", choices: ["Napoli", "Juventus", "Atletico Madrid", "Real Madrid"], a: 0 },
+  { q: "Which NBA team plays in Los Angeles and wears purple and gold?", choices: ["Lakers", "Bucks", "Miami Heat", "Chicago Bulls"], a: 0 },
+  { q: "Which team is based in Milwaukee, Wisconsin?", choices: ["Miami Heat", "Bucks", "Lakers", "Chicago Bulls"], a: 1 },
+  { q: "Which team is known as 'The Reds' in English football?", choices: ["Liverpool", "Manchester United", "Santos", "Atletico Madrid"], a: 0 },
+  { q: "Which team won the UEFA Champions League in 2022?", choices: ["Real Madrid", "Manchester United", "Liverpool", "Atletico Madrid"], a: 0 },
+  { q: "Which Portuguese star plays for Portugal?", choices: ["Cristiano Ronaldo", "Lionel Messi", "Neymar", "Kylian Mbappe"], a: 0 },
+  { q: "Which team plays in Miami, Florida in the NBA?", choices: ["Miami Heat", "Bucks", "Chicago Bulls", "Lakers"], a: 0 },
+  { q: "Which Brazilian club is Pelé famous for playing?", choices: ["Santos", "Napoli", "Atletico Madrid", "Liverpool"], a: 0 }
 ];
 
 // ---------------- QUIZ LOGIC ----------------
-let QUIZ=[], currentQ=0, score=0;
-let totalCoins = Number(localStorage.getItem('totalCoins')) || 0;
+let QUIZ = [], currentQ = 0, score = 0;
+
+// 🔴 FIXED: Load username and user's saved coins from leaderboard
+let username = localStorage.getItem('username') || null;
+let rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+
+let totalCoins = 0;
+if (username) {
+  const userEntry = rushersLeague.find(e => e.name === username);
+  if (userEntry) {
+    totalCoins = userEntry.coins;
+  } else {
+    totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+  }
+} else {
+  totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+}
+
+localStorage.setItem('totalCoins', totalCoins);
+
 const POINTS_PER_Q = 10;
 let timerInterval, timeLeft = 15;
 
-const logoImg=document.getElementById('logoImg');
-const questionEl=document.getElementById('question');
-const choicesEl=document.getElementById('choices');
-const progressFill=document.getElementById('progressFill');
-const finalEl=document.getElementById('final');
-const finalScoreEl=document.getElementById('finalScore');
-const coinSummaryEl=document.getElementById('coinSummary');
-const headerCoinsEl=document.getElementById('headerCoins');
-const playAgainBtn=document.getElementById('playAgain');
-const goHomeBtn=document.getElementById('goHome');
-const levelText=document.getElementById('levelText');
-const clickS=document.getElementById('clickS');
-const coinS=document.getElementById('coinS');
-const cheerS=document.getElementById('cheerS');
-const bgMusic=document.getElementById('bgMusic');
-const card=document.getElementById('card');
-const timerCircle=document.getElementById('timerCircle');
+const logoImg = document.getElementById('logoImg');
+const questionEl = document.getElementById('question');
+const choicesEl = document.getElementById('choices');
+const progressFill = document.getElementById('progressFill');
+const finalEl = document.getElementById('final');
+const finalScoreEl = document.getElementById('finalScore');
+const coinSummaryEl = document.getElementById('coinSummary');
+const headerCoinsEl = document.getElementById('headerCoins');
+const playAgainBtn = document.getElementById('playAgain');
+const goHomeBtn = document.getElementById('goHome');
+const levelText = document.getElementById('levelText');
+const clickS = document.getElementById('clickS');
+const coinS = document.getElementById('coinS');
+const cheerS = document.getElementById('cheerS');
+const bgMusic = document.getElementById('bgMusic');
+const card = document.getElementById('card');
+const timerCircle = document.getElementById('timerCircle');
 
-headerCoinsEl.textContent=totalCoins;
+headerCoinsEl.textContent = totalCoins;
+
+// ====== LEADERBOARD UPDATE FUNCTION ======
+function updateLeaderboardEntry() {
+  if (!username) return;
+  
+  rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+  const existing = rushersLeague.find(e => e.name === username);
+  
+  if (existing) {
+    existing.coins = totalCoins;
+  } else {
+    rushersLeague.push({ name: username, coins: totalCoins });
+  }
+  
+  rushersLeague.sort((a, b) => b.coins - a.coins);
+  localStorage.setItem('rushersLeague', JSON.stringify(rushersLeague));
+}
 
 // shuffle utility
-function shuffleArray(arr){ return arr.sort(()=>Math.random()-0.5); }
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 // generate quiz with shuffled correct answers
-function newQuiz(){
-  QUIZ = shuffleArray([...LOGO_QUESTIONS, ...TEXT_QUESTIONS]).slice(0,10).map(q=>{
+function newQuiz() {
+  QUIZ = shuffleArray([...LOGO_QUESTIONS, ...TEXT_QUESTIONS]).slice(0, 10).map(q => {
     let choicesCopy = [...q.choices];
     choicesCopy = shuffleArray(choicesCopy);
     let correctAnswerText = q.img ? q.choices[q.a] : q.choices[q.a];
     let newIndex = choicesCopy.indexOf(correctAnswerText);
-    return q.img ? {...q, choices:choicesCopy, a:newIndex} : {...q, choices:choicesCopy, question:q.q, a:newIndex};
+    return q.img ? { ...q, choices: choicesCopy, a: newIndex } : { ...q, choices: choicesCopy, q: q.q, a: newIndex };
   });
-  currentQ=0; score=0;
+  currentQ = 0;
+  score = 0;
 }
 
 // ---------------- LOAD QUESTION ----------------
-function loadQuestion(){
-  if(currentQ>=QUIZ.length){ finishQuiz(); return; }
+function loadQuestion() {
+  if (currentQ >= QUIZ.length) { finishQuiz(); return; }
   let current = QUIZ[currentQ];
   card.style.opacity = 0;
-  setTimeout(()=>{
-    if(current.img){
+  setTimeout(() => {
+    if (current.img) {
       logoImg.src = current.img;
       logoImg.style.display = 'block';
     } else { logoImg.style.display = 'none'; }
 
-    questionEl.textContent = current.img ? current.question : current.question;
+    questionEl.textContent = current.q || current.question;
     choicesEl.innerHTML = '';
 
-    current.choices.forEach((c,i)=>{
+    current.choices.forEach((c, i) => {
       const btn = document.createElement('div');
-      btn.className='choice';
-      btn.textContent=c;
-      btn.addEventListener('click',()=>selectAnswer(btn,current.a));
+      btn.className = 'choice';
+      btn.textContent = c;
+      btn.dataset.index = i;
+      btn.addEventListener('click', () => selectAnswer(btn, i, current.a));
       choicesEl.appendChild(btn);
     });
 
-    progressFill.style.width = `${(currentQ/QUIZ.length)*100}%`;
-    levelText.textContent = `Question ${currentQ+1} / ${QUIZ.length}`;
+    progressFill.style.width = `${(currentQ / QUIZ.length) * 100}%`;
+    levelText.textContent = `Question ${currentQ + 1} / ${QUIZ.length}`;
     startTimer();
     card.style.opacity = 1;
-  },300);
+  }, 300);
 }
 
 // ---------------- TIMER ----------------
-function startTimer(){
+function startTimer() {
   clearInterval(timerInterval);
-  timeLeft=15;
+  timeLeft = 15;
   updateTimer();
-  timerInterval=setInterval(()=>{
+  timerInterval = setInterval(() => {
     timeLeft--;
     updateTimer();
-    if(timeLeft<=0){
+    if (timeLeft <= 0) {
       clearInterval(timerInterval);
-      currentQ++;
-      loadQuestion();
+      if (currentQ < QUIZ.length - 1) {
+        currentQ++;
+        loadQuestion();
+      } else {
+        finishQuiz();
+      }
     }
-  },1000);
+  }, 1000);
 }
 
-function updateTimer(){
-  const circumference=2*Math.PI*15;
-  const offset=circumference*(1 - timeLeft/15);
-  timerCircle.style.strokeDasharray=circumference;
-  timerCircle.style.strokeDashoffset=offset;
+function updateTimer() {
+  const circumference = 2 * Math.PI * 15;
+  const offset = circumference * (1 - timeLeft / 15);
+  timerCircle.style.strokeDasharray = circumference;
+  timerCircle.style.strokeDashoffset = offset;
 }
 
 // ---------------- SELECT ANSWER ----------------
-function selectAnswer(btn, answerIdx){
+function selectAnswer(btn, selectedIndex, answerIdx) {
   clearInterval(timerInterval);
-  clickS.currentTime=0; clickS.play();
+  clickS.currentTime = 0; clickS.play();
   const buttons = Array.from(choicesEl.children);
-  const current = QUIZ[currentQ];
 
-  if(buttons.indexOf(btn)===answerIdx){
+  if (selectedIndex === answerIdx) {
     btn.classList.add('correct');
     score++;
-    totalCoins+=POINTS_PER_Q;
-    localStorage.setItem('totalCoins',totalCoins);
-    headerCoinsEl.textContent=totalCoins;
-    coinS.currentTime=0; coinS.play();
+    totalCoins += POINTS_PER_Q;
+    localStorage.setItem('totalCoins', totalCoins);
+    headerCoinsEl.textContent = totalCoins;
+    coinS.currentTime = 0; coinS.play();
+    coinPop(POINTS_PER_Q);
+    
+    // 🔴 Update leaderboard immediately
+    updateLeaderboardEntry();
   } else {
     btn.classList.add('wrong');
     buttons[answerIdx].classList.add('correct');
   }
-  buttons.forEach(b=>b.style.pointerEvents='none');
-  setTimeout(()=>{currentQ++; loadQuestion();},800);
+  buttons.forEach(b => b.style.pointerEvents = 'none');
+  
+  setTimeout(() => {
+    if (currentQ < QUIZ.length - 1) {
+      currentQ++;
+      loadQuestion();
+    } else {
+      finishQuiz();
+    }
+  }, 800);
 }
 
 // ---------------- FINISH QUIZ ----------------
-function finishQuiz(){
+function finishQuiz() {
   finalEl.classList.add('show');
   finalScoreEl.textContent = `You answered ${score} / ${QUIZ.length} correctly`;
-  coinSummaryEl.textContent = `You earned ${score*POINTS_PER_Q} 🪙 this round`;
-  cheerS.currentTime=0; cheerS.play();
-  progressFill.style.width='100%';
+  coinSummaryEl.textContent = `You earned ${score * POINTS_PER_Q} 🪙 this round`;
+  
+  // 🔴 Final leaderboard update
+  updateLeaderboardEntry();
+  
+  cheerS.currentTime = 0; cheerS.play();
+  progressFill.style.width = '100%';
   confetti();
 }
 
 // ---------------- BUTTONS ----------------
-playAgainBtn.addEventListener('click',()=>{ finalEl.classList.remove('show'); newQuiz(); loadQuestion(); });
-goHomeBtn.addEventListener('click',()=>window.location.href='index.html');
+playAgainBtn.addEventListener('click', () => {
+  finalEl.classList.remove('show');
+  newQuiz();
+  loadQuestion();
+});
+
+// 🔴 FIXED: Home button with proper leaderboard update
+goHomeBtn.addEventListener('click', () => {
+  localStorage.setItem('totalCoins', totalCoins);
+  updateLeaderboardEntry();
+  localStorage.setItem('totalCoins', totalCoins);
+  if (username) {
+    localStorage.setItem('rushersLeague', localStorage.getItem('rushersLeague'));
+  }
+  window.location.href = 'index.html';
+});
+
+// ---------------- COIN POP ----------------
+function coinPop(amount) {
+  const pop = document.createElement('div');
+  pop.textContent = `+${amount} 🪙`;
+  pop.style.position = 'absolute';
+  pop.style.top = '30px';
+  pop.style.right = '30px';
+  pop.style.fontWeight = '900';
+  pop.style.color = '#fbc531';
+  pop.style.zIndex = '100';
+  pop.style.opacity = '1';
+  pop.style.transition = 'all 1s ease-out';
+  document.body.appendChild(pop);
+  setTimeout(() => {
+    pop.style.transform = 'translateY(-50px)';
+    pop.style.opacity = '0';
+  }, 50);
+  setTimeout(() => pop.remove(), 1000);
+}
 
 // ---------------- CONFETTI ----------------
-function confetti(){
-  const colors = ["#f94144","#f3722c","#f9c74f","#90be6d","#43aa8b","#577590","#7b3af6","#00e5ff"];
-  for(let i=0;i<150;i++){
+function confetti() {
+  const colors = ["#f94144", "#f3722c", "#f9c74f", "#90be6d", "#43aa8b", "#577590", "#7b3af6", "#00e5ff"];
+  for (let i = 0; i < 150; i++) {
     const c = document.createElement('div');
-    c.className='confetti';
-    c.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
-    c.style.left = `${Math.random()*100}vw`;
-    c.style.width = `${Math.random()*8 + 6}px`;
-    c.style.height = `${Math.random()*8 + 6}px`;
-    c.style.opacity = Math.random()*0.8 + 0.3;
-    c.style.transform = `rotate(${Math.random()*360}deg)`;
-    c.style.animationDuration = `${Math.random()*3+2}s`;
-    c.style.animationDelay = `${Math.random()*0.5}s`;
+    c.className = 'confetti';
+    c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    c.style.left = `${Math.random() * 100}vw`;
+    c.style.width = `${Math.random() * 8 + 6}px`;
+    c.style.height = `${Math.random() * 8 + 6}px`;
+    c.style.opacity = Math.random() * 0.8 + 0.3;
+    c.style.transform = `rotate(${Math.random() * 360}deg)`;
+    c.style.animationDuration = `${Math.random() * 3 + 2}s`;
+    c.style.animationDelay = `${Math.random() * 0.5}s`;
     document.body.appendChild(c);
-    
-    // Remove confetti after animation
-    setTimeout(()=>c.remove(),4000);
+    setTimeout(() => c.remove(), 4000);
   }
 }
 
-
 // ---------------- MUSIC ----------------
-let musicStarted=false;
-document.addEventListener('click', ()=>{
-  if(!musicStarted){ bgMusic.volume=0.3; bgMusic.play().catch(e=>{}); musicStarted=true; }
+let musicStarted = false;
+document.addEventListener('click', () => {
+  if (!musicStarted) {
+    bgMusic.volume = 0.3;
+    bgMusic.play().catch(e => {});
+    musicStarted = true;
+  }
 });
 
 // ---------------- INIT ----------------

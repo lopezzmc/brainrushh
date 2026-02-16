@@ -118,6 +118,7 @@ svg.timer { width:70px; height:70px; }
 
 <script>
 (() => {
+// ====== CRE QUESTIONS BANK (Expanded to 50+ questions) ======
 const SECTIONS = {
   "Old Testament": [
     {q:"Who built the ark to survive the flood?", choices:["Moses","Noah","Abraham","David"], answer:"Noah"},
@@ -129,7 +130,17 @@ const SECTIONS = {
     {q:"Who received the Ten Commandments?", choices:["Moses","Aaron","Joshua","David"], answer:"Moses"},
     {q:"What did God create on the first day?", choices:["Sun and Moon","Earth","Light","Animals"], answer:"Light"},
     {q:"Who fought Goliath?", choices:["Saul","David","Samson","Solomon"], answer:"David"},
-    {q:"Who was Abraham’s son?", choices:["Isaac","Jacob","Esau","Joseph"], answer:"Isaac"}
+    {q:"Who was Abraham’s son?", choices:["Isaac","Jacob","Esau","Joseph"], answer:"Isaac"},
+    {q:"How many plagues did God send on Egypt?", choices:["7","10","12","40"], answer:"10"},
+    {q:"Who was the first king of Israel?", choices:["Saul","David","Solomon","Samuel"], answer:"Saul"},
+    {q:"Who built the first temple in Jerusalem?", choices:["David","Solomon","Moses","Joshua"], answer:"Solomon"},
+    {q:"Which prophet was taken to heaven in a whirlwind?", choices:["Elijah","Elisha","Isaiah","Jeremiah"], answer:"Elijah"},
+    {q:"Who was Job's three friends?", choices:["Eliphaz, Bildad, Zophar","Peter, James, John","Shadrach, Meshach, Abednego","Moses, Aaron, Miriam"], answer:"Eliphaz, Bildad, Zophar"},
+    {q:"Which city walls fell after the Israelites marched around them?", choices:["Jericho","Ai","Jerusalem","Hebron"], answer:"Jericho"},
+    {q:"Who was the strongest man in the Bible?", choices:["Samson","Goliath","Saul","David"], answer:"Samson"},
+    {q:"Who was Ruth's mother-in-law?", choices:["Naomi","Orpah","Hannah","Esther"], answer:"Naomi"},
+    {q:"Which king had a dream of a statue made of different metals?", choices:["Nebuchadnezzar","Cyrus","Darius","Belshazzar"], answer:"Nebuchadnezzar"},
+    {q:"Who interpreted Pharaoh's dream about 7 fat and 7 thin cows?", choices:["Joseph","Daniel","Moses","Abraham"], answer:"Joseph"}
   ],
   "New Testament": [
     {q:"Who was the mother of Jesus?", choices:["Mary","Elizabeth","Martha","Anna"], answer:"Mary"},
@@ -141,7 +152,17 @@ const SECTIONS = {
     {q:"What is the shortest verse in the Bible?", choices:["Jesus wept","God is love","Pray without ceasing","In the beginning"], answer:"Jesus wept"},
     {q:"Which disciple walked on water with Jesus?", choices:["Peter","John","James","Andrew"], answer:"Peter"},
     {q:"Who is known as the 'Beloved Disciple'?", choices:["John","Peter","James","Matthew"], answer:"John"},
-    {q:"Who wrote most of the letters in the New Testament?", choices:["Paul","Peter","John","James"], answer:"Paul"}
+    {q:"Who wrote most of the letters in the New Testament?", choices:["Paul","Peter","John","James"], answer:"Paul"},
+    {q:"How many books are in the New Testament?", choices:["27","39","66","73"], answer:"27"},
+    {q:"Which Roman governor ordered Jesus' crucifixion?", choices:["Pilate","Herod","Felix","Agrippa"], answer:"Pilate"},
+    {q:"Who replaced Judas as a disciple?", choices:["Matthias","Barnabas","Silas","Mark"], answer:"Matthias"},
+    {q:"On what day did Jesus rise from the dead?", choices:["Sunday","Monday","Friday","Saturday"], answer:"Sunday"},
+    {q:"Who had a vision of a sheet with unclean animals?", choices:["Peter","Paul","Cornelius","Philip"], answer:"Peter"},
+    {q:"Who was the first Christian martyr?", choices:["Stephen","James","Peter","Paul"], answer:"Stephen"},
+    {q:"Which city had believers first called Christians?", choices:["Antioch","Jerusalem","Rome","Ephesus"], answer:"Antioch"},
+    {q:"Who was the Roman emperor when Jesus was born?", choices:["Augustus","Tiberius","Nero","Caligula"], answer:"Augustus"},
+    {q:"Which disciple was a tax collector?", choices:["Matthew","Peter","John","Andrew"], answer:"Matthew"},
+    {q:"Who wrote the Book of Revelation?", choices:["John","Peter","Paul","James"], answer:"John"}
   ],
   "Parables & Miracles": [
     {q:"Which parable is about a son who returns home after squandering his inheritance?", choices:["Good Samaritan","Prodigal Son","Talents","Sower"], answer:"Prodigal Son"},
@@ -153,12 +174,37 @@ const SECTIONS = {
     {q:"Who did Jesus raise from the dead in Nain?", choices:["A widow's son","Lazarus","Tabitha","Jairus' daughter"], answer:"A widow's son"},
     {q:"Which parable shows the importance of being ready for the Kingdom of God?", choices:["Ten Virgins","Good Samaritan","Rich Fool","Prodigal Son"], answer:"Ten Virgins"},
     {q:"Which parable emphasizes mercy to neighbors?", choices:["Good Samaritan","Sower","Mustard Seed","Talents"], answer:"Good Samaritan"},
-    {q:"Which miracle healed a blind man in Bethsaida?", choices:["Lazarus","Blind Man","Paralyzed Man","Leper"], answer:"Blind Man"}
+    {q:"Which miracle healed a blind man in Bethsaida?", choices:["Healing of Blind Man","Lazarus","Paralyzed Man","Leper"], answer:"Healing of Blind Man"},
+    {q:"How many loaves and fish were used to feed 5000?", choices:["5 and 2","7 and few fish","3 and 4","12 baskets"], answer:"5 and 2"},
+    {q:"Which parable compares the Kingdom of Heaven to a mustard seed?", choices:["Mustard Seed","Sower","Leaven","Hidden Treasure"], answer:"Mustard Seed"},
+    {q:"Who was healed by Jesus at the pool of Bethesda?", choices:["A paralytic","A blind man","A leper","A deaf man"], answer:"A paralytic"},
+    {q:"Which parable warns about building your house on sand?", choices:["Wise and Foolish Builders","Talents","Ten Virgins","Sower"], answer:"Wise and Foolish Builders"},
+    {q:"How many fish did Peter catch after Jesus told him to cast the net?", choices:["153","100","50","12"], answer:"153"}
   ]
 };
 
 let currentSet=[], currentQ=0, score=0;
-let totalCoins = Number(localStorage.getItem('totalCoins')) || 0;
+
+// 🔴 FIXED: Load username and user's saved coins from leaderboard
+let username = localStorage.getItem('username') || null;
+let rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+
+// Load user's coins from leaderboard or use existing totalCoins
+let totalCoins = 0;
+if (username) {
+  const userEntry = rushersLeague.find(e => e.name === username);
+  if (userEntry) {
+    totalCoins = userEntry.coins;  // Load user's OWN saved coins
+  } else {
+    totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+  }
+} else {
+  totalCoins = parseInt(localStorage.getItem('totalCoins') || '0', 10);
+}
+
+// Save the loaded coins back to localStorage
+localStorage.setItem('totalCoins', totalCoins);
+
 const pointsPerQ = 10;
 let timeLeft=15, timerInterval;
 let answering=false;
@@ -180,6 +226,23 @@ const cheerS = document.getElementById('cheerS');
 const bgMusic = document.getElementById('bgMusic');
 
 headerCoinsEl.textContent = totalCoins;
+
+// ====== LEADERBOARD UPDATE FUNCTION ======
+function updateLeaderboardEntry() {
+  if (!username) return;
+  
+  rushersLeague = JSON.parse(localStorage.getItem('rushersLeague') || '[]');
+  const existing = rushersLeague.find(e => e.name === username);
+  
+  if (existing) {
+    existing.coins = totalCoins;
+  } else {
+    rushersLeague.push({ name: username, coins: totalCoins });
+  }
+  
+  rushersLeague.sort((a, b) => b.coins - a.coins);
+  localStorage.setItem('rushersLeague', JSON.stringify(rushersLeague));
+}
 
 function shuffle(array){
   let arr=[...array];
@@ -211,11 +274,12 @@ function loadQuestion(){
     btn.className='choice';
     btn.setAttribute('role','listitem');
     btn.textContent=c;
-    btn.addEventListener('click',()=>selectAnswer(i,btn));
+    btn.dataset.correct = (i === current.correct).toString();
+    btn.addEventListener('click',()=>selectAnswer(i,btn, current.correct));
     choicesEl.appendChild(btn);
   });
-  qcountEl.textContent=`Question ${currentQ+1} / 10`;
-  progressFill.style.width=`${(currentQ/10)*100}%`;
+  qcountEl.textContent=`Question ${currentQ+1} / ${currentSet.length}`;
+  progressFill.style.width=`${(currentQ/currentSet.length)*100}%`;
   startTimer();
 }
 
@@ -238,14 +302,14 @@ function updateTimerVisual(){
   document.getElementById('timerCircle').style.strokeDashoffset = 282.6*(1-timeLeft/15);
 }
 
-function selectAnswer(i,btn){
+function selectAnswer(i, btn, correctIndex){
   if(answering) return;
   answering=true;
   if(bgMusic.paused){ try{ bgMusic.play(); }catch(e){} }
   try{ clickS.currentTime=0; clickS.play(); }catch(e){}
   clearInterval(timerInterval);
-  let current = currentSet[currentQ];
-  if(i===current.correct){
+  
+  if(i===correctIndex){
     btn.classList.add('correct');
     score++;
     totalCoins+=pointsPerQ;
@@ -253,24 +317,38 @@ function selectAnswer(i,btn){
     headerCoinsEl.textContent=totalCoins;
     try{ coinS.currentTime=0; coinS.play(); }catch(e){}
     coinPop(pointsPerQ);
+    
+    // 🔴 Update leaderboard immediately when coins change
+    updateLeaderboardEntry();
   } else {
     btn.classList.add('wrong');
-    Array.from(choicesEl.children)[current.correct].classList.add('correct');
+    Array.from(choicesEl.children).forEach(ch => {
+      if (ch.dataset.correct === 'true') {
+        ch.classList.add('correct');
+      }
+    });
   }
   Array.from(choicesEl.children).forEach(c=>c.style.pointerEvents='none');
   setTimeout(()=>nextQuestion(),800);
 }
 
 function nextQuestion(){
-  currentQ++;
-  if(currentQ<10) loadQuestion();
-  else finishQuiz();
+  if (currentQ < currentSet.length - 1) {
+    currentQ++;
+    loadQuestion();
+  } else {
+    finishQuiz();
+  }
 }
 
 function finishQuiz(){
   finalEl.style.display='flex';
-  finalScoreEl.textContent=`You answered ${score} / 10 correctly`;
+  finalScoreEl.textContent=`You answered ${score} / ${currentSet.length} correctly`;
   coinSummaryEl.textContent=`You earned ${score*pointsPerQ} 🪙 this round`;
+  
+  // 🔴 Final leaderboard update
+  updateLeaderboardEntry();
+  
   try{ cheerS.currentTime=0; cheerS.play(); }catch(e){}
   progressFill.style.width='100%';
   confetti();
@@ -284,7 +362,23 @@ playAgainBtn.addEventListener('click',()=>{
   loadQuestion();
 });
 
-goHomeBtn.addEventListener('click',()=>window.location.href='index.html');
+// 🔴 FIXED: Home button with proper leaderboard update
+goHomeBtn.addEventListener('click',()=>{
+  // Final save of coins
+  localStorage.setItem('totalCoins', totalCoins);
+  
+  // Update leaderboard
+  updateLeaderboardEntry();
+  
+  // Trigger storage event for home page to refresh
+  localStorage.setItem('totalCoins', totalCoins);
+  if (username) {
+    localStorage.setItem('rushersLeague', localStorage.getItem('rushersLeague'));
+  }
+  
+  // Navigate to home
+  window.location.href = 'index.html';
+});
 
 function coinPop(amount){
   const pop=document.createElement('div');
@@ -312,6 +406,18 @@ function confetti(){
     setTimeout(()=>c.remove(),2200);
   }
 }
+
+// ====== BACKGROUND MUSIC ======
+let musicStarted = false;
+function startMusic() {
+  if (!musicStarted) {
+    bgMusic.volume = 0.3;
+    bgMusic.play().catch(e => console.log("Music play blocked", e));
+    musicStarted = true;
+    document.removeEventListener('click', startMusic);
+  }
+}
+document.addEventListener('click', startMusic);
 
 shuffleBank();
 loadQuestion();

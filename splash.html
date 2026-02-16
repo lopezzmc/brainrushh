@@ -22,10 +22,9 @@
     text-align: center;
   }
 
-  /* Increase size of main splash logo */
   #logo {
-    width: 300px;  /* Changed from 150px */
-    height: 300px; /* Changed from 150px */
+    width: 300px;
+    height: 300px;
     background: url('logo.png') no-repeat center/contain;
     animation: pulse 1.5s infinite;
   }
@@ -115,10 +114,9 @@
     position: relative;
   }
 
-  /* Increase size of welcome screen logo */
   #welcome-logo {
-    width: 300px;  /* Changed from 150px */
-    height: 300px; /* Changed from 150px */
+    width: 300px;
+    height: 300px;
     background: url('logo.png') no-repeat center/contain;
     margin-bottom: 20px;
     animation: pulse 1.5s infinite;
@@ -137,7 +135,6 @@
     max-width: 600px;
   }
 
-  /* Per-letter animated colored title */
   .rainbow-letter {
     display: inline-block;
     font-size: 2.4rem;
@@ -158,20 +155,6 @@
     100% { transform: translateY(0) scale(1); opacity: 1; }
   }
 
-  /* small staggered hue shift for extra sparkle */
-  .rainbow-letter::after {
-    content: '';
-    display: block;
-    height: 6px;
-    width: 100%;
-    margin-top: 6px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
-    transform-origin: left center;
-    opacity: 0.85;
-    filter: blur(6px);
-  }
-
-  /* Floating particles */
   .particle {
     position: absolute;
     background: #00bfff;
@@ -184,18 +167,6 @@
     0% { transform: translateY(0px) translateX(0px); opacity: 0.7; }
     50% { transform: translateY(-100px) translateX(50px); opacity: 0.4; }
     100% { transform: translateY(0px) translateX(0px); opacity: 0.7; }
-  }
-
-  /* Main content */
-  #main {
-    display: none;
-    height: 100%;
-    background: #1a1a2e;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 2rem;
   }
 </style>
 </head>
@@ -215,26 +186,19 @@
 
 <!-- Welcome Screen -->
 <div id="welcome">
-  <!-- Particles -->
   <div class="particle" style="width:10px;height:10px;top:20%;left:15%;"></div>
   <div class="particle" style="width:8px;height:8px;top:50%;left:70%;"></div>
   <div class="particle" style="width:12px;height:12px;top:80%;left:40%;"></div>
 
   <div id="welcome-logo"></div>
 
-  <!-- changed welcome heading to animated rainbow text -->
-  <h1 id="welcome-title" class="rainbow-text">Welcome to Brain Rush! 🧠</h1>
+  <h1 id="welcome-title">Welcome to Brain Rush! 🧠</h1>
   <p>Test your brain with fun games, quizzes, puzzles, and riddles!</p>
   <button id="continue-btn">Continue</button>
 </div>
 
-<!-- Main Content -->
-<div id="main">
-  This is where your main website content goes.
-</div>
-
-<!-- Background audio for splash (muted for autoplay) -->
-<audio id="bg-music" autoplay>
+<!-- Background audio for splash -->
+<audio id="bg-music" loop>
   <source src="background-music.mp3" type="audio/mpeg">
 </audio>
 
@@ -251,32 +215,28 @@
     welcome.style.display = 'flex';
   });
 
-  // AUDIO: attempt muted autoplay, then unmute on first user gesture (gesture "trap")
   document.addEventListener('DOMContentLoaded', () => {
     const music = document.getElementById('bg-music');
-    const clickSfx = document.getElementById('click-sfx');
-    const toggle = document.getElementById('music-toggle');
-
-    // Split welcome title into per-letter spans and assign colors + delays
+    
+    // Animate welcome title
     (function animateWelcomeTitle(){
       const el = document.getElementById('welcome-title');
       if (!el) return;
       const txt = el.textContent;
       el.innerHTML = '';
-      const colors = ['#00bfff', '#9b59b6', '#ff69b4', '#ffd166', '#7afcff']; // sky blue, purple, pink, yellow, teal
+      const colors = ['#00bfff', '#9b59b6', '#ff69b4', '#ffd166', '#7afcff'];
       [...txt].forEach((ch, i) => {
         const span = document.createElement('span');
         span.className = 'rainbow-letter';
         span.textContent = ch;
         span.style.setProperty('--i', i);
-        // skip coloring spaces (keep subtle)
         const color = ch.trim() ? colors[i % colors.length] : 'transparent';
         span.style.setProperty('--clr', color);
         el.appendChild(span);
       });
     })();
 
-    // Try to start muted playback (most browsers allow muted autoplay)
+    // Try to start muted playback
     if (music) {
       try {
         music.muted = true;
@@ -285,7 +245,7 @@
       } catch(e) {}
     }
 
-    // Fade-in helper to smoothly unmute
+    // Fade-in audio helper
     function fadeInAudio(el, targetVol=0.6, step=0.02, interval=80) {
       if (!el) return;
       try {
@@ -307,10 +267,9 @@
     document.body.addEventListener('click', resumeOnGesture, { once: true });
     document.body.addEventListener('keydown', resumeOnGesture, { once: true });
 
-    // Continue button: mark index to play and try to unmute immediately before navigating
+    // Continue button
     continueBtn?.addEventListener('click', () => {
       try { localStorage.setItem('br_play_music', '1'); } catch (e) {}
-      // Try to unmute/play now so music starts before navigation (if allowed)
       try {
         if (music) {
           music.muted = false;
